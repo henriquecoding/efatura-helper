@@ -262,6 +262,51 @@
   // item tied to the fact that triggered it and, where possible, to the real next deadline from the
   // agenda fiscal. These are INDICATORS derived from detected data, not legal advice or a filed
   // return - the card says so. Nothing here invents a value; deadlines come only from the agenda.
+  // Past-year correction windows. Pure + testable: given an income year, says whether you can
+  // still correct that year's IRS and until when. Grounded in DRE-verified law (see
+  // legal_sources.json cppt-59, cppt-70, lgt-78):
+  //   - recover (money back, you under-claimed): substituicao a favor do contribuinte is allowed
+  //     up to the reclamacao graciosa deadline = 120 dias from the end of the voluntary payment
+  //     period of the liquidacao (CPPT 59.º-3-b-II + 70.º).
+  //   - payMore (you owe more): substituicao up to 60 dias before caducidade (CPPT 59.º-3-b-III).
+  //   - revisao (LGT 78.º): 4 anos, but ONLY by AT initiative or "erro imputavel aos servicos" -
+  //     NOT a taxpayer's own omission - so it is NOT a reliable route to recover a missed deduction.
+  // When the real liquidacao payment date is known it is used (exact:true); otherwise the statutory
+  // IRS calendar is used as an estimate (voluntary payment deadline = 31 Aug of the year after the
+  // income year) and exact:false tells the UI to say "prazo estimado - confirma a tua liquidacao".
+  function _addDays(d, n){ var x = new Date(d.getTime()); x.setDate(x.getDate()+n); return x; }
+  function _fmtDate(d){ var p=function(n){return (n<10?"0":"")+n;}; return p(d.getDate())+"/"+p(d.getMonth()+1)+"/"+d.getFullYear(); }
+  function _daysLeft(today, deadline){ return Math.ceil((deadline.getTime()-today.getTime())/86400000); }
+  function resubmissionWindows(incomeYear, opts){
+    opts = opts || {};
+    var today = opts.today ? new Date(opts.today) : new Date();
+    var exact = !!opts.pagamentoLimite;
+    // voluntary payment deadline of that year's liquidacao (real date if we have it, else 31 Aug of Y+1)
+    var pay = exact ? new Date(opts.pagamentoLimite) : new Date(incomeYear+1, 7, 31);
+    var recoverDeadline = _addDays(pay, 120);                 // CPPT 70.º: 120 dias
+    var caducidade = new Date(incomeYear+4, 11, 31);          // LGT 45.º: ~4 anos (fim de Y+4), estimativa
+    var payMoreDeadline = _addDays(caducidade, -60);          // CPPT 59.º-3-b-III: 60 dias antes
+    return {
+      incomeYear: incomeYear,
+      declaredIn: incomeYear+1,
+      exact: exact,
+      recover: {
+        deadline: _fmtDate(recoverDeadline),
+        open: today.getTime() <= recoverDeadline.getTime(),
+        daysLeft: _daysLeft(today, recoverDeadline),
+        law: "CPPT art. 59.º-3-b-II + 70.º (120 dias)"
+      },
+      payMore: {
+        deadline: _fmtDate(payMoreDeadline),
+        open: today.getTime() <= payMoreDeadline.getTime(),
+        law: "CPPT art. 59.º-3-b-III (60 dias antes da caducidade)"
+      },
+      revisao: {
+        reliableForOwnOmission: false,
+        note: "4 anos (LGT art. 78.º) só com erro imputável aos serviços, não por omissão própria"
+      }
+    };
+  }
   function agendaMatch(prof, kws){
     var ag = (prof.detalhes.situacao && prof.detalhes.situacao.agenda && prof.detalhes.situacao.agenda.proximos) || [];
     for (var i=0;i<ag.length;i++){
