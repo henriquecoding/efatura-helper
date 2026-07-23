@@ -88,9 +88,19 @@
   a:hover{color:var(--pri-dark)}
 
   /* the first thing on the page: the one rule that keeps people safe */
-  .alertbar{background:var(--pri-dark);color:#fff;padding:18px 0;border-bottom:4px solid var(--red)}
-  .alertbar .big{font-size:clamp(1.05rem,2.6vw,1.32rem);font-weight:600;line-height:1.35;
-                 margin:0 0 8px;max-width:70ch}
+  .alertbar{background:var(--pri-dark);color:#fff;border-bottom:4px solid var(--red)}
+  .alertbar>summary{list-style:none;cursor:pointer;padding:13px 0}
+  .alertbar>summary::-webkit-details-marker{display:none}
+  .alertbar>summary>.wrap{display:flex;align-items:center;gap:16px}
+  .alertbar .big{font-size:clamp(1rem,2.4vw,1.22rem);font-weight:600;line-height:1.35;margin:0;flex:1}
+  .alertbar .why{flex:none;font-family:'IBM Plex Mono',monospace;font-size:.74rem;font-weight:600;
+                 letter-spacing:.04em;color:#cdd8f2;border:1px solid rgba(255,255,255,.35);
+                 border-radius:2px;padding:4px 9px;white-space:nowrap}
+  .alertbar .why::after{content:" \25BE";display:inline-block;transition:transform .18s ease}
+  .alertbar[open]>summary .why::after{transform:rotate(180deg)}
+  .alertbar[open]>summary .why{color:#fff;border-color:rgba(255,255,255,.6)}
+  @media (prefers-reduced-motion:reduce){.alertbar .why::after{transition:none}}
+  .alertbar .ab-body{padding:0 0 16px}
   .alertbar .small{font-size:.88rem;line-height:1.55;color:#d7e0f5;margin:0 0 6px;max-width:78ch}
   .alertbar .small:last-child{margin-bottom:0}
   .alertbar b{color:#fff}
@@ -280,10 +290,13 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
-<div class="alertbar">
-  <div class="wrap">
+<details class="alertbar">
+  <summary><div class="wrap">
     <p class="big">A tua password das Finanças só se escreve em páginas cujo endereço
       <b>termina</b> em <code>.gov.pt</code>. Aqui, nunca.</p>
+    <span class="why">Porquê</span>
+  </div></summary>
+  <div class="wrap ab-body">
     <p class="small">Esta ferramenta <b>não te pede a password</b> e <b>não consegue vê-la</b>.
       Funciona como uma extensão do navegador: só corre quando <b>tu</b> clicas, só dentro da página
       do e-Fatura onde <b>já fizeste login</b>, e não vê mais nada. Se alguma vez um site te pedir
@@ -291,7 +304,7 @@
     <p class="small tagline"><span class="tag">Não oficial</span> Projeto pessoal e independente.
       <b>Não</b> é um serviço do Estado nem da Autoridade Tributária.</p>
   </div>
-</div>
+</details>
 <div class="mast">
   <div class="wrap">
     <!-- Diogo's DA monogram, same geometry as the favicon and diogoandrade.com, but in the site's
