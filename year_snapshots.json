@@ -4,7 +4,17 @@
   "_provenance": "Values come from each article's DEDICATED DRE page (2014-70048167-<id>), which exposes the in-force text + full 'Alteracoes ao artigo' history; the full consolidated render does NOT expose those accordions. Historical (past-year) text is read by viewing the article as-in-force at that year. source_law names the diploma that set the value for that year.",
   "_correction_windows": "How long each past year stays fixable is separate, in legal_sources.json: cppt-59 (substituicao), cppt-70 (reclamacao graciosa 120 dias), lgt-78 (revisao 4 anos, com limites).",
   "_status": "SCAFFOLD 2026-07-23. Amendment-year maps captured for 78.º-C/-E. Per-year VALUES still unverified - none may reach a user until verified=true for that specific year.",
-  "_tooling_blocker": "Filling per-year values is blocked on the DRE reader, not on effort. Two problems found 2026-07-23: (1) dedicated article URLs render INCONSISTENTLY - some (e.g. -1124882175) return just the article (~8k chars), others (e.g. -185585815) return the whole 527k consolidated doc, so a naive parse bleeds the NEXT article's numbers into this one (78.º-D parsed 800 then 502/296 from 78.º-E). (2) present dre.mjs reads only CURRENT text; past-year values need the page's 'Versao'/'a data' version-at-date control, which it cannot drive. NEXT STEP is a tooling task: extend the DRE skill with reliable single-article isolation + version-at-date reading (likely via the OutSystems screenservice, cf. fiscal-monitor/dredisco.mjs). Until then, per-year values stay unverified BY DESIGN rather than guessed.",
+  "_method_proven": "Historical (past-year) values come from the OE law's own consolidated ARTICLE page (small, ~13k chars, clean via dre.mjs get), NOT the SPA version-at-date control and NOT the 200-page OE PDF. Workflow, deterministic: (1) the CIRS article's amendment history names the amending law+article, e.g. '78.º-E <- Lei 82/2023, art. 230'; (2) search 'OE <year> Artigo <N>' for that page's id (ids are non-sequential OutSystems content ids, not guessable, but search finds them); (3) dre.mjs get that page; (4) parse the redacao block '«Artigo N ...»' - the format is legally standardized across every OE, so the parser generalizes. PROVEN 2026-07-23: OE-2024 art 230 (2023-836109751-836144477) yields 78.º-E 2024 base rendas limit = 600 EUR (n.4 adds escalonamento: 900 EUR for rendimento coletavel <= 1st escalao). Current single-article isolation from the full consolidated render also works via the fixed line-anchored matcher (no re-render needed).",
+  "_rule_latest_amendment_per_year": "For income year Y, an article's value = the redacao set by the LAST amendment IN FORCE for Y, not the first. 78.º-E was amended TWICE for 2024 (Lei 82/2023 -> 600, then Lei 36/2024 in force 2024-08-07). 600 is the Lei 82/2023 wording and MUST be reconciled with Lei 36/2024 before verified=true.",
+  "current_values_2026_verified_isolation": {
+    "_note": "Clean single-article isolation from the full consolidated render (fixed matcher). These are CURRENT (2026) values; still need per-income-year confirmation before use.",
+    "78.º-B": "35% / 250 EUR (monoparental 45% / 335)",
+    "78.º-C": "15% / 1000 EUR",
+    "78.º-D": "30% / 800 EUR",
+    "78.º-E": "escalonamento - do NOT flatten; source per year from OE articles",
+    "78.º-F": "15% / 250 EUR conjunto",
+    "84.º": "25% / 403 EUR"
+  },
   "article_pages": {
     "78.º-C": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-912821426",
     "78.º-D": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-185585815",
@@ -43,7 +53,7 @@
         "despesas_gerais": { "article": "78.º-B", "pct": null, "ceiling": null, "verified": false },
         "saude": { "article": "78.º-C", "pct": null, "ceiling": null, "verified": false },
         "educacao": { "article": "78.º-D", "pct": null, "ceiling": null, "verified": false },
-        "imoveis_rendas": { "article": "78.º-E", "verified": false, "note": "Lei 82/2023 + Lei 36/2024 in force" },
+        "imoveis_rendas": { "article": "78.º-E", "base_ceiling_lei82_2023": 600, "escalonamento_n4": "900 EUR se rendimento coletavel <= 1.º escalao", "verified": false, "source_law": "Lei 82/2023 art 230 (OE 2024)", "note": "600 is the Lei 82/2023 wording; RECONCILE with Lei 36/2024 (in force 2024-08-07) before verified=true" },
         "lares": { "article": "84.º", "pct": null, "ceiling": null, "verified": false },
         "iva_conjunto": { "article": "78.º-F", "pct": null, "ceiling": null, "verified": false }
       },
