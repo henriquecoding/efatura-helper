@@ -648,11 +648,20 @@
     }).then(function (o) {
       var ativos = o.contratos.filter(function (c) { return /activ|ativ/i.test(estadoStr(c.estado)); });
       var recCount = o.recibos ? o.recibos.length : null;
+      // Per-year recibo count for the recibos-em-falta indicator. Recibo period fields are not pinned,
+      // so scan each row for a year (schema-agnostic, like readIRS) - another contributor-schema target.
+      var yNow = new Date().getFullYear();
+      var recibosAno = o.recibos ? o.recibos.filter(function (r) { return scanYear(rowVals(r)) === yNow; }).length : null;
       var avisos = [];
       if (o.recibos && ativos.length && recCount === 0) avisos.push("contrato activo sem recibos no per\u00edodo - confirmar");
       return { data: { contratos: o.contratos.length, activos: ativos.length, recibos: recCount,
+                       recibosAno: recibosAno, ano: yNow, periodosHeuristica: true,
                        lista: ativos.slice(0, 8).map(function (c) {
-                         return { referencia: c.referencia || c.numero, estado: estadoStr(c.estado), valorRenda: c.valorRenda };
+                         var cv = rowVals(c), dt = scanDate(cv);
+                         // inicio as YYYY-MM when a start date is present; used to not over-count months
+                         var inicio = null; if (dt) { var mm = dt.match(/(\d{4})-(\d{2})/) || dt.match(/(\d{2})[\/.-](\d{2})[\/.-](\d{4})/);
+                           if (mm) inicio = mm[0].length === 7 ? mm[0] : (mm[3] + "-" + mm[2]); }
+                         return { referencia: c.referencia || c.numero, estado: estadoStr(c.estado), valorRenda: c.valorRenda, inicio: inicio };
                        }), avisos: avisos },
                source: cU + (o.recibos !== null ? " + " + rU : " (recibos indispon\u00edveis)") };
     });
