@@ -92,6 +92,36 @@
       "source_note": "DRE consolidada CIRS; portaldasfinancas pages are pointers"
     },
     {
+      "id": "cppt-59",
+      "governs": "Declaracao de substituicao - prazos para corrigir um IRS ja entregue (base da ferramenta de anos anteriores)",
+      "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/1999-34577575",
+      "type": "artigo",
+      "critical": true,
+      "why_it_matters": "Fixa QUANDO se pode substituir uma declaracao. n.3-b-II (correcao a favor do contribuinte, imposto inferior) permite substituir ate ao prazo legal de reclamacao graciosa; n.3-b-III (imposto superior) ate 60 dias antes da caducidade. A promessa 'ainda da para recuperar' da re-auditoria vive deste artigo.",
+      "expect": [
+        "59.º",
+        "substituídas",
+        "30 dias",
+        "reclamação graciosa"
+      ],
+      "source_note": "DRE consolidada CPPT (DL 433/99). Verificado por render 2026-07-23."
+    },
+    {
+      "id": "cppt-70",
+      "governs": "Reclamacao graciosa - prazo de 120 dias (janela central da re-auditoria)",
+      "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/1999-34577575",
+      "type": "artigo",
+      "critical": true,
+      "why_it_matters": "O prazo de 120 dias (contados do art. 102 n.1) e o limite que o art. 59-3-b-II referencia para corrigir a favor do contribuinte. E o numero que a ferramenta mostra ao utilizador; se mudar, a ferramenta passa a mentir.",
+      "expect": [
+        "70.º",
+        "reclamação graciosa",
+        "120 dias",
+        "artigo 102.º"
+      ],
+      "source_note": "DRE consolidada CPPT. Verificado por render 2026-07-23."
+    },
+    {
       "id": "dl-381-2007",
       "governs": "CAE Rev.3 - the classification the CIRS articles were written against",
       "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/381-2007-629150",
