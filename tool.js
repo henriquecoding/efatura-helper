@@ -42,7 +42,33 @@
   var CAEMAP_URL = "https://cae-db.diogoandrade.com/sectors.json";
   // Provably-fair versioning: this label is shown in the panel; the TRUTH is the file's sha384,
   // published per release in /versions.json and checkable at /verificar. Bump on any tool.js change.
-  var FB_VERSION = "2026.07.23";
+  var FB_VERSION = "2026.07.24";
+
+  /* ADS AS INERT DATA (provably-fair Step 2). The sponsor strip is the ONE piece that should update
+   * without re-pinning the core, so it is a DATA feed, not code: the pinned core fetches offers.json
+   * and renders it, validating every URL is https and escaping every string. The data can only pick
+   * from core-defined styles; it can never inject markup or execute. A built-in DEFAULT (the current
+   * offers) is in the audited code, so a pinned core still works and is honest if the feed is down. */
+  var OFFERS_URL = "https://faturas.diogoandrade.com/offers.json";
+  var DEFAULT_OFFERS = { message: "Isto e gratuito e continua a ser. Se te poupou trabalho e quiseres retribuir, abrir conta pelo link acima da-me uma pequena comissao, e a ti nao te custa nada.",
+    offers: [ { style: "revolut", url: "https://revolut.com/referral/?referral-code=nobodykr!JUL2-26-AR-L1&geo-redirect", label: "Abrir conta Revolut" },
+              { style: "coffee", url: "https://buymeacoffee.com/diogoandrade", label: "Buy me a coffee" } ] };
+  var _offers = null;
+  try { fetch(OFFERS_URL, { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (o) { if (o && o.offers) _offers = o; }).catch(function () {}); } catch (e) {}
+
+  var REVOLUT_SVG = '<span style="background:#0075eb;border-radius:3px;padding:2px;display:inline-flex">' +
+    '<svg aria-hidden="true" style="width:14px;height:14px;display:block" viewBox="0 0 800 800"><path fill="#fff" d="M628.623,285.554c0-87.043-70.882-157.86-158.011-157.86H209.051v87.603h249.125c39.43,0,72.093,30.978,72.814,69.051 c0.361,19.064-6.794,37.056-20.146,50.66c-13.357,13.61-31.204,21.109-50.251,21.109h-97.046c-3.446,0-6.25,2.8-6.25,6.245v77.859 c0,1.324,0.409,2.59,1.179,3.656l164.655,228.43h120.53L478.623,443.253C561.736,439.08,628.623,369.248,628.623,285.554z"/></svg></span>';
+  function renderOffers(o) {
+    o = (o && o.offers) ? o : DEFAULT_OFFERS;
+    var items = (o.offers || []).filter(function (x) { return /^https:\/\//i.test(x.url || ""); }).map(function (x) {
+      var href = esc(x.url), label = esc(x.label || "");
+      if (x.style === "revolut") return '<a href="' + href + '" target="_blank" rel="noopener sponsored nofollow" style="display:inline-flex;align-items:center;gap:5px;color:#034ad8;font-weight:600;text-decoration:none">' + REVOLUT_SVG + label + '</a>';
+      if (x.style === "coffee") return '<a href="' + href + '" target="_blank" rel="noopener sponsored nofollow" style="display:inline-flex;align-items:center;gap:4px;color:#2B363C;background:#ffdd00;border-radius:2px;padding:2px 7px;font-weight:700;text-decoration:none">\u2615 ' + label + '</a>';
+      return '<a href="' + href + '" target="_blank" rel="noopener sponsored nofollow" style="color:#034ad8;font-weight:600;text-decoration:none">' + label + '</a>';
+    }).join("");
+    return '<div style="margin:14px 0 2px;padding:7px 9px;background:#f4f6f9;border:1px solid #d5dae1;border-left:3px solid #034ad8;border-radius:4px;font-size:11px;color:#2B363C;display:flex;flex-wrap:wrap;align-items:center;gap:8px">' +
+      items + '<span style="color:#6b7780">' + esc(o.message || "") + '</span></div>';
+  }
 
   /* DRAFT MODE. While true the panel never submits anything to the AT: no apply button is
    * rendered and applySelected() is unreachable. The page at faturas.diogoandrade.com states
@@ -1372,21 +1398,10 @@
             '<div style="padding:2px 9px 9px">' + html + "</div></details>";
         }
 
-        // Sponsor strip - moved OUT of the top. It now sits at the BOTTOM of the Resumo tab, so the
-        // user sees the actual result first and the "buy me a coffee / Revolut" ask comes after the
-        // value, not before it. Only on the simple view.
-        var sponsor = '<div style="margin:14px 0 2px;padding:7px 9px;background:#f4f6f9;border:1px solid #d5dae1;border-left:3px solid #034ad8;border-radius:4px;font-size:11px;color:#2B363C;display:flex;flex-wrap:wrap;align-items:center;gap:8px">' +
-          '<a href="https://revolut.com/referral/?referral-code=nobodykr!JUL2-26-AR-L1&amp;geo-redirect" ' +
-          'target="_blank" rel="noopener sponsored nofollow" ' +
-          'style="display:inline-flex;align-items:center;gap:5px;color:#034ad8;font-weight:600;text-decoration:none">' +
-          '<span style="background:#0075eb;border-radius:3px;padding:2px;display:inline-flex">' +
-          '<svg aria-hidden="true" style="width:14px;height:14px;display:block" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 800 800" style="enable-background:new 0 0 800 800;" xml:space="preserve"> <style type="text/css"> .st0{fill:#FFFFFF;} </style> <rect class="st0"/> <g> <rect x="209.051" y="262.097"/> <path d="M628.623,285.554c0-87.043-70.882-157.86-158.011-157.86H209.051v87.603h249.125c39.43,0,72.093,30.978,72.814,69.051 c0.361,19.064-6.794,37.056-20.146,50.66c-13.357,13.61-31.204,21.109-50.251,21.109h-97.046c-3.446,0-6.25,2.8-6.25,6.245v77.859 c0,1.324,0.409,2.59,1.179,3.656l164.655,228.43h120.53L478.623,443.253C561.736,439.08,628.623,369.248,628.623,285.554z"/> </g> </svg>' +
-          '</span>Abrir conta Revolut</a>' +
-          '<a href="https://buymeacoffee.com/diogoandrade" target="_blank" rel="noopener sponsored nofollow" ' +
-          'style="display:inline-flex;align-items:center;gap:4px;color:#2B363C;background:#ffdd00;' +
-          'border-radius:2px;padding:2px 7px;font-weight:700;text-decoration:none">\u2615 Buy me a coffee</a>' +
-          '<span style="color:#6b7780">Isto \u00e9 gratuito e continua a ser. Se te poupou trabalho e quiseres retribuir, abrir conta pelo link acima d\u00e1-me uma pequena comiss\u00e3o, e a ti n\u00e3o te custa nada.</span>' +
-          '</div>';
+        // Sponsor strip - now rendered from the offers DATA feed (see renderOffers / offers.json),
+        // so the referral/offers can update without re-pinning the core. Sits at the BOTTOM of the
+        // Resumo tab, after the value. Only on the simple view.
+        var sponsor = renderOffers(_offers);
         document.getElementById("efh-body").innerHTML =
           /* Two renderings of ONE dataset, one fetch. Resumo answers "what do I do"; Detalhe keeps
            * everything that was here before. Tabs toggle display only - #efh-bars and #efh-opt must

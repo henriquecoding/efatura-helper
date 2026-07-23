@@ -1,0 +1,7 @@
+{
+  "message": "Isto é gratuito e continua a ser. Se te poupou trabalho e quiseres retribuir, abrir conta pelo link acima dá-me uma pequena comissão, e a ti não te custa nada.",
+  "offers": [
+    { "style": "revolut", "url": "https://revolut.com/referral/?referral-code=nobodykr!JUL2-26-AR-L1&geo-redirect", "label": "Abrir conta Revolut" },
+    { "style": "coffee", "url": "https://buymeacoffee.com/diogoandrade", "label": "Buy me a coffee" }
+  ]
+}
