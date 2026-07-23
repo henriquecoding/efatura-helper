@@ -391,9 +391,16 @@
     // Past-year correction windows (only when we know the person has IRS history)
     if (done.length && prof.detalhes.irs){
       var nowY = new Date().getFullYear();
+      var irsD = prof.detalhes.irs;
+      // Prefer the years actually detected in the liquidacoes table; fall back to a recent range.
+      var anos = (irsD.porAno && irsD.porAno.length) ? irsD.porAno.map(function(x){return x.ano;}).filter(function(y){return y<=nowY;}) : [];
+      var detected = anos.length>0;
+      if (!detected){ for (var yg=nowY-1; yg>=nowY-4; yg--) anos.push(yg); }
+      anos = anos.slice(0,6);
       h += '<div class="card"><div style="font-weight:700;font-size:1.05rem;margin-bottom:4px">Anos anteriores - ainda podes corrigir?</div>'+
-        '<div class="w" style="margin-bottom:8px">Se num ano deixaste deduções por fora, ainda podes entregar uma declaração de substituição <b>a teu favor</b> - mas só dentro do prazo. A janela para recuperar é curta: cerca de 120 dias a contar da liquidação desse ano (na prática, até ao fim do ano em que entregaste).</div>';
-      for (var yy=nowY-1; yy>=nowY-4; yy--){
+        '<div class="w" style="margin-bottom:8px">Se num ano deixaste deduções por fora, ainda podes entregar uma declaração de substituição <b>a teu favor</b> - mas só dentro do prazo. A janela para recuperar é curta: cerca de 120 dias a contar da liquidação desse ano (na prática, até ao fim do ano em que entregaste).'+
+        (detected?' Mostrando os anos com liquidação detetada no teu perfil.':'')+'</div>';
+      anos.forEach(function(yy){
         var wnd = resubmissionWindows(yy);
         var openPill = wnd.recover.open
           ? '<span class="pill" style="background:#e9f5ee;border-color:var(--green);color:var(--green)">recuperar: ABERTA</span>'
@@ -404,7 +411,7 @@
           (wnd.recover.open?' - faltam ~'+esc(wnd.recover.daysLeft)+' dias':'')+'. '+
           (wnd.recover.open?'':'Depois disto, só por revisão do ato (4 anos), que <b>não</b> serve para uma dedução que te esqueceste - exige erro dos serviços.')+'</div>'+
         '</div></div>';
-      }
+      });
       h += '<div class="w" style="margin-top:10px;color:var(--amber)">Prazos <b>estimados</b> pelo calendário do IRS. Confirma a data da <b>tua</b> liquidação de cada ano (o prazo conta a partir dela). Base legal: CPPT art. 59.º e 70.º, LGT art. 78.º.</div></div>';
     }
     // opt-in contribution

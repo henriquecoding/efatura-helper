@@ -703,6 +703,28 @@
   // authoritative count is iTotalRecords, NOT aaData.length (aaData is one page). When they differ,
   // the endpoint is paginating and needs display params - the suspect-0/short flag catches it.
   function dtCount(j, rows) { return (j && j.iTotalRecords != null) ? j.iTotalRecords : rows.length; }
+  // Per-row parse for the liquidacoes table, feeding the past-year correction-window tool. The exact
+  // column names/order are NOT yet pinned by a server probe, so this is DELIBERATELY heuristic and
+  // schema-agnostic: it flattens the row (object -> values, DataTables array-of-arrays -> the array)
+  // and scans for a 4-digit year, a date, and an estado token. It reports what it found + keeps the
+  // raw row, and marks the result heuristic so nothing downstream treats it as pinned. When the probe
+  // lands, this narrows to the real fields. Guessing exact keys is what ships wrong numbers - scanning
+  // for shapes (year-looking, date-looking) is the honest interim.
+  function rowVals(r) { return (r && typeof r === "object") ? (Array.isArray(r) ? r : Object.keys(r).map(function (k) { return r[k]; })) : [r]; }
+  function scanYear(vals) { for (var i = 0; i < vals.length; i++) { var m = String(vals[i]).match(/\b(20\d{2})\b/); if (m) return +m[1]; } return null; }
+  function scanDate(vals) { for (var i = 0; i < vals.length; i++) { var s = String(vals[i]); var m = s.match(/\b\d{4}-\d{2}-\d{2}\b/) || s.match(/\b\d{2}[\/.-]\d{2}[\/.-]\d{4}\b/); if (m) return m[0]; } return null; }
+  function scanEstado(vals) { for (var i = 0; i < vals.length; i++) { var s = String(vals[i] == null ? "" : vals[i]).trim(); if (s && !/^\d/.test(s) && !/^\d{4}-\d{2}-\d{2}/.test(s) && s.length > 2 && s.length < 40 && /[a-z\u00e0-\u00ff]/i.test(s)) return s; } return null; }
+  function liqPorAno(rows) {
+    var out = [], seen = {};
+    rows.forEach(function (r) {
+      var v = rowVals(r), y = scanYear(v);
+      if (y == null || seen[y]) return;         // one entry per year; earliest row wins
+      seen[y] = 1;
+      out.push({ ano: y, data: scanDate(v), estado: scanEstado(v) });
+    });
+    out.sort(function (a, b) { return b.ano - a.ano; });
+    return out;
+  }
   function readIRS() {
     var uL = "/inffin/liquidacoesIRSDataTables.web";
     var uR = "/inffin/reembolsosDataTables.web";
@@ -710,10 +732,12 @@
       return getJSON(uR + "?_=" + Date.now()).catch(function () { return null; }).then(function (jr) {
         var liq = dtRows(jl), reemb = jr ? dtRows(jr) : null;
         var liqN = dtCount(jl, liq);
+        var porAno = liqPorAno(liq);
         var avisos = [];
         if (liqN === 0) avisos.push("0 liquida\u00e7\u00f5es - se j\u00e1 entregaste IRS, pode precisar de par\u00e2metros de pagina\u00e7\u00e3o; confirmar");
+        if (porAno.length) avisos.push("anos detetados por leitura heur\u00edstica (colunas por confirmar): " + porAno.map(function (x) { return x.ano; }).join(", "));
         return { data: { liquidacoes: liqN, reembolsos: reemb == null ? null : dtCount(jr, reemb),
-                         amostra: liq.slice(0, 5), avisos: avisos },
+                         porAno: porAno, anosHeuristica: true, amostra: liq.slice(0, 5), avisos: avisos },
                  source: uL + (reemb == null ? " (reembolsos indispon\u00edveis)" : " + " + uR) };
       });
     });
