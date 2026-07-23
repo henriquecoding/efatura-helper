@@ -388,6 +388,25 @@
       });
       h += '<div class="w" style="margin-top:10px;color:var(--amber)">Estes itens são <b>indicadores</b> a partir do que foi detetado, não aconselhamento fiscal nem uma entrega feita. Confirma sempre o teu caso.</div></div>';
     }
+    // Past-year correction windows (only when we know the person has IRS history)
+    if (done.length && prof.detalhes.irs){
+      var nowY = new Date().getFullYear();
+      h += '<div class="card"><div style="font-weight:700;font-size:1.05rem;margin-bottom:4px">Anos anteriores - ainda podes corrigir?</div>'+
+        '<div class="w" style="margin-bottom:8px">Se num ano deixaste deduções por fora, ainda podes entregar uma declaração de substituição <b>a teu favor</b> - mas só dentro do prazo. A janela para recuperar é curta: cerca de 120 dias a contar da liquidação desse ano (na prática, até ao fim do ano em que entregaste).</div>';
+      for (var yy=nowY-1; yy>=nowY-4; yy--){
+        var wnd = resubmissionWindows(yy);
+        var openPill = wnd.recover.open
+          ? '<span class="pill" style="background:#e9f5ee;border-color:var(--green);color:var(--green)">recuperar: ABERTA</span>'
+          : '<span class="pill" style="background:var(--bg2);border-color:var(--rule);color:var(--mute)">recuperar: fechada</span>';
+        h += '<div class="step" style="align-items:baseline"><div class="ic" style="width:18px">•</div><div class="bd">'+
+          '<div class="t">IRS '+yy+' <span class="w">(entregue em '+wnd.declaredIn+')</span> '+openPill+'</div>'+
+          '<div class="w">Prazo para corrigir a teu favor (estimado): <b>'+esc(wnd.recover.deadline)+'</b>'+
+          (wnd.recover.open?' - faltam ~'+esc(wnd.recover.daysLeft)+' dias':'')+'. '+
+          (wnd.recover.open?'':'Depois disto, só por revisão do ato (4 anos), que <b>não</b> serve para uma dedução que te esqueceste - exige erro dos serviços.')+'</div>'+
+        '</div></div>';
+      }
+      h += '<div class="w" style="margin-top:10px;color:var(--amber)">Prazos <b>estimados</b> pelo calendário do IRS. Confirma a data da <b>tua</b> liquidação de cada ano (o prazo conta a partir dela). Base legal: CPPT art. 59.º e 70.º, LGT art. 78.º.</div></div>';
+    }
     // opt-in contribution
     h += '<label style="display:block;background:var(--bg2);border:1px solid var(--rule);border-radius:var(--r);padding:10px 12px;margin-top:14px;font-size:.85rem;cursor:pointer">'+
       '<input type="checkbox" id="share" '+(shareOn()?'checked':'')+' style="margin-right:6px">'+
