@@ -139,6 +139,7 @@
   }
 
   header{padding:52px 0 40px;background:var(--bg2);border-bottom:1px solid var(--rule)}
+  header .wrap{text-align:center}
   .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.11em;
            text-transform:uppercase;color:var(--pri);font-weight:600}
   /* it now lives inside the h1, so it needs to behave like the standalone div it replaced */
@@ -176,7 +177,8 @@
   p{margin:0 0 .95em;text-align:justify;hyphens:auto;-webkit-hyphens:auto;text-wrap:pretty}
   p.note,.badge,.meter-key,caption,.step .n{text-align:left;hyphens:manual}
   .sub{text-align:left;hyphens:manual}          /* display type: justification looks broken */
-  header .sub,#faz .lead,#faz .r-item,#faz .r-item div{text-align:left;hyphens:manual}
+  header .sub{text-align:center;margin-left:auto;margin-right:auto;hyphens:manual}
+  #faz .lead,#faz .r-item,#faz .r-item div{text-align:left;hyphens:manual}
   .safe li,.step div{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
   @media (max-width:640px){                      /* narrow columns river no matter what */
     p,.safe li,.step div{text-align:left;hyphens:auto}
@@ -258,14 +260,14 @@
   .r-item .dot{flex:none;width:11px;height:11px;border-radius:50%;margin-top:6px}
   .dot.ok{background:var(--green)}
   .dot.dev{background:var(--amber)}
-  .cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin:22px 0 4px}
+  .cta-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px;margin:22px 0 4px}
   .cta-main{background:var(--pri);color:#fff;text-decoration:none;font-weight:600;
             padding:13px 26px;border-radius:var(--r);cursor:pointer;font-size:1.02rem;
             display:inline-flex;align-items:center;min-height:48px}
   .cta-main:hover{background:var(--pri-dark);color:#fff}
   .cta-alt{color:var(--pri);font-weight:600;text-decoration:none;text-underline-offset:3px}
   .cta-alt:hover{color:var(--pri-dark);text-decoration:underline}
-  .badges{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0}
+  .badges{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:18px 0 0}
   .badge{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--ink2);
          border:1px solid var(--rule);border-radius:2px;padding:5px 10px;background:#fff}
   .badge b{color:var(--pri);font-weight:600}
@@ -329,11 +331,10 @@
        was already sitting here saying "e-Fatura / IRS"; making it a full phrase and moving it
        into the heading buys the search intent without changing what the page looks like. -->
   <h1><span class="eyebrow">e-Fatura · IRS · Segurança Social</span>O teu perfil fiscal,<br>das fontes oficiais.</h1>
-  <p class="sub">Não te pede a password. Corre na sessão que <b>já tens aberta</b> no Portal das
-     Finanças (e na Segurança Social), lê o que o Estado já sabe sobre ti, e monta o teu perfil:
-     as faturas do e-Fatura por setor e teto de dedução, as tuas rendas, a tua situação fiscal e
-     prazos, o teu património e IMI, o histórico de IRS. Tudo <b>no teu navegador</b>, e o código
-     é <a href="/verificar">verificável</a>.</p>
+  <p class="sub">Não te pede a password. Corre na sessão que <b>já tens aberta</b> nas Finanças
+     e na Segurança Social, lê o que o Estado já sabe sobre ti, e monta o teu perfil: faturas,
+     rendas, situação fiscal, património e IRS. Tudo <b>no teu navegador</b>, e o código é
+     <a href="/verificar">verificável</a>.</p>
 
   <div class="cta-row">
     <a class="bm cta-main" href="/perfil">Criar o meu perfil</a>
@@ -555,8 +556,8 @@
     <tr><td>Educação</td><td>Propinas, creche, colégio, explicações, manuais, formação certificada.</td><td>30%, máx €800</td></tr>
     <tr><td>Habitação</td><td>Rendas de habitação própria, ou juros de crédito à habitação (contratos até 2011).</td><td>15%, máx €900 <span class="note">(800 € em 2025, 1000 € a partir de 2027)</span></td></tr>
     <tr><td>Lares</td><td>Lares e apoio domiciliário (próprio ou ascendentes).</td><td>25%, máx €403,75</td></tr>
-    <tr><td>Restauração, cabeleireiro, ginásio, veterinário, oficina, transportes, jornais, livros…</td><td>Cada fatura no setor correto do <i>comerciante</i>. Ex: ginásio->Ginásios, restaurante->Restauração.</td><td>15% do IVA, pool partilhada máx €250</td></tr>
-    <tr><td>Despesas Gerais Familiares</td><td>Tudo o resto com NIF (supermercado, roupa, combustível, telecom…).</td><td>35%, máx €250</td></tr>
+    <tr><td>Restauração, cabeleireiro, ginásio, veterinário, oficina, transportes, jornais, livros...</td><td>Cada fatura no setor correto do <i>comerciante</i>. Ex: ginásio->Ginásios, restaurante->Restauração.</td><td>15% do IVA, pool partilhada máx €250</td></tr>
+    <tr><td>Despesas Gerais Familiares</td><td>Tudo o resto com NIF (supermercado, roupa, combustível, telecom...).</td><td>35%, máx €250</td></tr>
   </table></div>
   <p class="warn">A ferramenta só te propõe setores para os quais o comerciante <b>está mesmo
     registado</b>. Por isso o e-Fatura aceita-os todos, e é aí que está a confusão: <b>ser aceite
