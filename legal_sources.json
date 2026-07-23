@@ -122,6 +122,21 @@
       "source_note": "DRE consolidada CPPT. Verificado por render 2026-07-23."
     },
     {
+      "id": "lgt-78",
+      "governs": "Revisao dos actos tributarios - o alcance de 4 anos, e os seus LIMITES (evitar over-promise)",
+      "url": "https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/1998-34438775",
+      "type": "artigo",
+      "critical": true,
+      "why_it_matters": "Os 4 anos SO valem por iniciativa da AT ou com 'erro imputavel aos servicos'; a revisao por iniciativa do contribuinte corre no prazo de reclamacao. Uma omissao de deducao do proprio NAO e erro dos servicos, logo o caminho fiavel e a substituicao/reclamacao (120 dias). Este artigo existe aqui para a ferramenta NAO prometer 4 anos ao utilizador.",
+      "expect": [
+        "78.º",
+        "Revisão dos actos tributários",
+        "quatro anos",
+        "erro imputável aos serviços"
+      ],
+      "source_note": "DRE consolidada LGT (DL 398/98). Verificado por render 2026-07-23."
+    },
+    {
       "id": "dl-381-2007",
       "governs": "CAE Rev.3 - the classification the CIRS articles were written against",
       "url": "https://diariodarepublica.pt/dr/detalhe/decreto-lei/381-2007-629150",
