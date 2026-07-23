@@ -153,8 +153,20 @@
   function saveExtra(e){ try { localStorage.setItem(EXTRA_KEY, JSON.stringify(e)); } catch(e2){} }
 
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
-  function load(){ try { return JSON.parse(localStorage.getItem(PKEY)) || {partitions:{}}; } catch(e){ return {partitions:{}}; } }
-  function save(p){ try { localStorage.setItem(PKEY, JSON.stringify(p)); } catch(e){} }
+  // The profile is sensitive fiscal data, so it is NOT kept indefinitely: it self-destructs at the
+  // end of the day it was last saved. save() stamps `expiresAt` at the next local midnight; load()
+  // wipes the store BEFORE returning it if that moment has passed. You can still delete it manually
+  // at any time. Every save refreshes the expiry to the end of that day.
+  function endOfDayTs(){ var d = new Date(); d.setHours(24,0,0,0); return d.getTime(); }
+  function load(){
+    try {
+      var s = JSON.parse(localStorage.getItem(PKEY));
+      if (!s) return {partitions:{}};
+      if (s.expiresAt && Date.now() >= s.expiresAt){ localStorage.removeItem(PKEY); return {partitions:{}}; }
+      return s;
+    } catch(e){ return {partitions:{}}; }
+  }
+  function save(p){ try { p.expiresAt = endOfDayTs(); localStorage.setItem(PKEY, JSON.stringify(p)); } catch(e){} }
   function b64d(s){ try { return decodeURIComponent(escape(atob(s))); } catch(e){ return null; } }
 
   // 1. If the bookmarklet handed us a partition via the fragment, merge it, then CLEAR the hash so
@@ -436,7 +448,7 @@
     var haveShapes = PARTITIONS.some(function(p){ return store.partitions[p.id] && store.partitions[p.id].shape; });
     if (haveShapes)
       h += '<div style="margin-top:8px"><a href="#" id="copyshape" class="muted" style="font-size:.8rem">Copiar estrutura das respostas (sem valores) - para validacao</a></div>';
-    h += '<div style="margin-top:12px"><a href="#" id="reset" class="muted" style="font-size:.8rem">Apagar o meu perfil deste navegador</a></div></div>';
+    h += '<div class="w" style="margin-top:12px;font-size:.8rem">O teu perfil é apagado automaticamente ao fim do dia, aqui neste navegador. Podes apagá-lo já: <a href="#" id="reset" class="muted">apagar agora</a>.</div></div>';
 
     document.getElementById("out").innerHTML = h;
     var cs = document.getElementById("copyshape");
