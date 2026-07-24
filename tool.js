@@ -1,3 +1,6 @@
+/* Fatura Boa (c) 2026 Diogo Andrade. Licenca PolyForm Noncommercial 1.0.0
+ * (https://polyformproject.org/licenses/noncommercial/1.0.0). Uso nao-comercial apenas; copias
+ * carregam este aviso. Origem oficial: faturas.diogoandrade.com | ref fb-lic-4761358cab */
 /* Fatura Boa - runs 100% in the user's own browser, on their own e-Fatura session.
  * It never sees a password: it reuses the login already in the browser (same-origin cookies).
  *

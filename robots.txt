@@ -8,8 +8,10 @@
 
 User-agent: *
 Allow: /
+# Internal, non-content endpoints - not for indexing.
+Disallow: /hp/
 
 # The merchant data lives on a different origin (cae-db.diogoandrade.com) and is not linked into
-# any indexable page on purpose - see the "no per-company pages" decision. Nothing to exclude here.
+# any indexable page on purpose - see the "no per-company pages" decision.
 
 Sitemap: https://faturas.diogoandrade.com/sitemap.xml
