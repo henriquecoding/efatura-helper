@@ -40,6 +40,11 @@ function trapKind(path) {
 
 async function record(request, env, ctx, kind) {
   const url = new URL(request.url);
+  // request.cf is set by Cloudflare (NOT attacker-controlled) - the actionable signals for a SAFE
+  // block decision live here: botManagement.score (1=bot .. 99=human) and asn/asOrganization
+  // (datacenter vs residential/mobile). "Low score + hosting ASN on scanner-bait" is near-certain
+  // malicious and cannot be a real person on a shared mobile IP (they score high on a mobile ASN).
+  const cf = request.cf || {};
   const hit = {
     t: new Date().toISOString(),
     kind,
@@ -49,6 +54,12 @@ async function record(request, env, ctx, kind) {
     ua: cap(request.headers.get("User-Agent"), 400),
     ref: cap(request.headers.get("Referer"), 400),
     country: cap(request.headers.get("CF-IPCountry"), 4),
+    asn: cf.asn || null,
+    asOrg: cap(cf.asOrganization, 80),
+    bot: (cf.botManagement && typeof cf.botManagement.score === "number") ? cf.botManagement.score : null,
+    verifiedBot: !!(cf.botManagement && cf.botManagement.verifiedBot),
+    colo: cap(cf.colo, 8),
+    city: cap(cf.city, 60),
   };
   console.log("FB_HONEYPOT " + JSON.stringify(hit));   // greppable in Cloudflare function logs
   // Optional persistence for the admin panel: POST to ONE fixed, trusted sink (never a request
