@@ -1,0 +1,77 @@
+// Root catch-all. It runs for every request NOT handled by a more specific function (e.g.
+// /api/feedback stays with functions/api/feedback.js). Its only job: trap honeypot hits, pass
+// everything else straight through to the static site with next(). A normal visitor never notices.
+//
+// Trapped:
+//   - /hp/*        : our hidden, robots-disallowed links (a human never reaches them)
+//   - framework/scanner bait (wp-login, xmlrpc, .env, .git, phpmyadmin, ...): paths that DO NOT
+//     exist here (static site, no PHP/WordPress/admin), so any request is a scanner or bad actor.
+//
+// SECURITY - the trap must never become an attack surface (no counter-attack):
+//   - Capture only BOUNDED metadata from Cloudflare's own headers; never the request body.
+//   - NEVER reflect any attacker-controlled value into the response (no XSS).
+//   - NEVER fetch an attacker-controlled URL (no SSRF); forwarding goes to ONE fixed env sink only.
+//   - Response is 100% static. Whatever later DISPLAYS these hits (admin panel) MUST escape
+//     ua/ref/path - they are attacker-controlled and a stored-XSS vector if rendered raw.
+
+const cap = (s, n) => String(s || "").slice(0, n);
+
+const BAIT = [
+  /^\/wp-(login|admin|content|includes|json)/i,
+  /^\/xmlrpc\.php/i,
+  /(^|\/)\.env(\.|$|\/)/i,
+  /^\/\.git(\/|$)/i,
+  /^\/\.aws(\/|$)/i,
+  /(phpmyadmin|^\/pma\/)/i,
+  /^\/administrator(\/|$)/i,
+  /^\/config\.php/i,
+  /\/backup\.(zip|sql|tar|gz|rar)(\?|$)/i,
+  /^\/\.vscode(\/|$)/i,
+  /^\/actuator(\/|$)/i,
+  /\/vendor\/phpunit/i,
+  /^\/(cgi-bin|solr|struts|jenkins|\.svn)(\/|$)/i,
+];
+
+function trapKind(path) {
+  if (path.startsWith("/hp/")) return "hidden-link";
+  for (const re of BAIT) if (re.test(path)) return "scanner-bait";
+  return null;
+}
+
+async function record(request, env, ctx, kind) {
+  const url = new URL(request.url);
+  const hit = {
+    t: new Date().toISOString(),
+    kind,
+    path: cap(url.pathname, 300),
+    method: cap(request.method, 10),
+    ip: cap(request.headers.get("CF-Connecting-IP"), 45),
+    ua: cap(request.headers.get("User-Agent"), 400),
+    ref: cap(request.headers.get("Referer"), 400),
+    country: cap(request.headers.get("CF-IPCountry"), 4),
+  };
+  console.log("FB_HONEYPOT " + JSON.stringify(hit));   // greppable in Cloudflare function logs
+  // Optional persistence for the admin panel: POST to ONE fixed, trusted sink (never a request
+  // value). Fire-and-forget with a hard timeout so a slow sink cannot hold the worker.
+  if (env && env.HONEYPOT_SINK) {
+    const p = fetch(env.HONEYPOT_SINK, {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-fb-hp": env.HONEYPOT_KEY || "" },
+      body: JSON.stringify(hit),
+      signal: AbortSignal.timeout(2500),
+    }).catch(() => {});
+    if (ctx && ctx.waitUntil) ctx.waitUntil(p);
+  }
+}
+
+export async function onRequest(context) {
+  const { request } = context;
+  const path = new URL(request.url).pathname;
+  const kind = trapKind(path);
+  if (!kind) return context.next();   // not a trap -> serve the real static site
+  try { await record(request, context.env, context, kind); } catch { /* never fail loudly */ }
+  return new Response(
+    JSON.stringify({ error: "not_found", notice: "Fatura Boa - conteudo protegido, PolyForm Noncommercial 1.0.0. Acesso registado. ref fb-trap-8be21f04" }),
+    { status: 404, headers: { "content-type": "application/json", "x-robots-tag": "noindex" } }
+  );
+}
