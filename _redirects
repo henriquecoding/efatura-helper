@@ -1,0 +1,20 @@
+# Framework/scanner bait. These paths do not exist on this site (it is a static tool, no PHP, no
+# WordPress, no admin). Anything requesting them is a vulnerability scanner or a bad actor, so we
+# REWRITE (status 200) them into the honeypot handler, which logs the hit and returns a decoy. The
+# rewritten /hp/bait-* path records WHICH bait was tripped. Real 404s (typos) are left alone.
+/wp-login.php       /hp/bait-wp-login    200
+/wp-admin           /hp/bait-wp-admin    200
+/wp-admin/*         /hp/bait-wp-admin    200
+/xmlrpc.php         /hp/bait-xmlrpc      200
+/.env               /hp/bait-dotenv      200
+/.env.*             /hp/bait-dotenv      200
+/.git/config        /hp/bait-git         200
+/.git/*             /hp/bait-git         200
+/phpmyadmin/*       /hp/bait-pma         200
+/pma/*              /hp/bait-pma         200
+/administrator/*    /hp/bait-joomla      200
+/config.php         /hp/bait-config      200
+/.aws/credentials   /hp/bait-aws         200
+/backup.zip         /hp/bait-backup      200
+/.vscode/*          /hp/bait-vscode      200
+/actuator/*         /hp/bait-actuator    200
