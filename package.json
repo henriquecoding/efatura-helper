@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "efatura-helper",
+  "description": "Dev-only manifest. tool.js itself has ZERO dependencies and is never bundled - these packages exist solely to run the test suite locally, the same way .github/workflows does.",
+  "scripts": {
+    "dev": "npx --yes serve -l 4173 .",
+    "ci": "node --check tool.js && node check-functions.js tool.js && node test-deducoes-sync.js",
+    "test": "node run-tests.js"
+  },
+  "devDependencies": {
+    "jsdom": "^30.0.1",
+    "playwright-core": "^1.62.0"
+  }
+}

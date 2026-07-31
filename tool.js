@@ -45,7 +45,7 @@
   var CAEMAP_URL = "https://cae-db.diogoandrade.com/sectors.json";
   // Provably-fair versioning: this label is shown in the panel; the TRUTH is the file's sha384,
   // published per release in /versions.json and checkable at /verificar. Bump on any tool.js change.
-  var FB_VERSION = "2026.07.28d";
+  var FB_VERSION = "2026.07.30a";
 
   /* ADS AS INERT DATA (provably-fair Step 2). The sponsor strip is the ONE piece that should update
    * without re-pinning the core, so it is a DATA feed, not code: the pinned core fetches offers.json
@@ -56,8 +56,23 @@
   var DEFAULT_OFFERS = { message: "Isto e gratuito e continua a ser. Se te poupou trabalho e quiseres retribuir, abrir conta pelo link acima da-me uma pequena comissao, e a ti nao te custa nada.",
     offers: [ { style: "revolut", url: "https://revolut.com/referral/?referral-code=nobodykr!JUL2-26-AR-L1&geo-redirect", label: "Abrir conta Revolut" },
               { style: "coffee", url: "https://buymeacoffee.com/diogoandrade", label: "Buy me a coffee" } ] };
+  /* NAO buscar o feed aqui. Este ficheiro corre inteiro no clique do bookmarklet, portanto um fetch
+   * a este nivel dispara ANTES da gate de consentimento - e a pagina promete, a letra, que "antes
+   * disso nao ha um unico pedido de rede, nem sequer o mapa publico". Um pedido para carregar o
+   * anuncio era precisamente o pior candidato a excecao. O test-network.js apanhava isto e falhava.
+   * loadOffers() e chamado depois do consentimento; ate la o strip usa DEFAULT_OFFERS, que ja esta
+   * no codigo auditado. Se o feed falhar ou chegar tarde, o strip fica no default - nao ha estado
+   * de espera nem layout a saltar, porque renderOffers() ja e chamado com o que existir na altura. */
   var _offers = null;
-  try { fetch(OFFERS_URL, { cache: "no-store" }).then(function (r) { return r.json(); }).then(function (o) { if (o && o.offers) _offers = o; }).catch(function () {}); } catch (e) {}
+  function loadOffers() {
+    if (_offers !== null) return;
+    try {
+      fetch(OFFERS_URL, { cache: "no-store" })
+        .then(function (r) { return r.json(); })
+        .then(function (o) { if (o && o.offers) _offers = o; })
+        .catch(function () {});
+    } catch (e) {}
+  }
 
   var REVOLUT_SVG = '<span style="background:#0075eb;border-radius:3px;padding:2px;display:inline-flex">' +
     '<svg aria-hidden="true" style="width:14px;height:14px;display:block" viewBox="0 0 800 800"><path fill="#fff" d="M628.623,285.554c0-87.043-70.882-157.86-158.011-157.86H209.051v87.603h249.125c39.43,0,72.093,30.978,72.814,69.051 c0.361,19.064-6.794,37.056-20.146,50.66c-13.357,13.61-31.204,21.109-50.251,21.109h-97.046c-3.446,0-6.25,2.8-6.25,6.245v77.859 c0,1.324,0.409,2.59,1.179,3.656l164.655,228.43h120.53L478.623,443.253C561.736,439.08,628.623,369.248,628.623,285.554z"/></svg></span>';
@@ -114,12 +129,16 @@
   var CEIL = {
     C05: { rate: 0.15, base: "total", cap: 1000 },
     C06: { rate: 0.30, base: "total", cap: 800 },
-    // Art. 78.o-E n.1 a) EM VIGOR (pagina dedicada DRE 2014-70048167-1124882175, alterada
-    // 2026-06-03, lida 2026-07-28): rendas 15% ate 800 EUR. O n.4 ESCALONA para cima (ate 1.100 p/
-    // coletavel <= 1.o escalao, formula ate 30.000) - nao modelado; 800 e o piso, logo conservador.
-    // Historico: 900 (original) nao era o valor de nenhum ano; 502 (fix de ontem) era o texto
-    // DESATUALIZADO do render do diploma-pai - o valor por ano vive em RENDAS_CAP_ANO abaixo.
-    C07: { rate: 0.15, base: "total", cap: 800 },
+    // Art. 78.o-E rendas 15%. A alinea a) do n.1 continua a dizer 800 EUR, mas o DL 97/2026 de 20-05
+    // (autorizado pela Lei 9-A/2026) aditou o n.10, que ELEVA esse limite, e a sua norma transitoria
+    // (art. 15.o n.1) fixa 900 EUR para o ano de 2026 e 1.000 EUR so a partir de 2027. O art. 18.o n.2
+    // manda produzir efeitos a 1 de janeiro de 2026, logo 900 e o teto do rendimento de 2026.
+    // O n.4 ESCALONA para cima (ate 1.100 p/ coletavel <= 1.o escalao, formula ate 30.000) - nao
+    // modelado; o n.10 diz "sem prejuizo do n.4 quando resultar limite superior", logo 900 e o piso.
+    // NAO REVERTER PARA 800. O comentario anterior marcava 900 como valor inventado, e nessa altura
+    // era: vinha de um palpite, nao de diploma nenhum. Passou a ser o valor certo por outra via.
+    // O valor por ano vive em RENDAS_CAP_ANO abaixo; este cap plano e so o do ano corrente.
+    C07: { rate: 0.15, base: "total", cap: 900 },
     C08: { rate: 0.25, base: "total", cap: 403.75 },
     C99: { rate: 0.35, base: "total", cap: 250, perTaxpayer: true },
     C01: { rate: 0.15, base: "iva", pot: POT }, C02: { rate: 0.15, base: "iva", pot: POT },
@@ -254,7 +273,11 @@
    * still free - i.e. deduction that MIGHT be recoverable via a declaracao de substituicao (within
    * the CPPT/LGT windows). Only the rendas ceiling (C07) moved across years; the rest held. Values
    * are DRE/AT-verified in year_snapshots.json. Indicators only - never a submission. */
-  var RENDAS_CAP_ANO = { 2023: 502, 2024: 600, 2025: 600, 2026: 800 };   // C07 base per income year (2026: Lei 73-A/2025 OE-2026, DRE em vigor)
+  /* C07 por ano de rendimento. 2026 = 900 (DL 97/2026 art. 15.o n.1; efeitos a 01-01-2026 pelo art.
+   * 18.o n.2). 2027 sera 1.000 (78.o-E n.10) - NAO adicionar aqui antes do tempo: o teste
+   * test-deducoes-sync trata a chave mais recente como o ANO CORRENTE e exige que o cap plano do
+   * CEIL lhe seja igual, portanto pos 2027 aqui hoje passaria a mostrar 1.000 a quem declara 2026. */
+  var RENDAS_CAP_ANO = { 2023: 502, 2024: 600, 2025: 700, 2026: 900 };
   /* obterDocumentosAdquirente CAPS at 300 rows and returns the MOST RECENT first, so summing an
    * unfiltered year silently misses invoices on a busy year. But it accepts ambitoAquisicaoFilter
    * (a sector code), and a single sector is always well under 300 - so we fetch PER SECTOR to get
@@ -566,6 +589,10 @@
   }
 
   function start() {
+    // Unico sitio de onde o feed de offers pode arrancar. start() so e alcancavel depois do
+    // consentimento - pela gate ou por consent() ja gravado - portanto poe-lo aqui cobre os dois
+    // caminhos e torna impossivel um pedido pre-consentimento por se ter esquecido um deles.
+    loadOffers();
     // faturas FIRST, then only the map slices they need. Order matters: it cannot know which
     // buckets to ask for until it knows your merchants.
     run();
@@ -1749,12 +1776,17 @@
           /* Two suggestions, side by side, because they answer different questions and the user
            * is the one declaring.
            *
-           * PRE-SELECTS OTIMIZADA (changed 20-07-2026). This reverses the original default, and
-           * the reason it was PROVAVEL is still valid and worth stating: defaulting to whatever
-           * pays most can nudge someone into declaring groceries as Saude just because the shop
-           * also holds a pharmacy CAE. What changed is that defaulting to PROVAVEL meant almost
-           * nobody ever saw the benefit - the panel opened on the safe answer and the user had to
-           * work out for themselves that a better one existed.
+           * PRE-SELECTS PROVAVEL (restored 30-07-2026, reverting the 20-07-2026 change).
+           *
+           * The 20-07 argument for defaulting to OTIMIZADA was a discoverability one: with
+           * PROVAVEL pre-selected almost nobody noticed a better answer existed. That is a real
+           * problem, but the fix traded it for a worse one. What goes in this select is what gets
+           * DECLARED to the AT if the user just clicks Aplicar. Pre-selecting the sector that pays
+           * most makes the default outcome the aggressive one, and the people most likely to click
+           * straight through are exactly the ones least able to defend the classification if it is
+           * questioned. A default is not a suggestion; it is what happens to people who do not
+           * read. Discoverability is worth solving with the SWITCHER and the Resumo figures - both
+           * still there, both one click - not by pre-loading the answer with more tax at stake.
            *
            * What keeps this honest, and must not be removed:
            *   - Otimizada only ever offers a sector the merchant is ACTUALLY REGISTERED for
@@ -1763,7 +1795,19 @@
            *     classifying is a declaration to the AT, and being accepted is not being right.
            *   - Both figures sit on the switcher, so choosing PROVAVEL is one click and the user
            *     can see exactly what that choice costs.
-           * Where the purchase genuinely was in the better sector the two agree anyway. */
+           * Where the purchase genuinely was in the better sector the two agree anyway.
+           *
+           * THE DEFAULT SPLITS BY ROW TYPE, and it has to:
+           *   - PENDENTE (P): nothing has been declared yet, so the pre-selection IS the eventual
+           *     declaration. Defaults to PROVAVEL, per the argument above.
+           *   - CORRIGIR (R): already classified, and on screen only because cascade() found a
+           *     sector with room that the merchant is also registered for. Here pv is not a rival
+           *     recommendation, it is just the sector the row already has - pre-selecting it would
+           *     make Aplicar a no-op and the row pointless. Defaults to the move target.
+           * Same principle in both: the default never declares something new and aggressive on the
+           * user's behalf. On an R row the aggressive thing would be leaving deduction on the
+           * table, and the user opened that row to move it. test-r1.js pins this. */
+          var presel = isR ? s : pv;
           var cell = function (sec, i2, kind) {
             return '<button type="button" class="efh-pick" data-i="' + i2 + '" data-sec="' + sec + '" ' +
               'title="Usar ' + sec + ' - ' + esc(SECTORS[sec] || sec) + '" ' +
@@ -1781,7 +1825,7 @@
               (same ? '<span style="color:#999">igual</span>' : cell(s, i, "op")) + "</td>" +
             '<td><select class="efh-sec" data-i="' + i + '" style="max-width:190px" aria-label="Setor para ' +
             esc(name34(x)) + '">' +
-            opts.replace('value="' + s + '"', 'value="' + s + '" selected') + '</select></td></tr>';
+            opts.replace('value="' + presel + '"', 'value="' + presel + '" selected') + '</select></td></tr>';
         }).join("");
         // Named __efhPend for history, but it is now the full ACTIONABLE set (pending + movable-R).
         // applySelected() indexes into this by the row's data-i and routes each by estadoBeneficio.

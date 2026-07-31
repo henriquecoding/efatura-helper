@@ -36,15 +36,33 @@ setTimeout(()=>{
   console.log("  suggestions offered:", picks.join(" vs ")||"(none)");
   console.log("  they DIVERGE (not decorative):", new Set(picks).size>1);
   const sel=d.querySelector(".efh-sec");
-  // Default is OTIMIZADA (changed 20-07-2026). It must equal the Otimizada button's sector,
-  // and that sector must be one the merchant is really registered for - the point of the
-  // change was to show the benefit, not to invent a sector.
-  const optBtn=[...d.querySelectorAll(".efh-pick")].find(b=>b.style.borderColor.includes("128a3a")||/128a3a/.test(b.getAttribute("style")||""));
-  const optSec=optBtn&&optBtn.dataset.sec;
-  console.log("  pre-selected:", sel&&sel.value, "| equals Otimizada:", !!optSec&&sel&&sel.value===optSec);
-  console.log("  merchant really registered for it:", !!optSec&&(["C05","C99"].includes(optSec)));
+  /* Default on a PENDING row is PROVAVEL (restored 30-07-2026; it was flipped to Otimizada on
+   * 20-07-2026). This fixture is the exact footgun in the header: the C99 ceiling is already
+   * full, so Otimizada reaches for the pharmacy CAE - declaring a supermarket run as Saude is
+   * what would happen to anyone who just clicked Aplicar. The R-row default is the opposite way
+   * round and is pinned separately by test-r1.js; see the comment above `presel` in tool.js.
+   *
+   * Until 30-07-2026 this whole file only PRINTED. It had no assertions and no exit code, so it
+   * reported PASS whatever tool.js did - including while the pre-selection contradicted the
+   * header comment three lines up. Every check below now counts. */
+  const optBtn=[...d.querySelectorAll(".efh-pick")].find(b=>/128a3a/.test(b.getAttribute("style")||""));
+  const pvBtn=[...d.querySelectorAll(".efh-pick")].find(b=>/034ad8/.test(b.getAttribute("style")||""));
+  const optSec=optBtn&&optBtn.dataset.sec, pvSec=pvBtn&&pvBtn.dataset.sec;
+  const bothCols=heads.some(h=>h.normalize("NFD").replace(/[̀-ͯ]/g,"")==="Provavel")&&heads.includes("Otimizada");
+  const diverge=new Set(picks).size>1;
+  const preIsPv=!!pvSec&&!!sel&&sel.value===pvSec;
+  const registered=!!optSec&&["C05","C99"].includes(optSec);
+  console.log("  pre-selected:", sel&&sel.value, "| Provavel:", pvSec, "| Otimizada:", optSec);
+  console.log("  default is the TRUTHFUL column, not the one that pays most:", preIsPv);
+  console.log("  Otimizada is a sector the merchant really holds:", registered);
   const opt=[...d.querySelectorAll(".efh-pick")].find(b=>b.dataset.sec!=="C99");
-  if(opt){ opt.click(); console.log("  after clicking Otimizada:", sel.value, "(expected C05)"); }
+  let clickWorks=false;
+  if(opt){ opt.click(); clickWorks=sel.value==="C05";
+           console.log("  Otimizada is still ONE click away:", sel.value, "(expected C05)"); }
   else console.log("  *** no divergent suggestion to click ***");
-  console.log("  POSTs to AT:", posted.length, posted.length===0?"(correct)":"*** LEAKED ***");
+  const noPost=posted.length===0;
+  console.log("  POSTs to AT:", posted.length, noPost?"(correct)":"*** LEAKED ***");
+  const ok=bothCols&&diverge&&preIsPv&&registered&&clickWorks&&noPost;
+  console.log(ok?"  PASS":"  *** FAIL: the pre-selected column is not the truthful one ***");
+  process.exit(ok?0:1);
 },500);

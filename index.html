@@ -63,15 +63,43 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Two families, deliberately. A display serif (Fraunces) was tried on 30-07-2026 and rejected:
+     the high-contrast old-style read as a magazine, not as a fiscal record. Character has to come
+     from composition and rule work, not from the letterforms. -->
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* institutional palette. Reads like a state service on purpose; the page says plainly it isn't one. */
-    --pri:#034ad8; --pri-dark:#021c51; --pri-mid:#1b4dab; --pri-light:#1CA3FC;
-    --ink:#2B363C; --ink2:#4a5a63; --mute:#6b7780;
-    --bg:#ffffff; --bg2:#f4f6f9; --bg3:#E1E4EA; --rule:#d5dae1;
-    --red:#c8102e; --green:#1E5A3A; --amber:#8a6100;
-    --focus:#ff7a00;   /* amber focus ring: high contrast on both white and dark-blue, no neon shock */
+    /* PALETTE = gov.pt's, warmed. Kinship with the state's own design system is deliberate: this
+       tool sits next to Portal das Financas and gov.pt in the user's head, and a stranger palette
+       would read as less trustworthy than it deserves. These are gov.pt's published tokens, taken
+       exactly:
+         --pri      #034AD8  = gov --color-primary-600
+         --pri-dark #021C51  = gov --color-primary-900
+         --pri-mid  #0338A2  = gov --color-primary-700
+         --pri-light#1CA3FC  = gov --color-secondary-500
+         --ink      #2B363C  = gov --color-neutral-900
+         --ink2     #475164  = gov --color-neutral-800
+         --mute     #64718B  = gov --color-neutral-700
+         --bg3      #E1E4EA  = gov --color-neutral-200
+         --green    #00724C  = gov's success
+         --red      #D12332  = gov's error
+       The ONE deliberate divergence is the surface ramp: gov.pt's neutrals are cool (#F7F8FA,
+       #F1F3F8) and we run warm (#FAF9F6, #EFEEE9). That is what stops this being a clone - the
+       blues and the neutral TEXT ramp are shared, the paper is ours. It also does real work: a
+       page about someone's tax debt reads less clinical on warm paper than on cool grey.
+       NOT shared, on purpose: gov.pt's magenta focus (#F408FC). Ours stays amber, which clears
+       both the paper and the dark-blue header without the neon shock.
+       History: this file briefly ran a #f4f1e9/#122033 "paper and ink" palette on 30-07-2026. That
+       dropped the gov.pt kinship by accident - the old comment stated the intent ("reads like a
+       state service") but not the source, so the values looked arbitrary and got replaced.
+       Hence the token-by-token mapping above. Do not retune without re-reading it. */
+    --pri:#034AD8; --pri-dark:#021C51; --pri-mid:#0338A2; --pri-light:#1CA3FC;
+    --ink:#2B363C; --ink2:#475164; --mute:#64718B;
+    --bg:#FAF9F6;        /* warm paper - the page */
+    --surface:#FFFFFF;   /* card stock - anything that sits ON the page */
+    --bg2:#EFEEE9; --bg3:#E1E4EA; --rule:#CFCEC8;
+    --red:#D12332; --green:#00724C; --amber:#8A6100;
+    --focus:#ff7a00;
     --r:6px;
   }
   *{box-sizing:border-box}
@@ -88,27 +116,63 @@
   a:hover{color:var(--pri-dark)}
 
   /* the first thing on the page: the one rule that keeps people safe */
-  .alertbar{background:var(--pri-dark);color:#fff;border-bottom:4px solid var(--red)}
-  .alertbar>summary{display:block;list-style:none;cursor:pointer;padding:13px 0}
+  /* ---- safety rule band ------------------------------------------------------------------------
+     On the page's [rail] grid, like the masthead and every chapter: mono index in the rail, content
+     in main. The 4px red underline became a red RULE IN THE RAIL, next to the index - the accent
+     now marks the thing it is about instead of being a stripe at the bottom of a box. */
+  .alertbar{background:var(--pri-dark);color:#fff;
+            border-bottom:1px solid color-mix(in srgb, var(--red) 60%, transparent)}
+  .alertbar>summary{display:block;list-style:none;cursor:pointer}
   .alertbar>summary::-webkit-details-marker{display:none}
-  .alertbar>summary>.wrap{display:flex;align-items:center;gap:16px}
-  .alertbar .big{font-size:clamp(1rem,2.4vw,1.22rem);font-weight:600;line-height:1.35;margin:0;flex:1}
-  .alertbar .why{flex:none;font-family:'IBM Plex Mono',monospace;font-size:.74rem;font-weight:600;
-                 letter-spacing:.04em;color:#cdd8f2;border:1px solid rgba(255,255,255,.35);
-                 border-radius:2px;padding:4px 9px;white-space:nowrap}
-  .alertbar .why::after{content:" \25BE";display:inline-block;transition:transform .18s ease}
-  .alertbar[open]>summary .why::after{transform:rotate(180deg)}
-  .alertbar[open]>summary .why{color:#fff;border-color:rgba(255,255,255,.6)}
+  .alertbar .ab-head,.alertbar .ab-body{
+    display:grid;grid-template-columns:[rail] 148px [main] minmax(0,1fr) [why] auto;
+    column-gap:48px;align-items:start}
+  /* padding-BLOCK only. `padding:17px 0 18px` zeroed the .wrap's 24px inline padding, so the rail
+     index landed at x=130 while the masthead mark sat at 154 - the band was 24px off the grid it
+     was rebuilt to join. */
+  .alertbar .ab-head{padding-block:17px 18px}
+  .ab-idx{grid-column:rail;margin:0;padding-left:13px;border-left:2px solid var(--red);
+          font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:600;
+          letter-spacing:.13em;text-transform:uppercase;line-height:1.5;color:#cdd8f2}
+  .alertbar .big{grid-column:main;margin:0;max-width:64ch;
+                 font-size:clamp(1.02rem,1.5vw,1.2rem);font-weight:600;line-height:1.45;
+                 letter-spacing:-.005em}
+  /* "Aqui, nunca." is the whole point of the sentence and was buried in the run of text */
+  .ab-never{display:block;margin-top:5px;color:#ffd7dc;font-weight:700}
+  .alertbar .why{grid-column:why;justify-self:end;align-self:center;
+                 display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:0 13px;
+                 font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:600;
+                 letter-spacing:.08em;text-transform:uppercase;color:#cdd8f2;
+                 border:1px solid rgba(255,255,255,.32);border-radius:var(--r);white-space:nowrap}
+  .alertbar .why::after{content:"\25BE";font-size:.62rem;display:inline-block;
+                        transition:transform .18s ease}
+  .alertbar[open] .why{color:#fff;border-color:rgba(255,255,255,.65);
+                       background:rgba(255,255,255,.07)}
+  .alertbar[open] .why::after{transform:rotate(180deg)}
+  .alertbar>summary:hover .why{color:#fff;border-color:rgba(255,255,255,.55)}
+  .alertbar>summary:focus-visible .why{outline:3px solid var(--focus);outline-offset:3px}
   @media (prefers-reduced-motion:reduce){.alertbar .why::after{transition:none}}
-  .alertbar .ab-body{padding:0 0 16px}
-  .alertbar .small{font-size:.88rem;line-height:1.55;color:#d7e0f5;margin:0 0 6px;max-width:78ch}
-  .alertbar .small:last-child{margin-bottom:0}
+
+  .alertbar .ab-body{padding-block:0 20px}
+  .alertbar .ab-body .ab-idx{border-left-color:rgba(255,255,255,.28);color:#93a6c9}
+  .ab-text{grid-column:main;max-width:74ch;padding-top:2px;
+           border-top:1px solid rgba(255,255,255,.18)}
+  .alertbar .small{font-size:.9rem;line-height:1.6;color:#d7e0f5;margin:13px 0 0;max-width:none}
   .alertbar b{color:#fff}
-  .alertbar code{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);
-                 color:#fff;padding:1px 6px}
-  .alertbar .tagline{margin-top:12px;padding-top:11px;
-                     border-top:1px solid rgba(255,255,255,.22)}
-  .alertbar .tag{margin-right:8px;vertical-align:1px}
+  .alertbar code{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.34);
+                 color:#fff;padding:2px 7px;font-size:.9em}
+  .alertbar .tagline{margin-top:14px;padding-top:13px;
+                     border-top:1px solid rgba(255,255,255,.18)}
+  .alertbar .tag{margin-right:9px;vertical-align:1px}
+
+  @media (max-width:900px){
+    .alertbar .ab-head,.alertbar .ab-body{grid-template-columns:minmax(0,1fr) auto;
+      column-gap:18px;row-gap:11px}
+    .ab-idx{grid-column:1 / -1;padding-left:11px}
+    .alertbar .big{grid-column:1;max-width:none}
+    .alertbar .why{grid-column:2;align-self:start}
+    .ab-text{grid-column:1 / -1}
+  }
 
   /* legacy strip styles, kept for the masthead tag */
   .tag{font-family:'IBM Plex Mono',monospace;font-size:.7rem;letter-spacing:.09em;
@@ -116,8 +180,30 @@
               border-radius:2px;padding:2px 7px;white-space:nowrap}
 
   /* masthead */
-  .mast{border-bottom:3px solid var(--pri);background:#fff}
-  .mast .wrap{display:flex;align-items:center;gap:14px;min-height:72px}
+  /* MASTHEAD = running head, on the page grid.
+     Rebuilt 30-07-2026. It was two full-width bands of near-equal weight stacked before any
+     content (alert bar 83px + masthead 75px = 158px), carrying a tagline that repeated the <h1>
+     verbatim and a filled blue button duplicating the hero's primary action. A running head
+     repeats the publisher, not the headline, and it navigates - it does not compete for the
+     click. Border is now a hairline, not a 3px blue rule: the alert bar above already carries
+     the heavy edge, and two heavy edges 75px apart is what made the top read as a stack. */
+  /* Sticks to the top on desktop so the search is reachable anywhere on a 12.000px page. The alert
+     bar deliberately does NOT stick: it is read once, at the top, and pinning a dark navy band to
+     every screen would be shouting. Mobile overrides this to a bottom-fixed bar further down. */
+  .mast{position:sticky;top:0;z-index:70;
+        border-bottom:1px solid var(--hair-strong);background:var(--surface)}
+  /* the mark sits in the rail column and the name at the main column's start, so the masthead
+     lines up with the hero and with every chapter heading below it */
+  /* THE SEARCH IS THE SPINE OF THE HEADER.
+     It was a grid cell squeezed between the wordmark and the nav, and it behaved like one: the
+     input collapsed first under flex pressure and a nine-digit NIF rendered as "046".
+     Now the row is built around it - the bar is the only flexible child, it sets the header's
+     height, and everything else is flex:none arranged to it. Identity on the left, the two
+     destinations the search does not cover on the right, the search taking whatever is left. */
+  .mast .wrap{display:flex;align-items:center;gap:clamp(14px,2vw,26px);
+              min-height:72px;padding-block:10px}
+  .mast .mark{flex:none}
+  .mast .nm{flex:none}
   /* 44px, not 38: the monogram carries more detail than the two letters it replaced, and the
      D's bowl and the A's crossbar close up below about 40px. Also hits the 44px touch target. */
   .mark{width:44px;height:44px;flex:none;display:block;line-height:0;border-radius:var(--r)}
@@ -129,26 +215,199 @@
   .mark .plate,.mark .cut{transition:fill .15s ease}
   .mark:hover .plate,.mark:hover .cut{fill:var(--pri-dark)}
   .mark:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
-  .mast .nm{font-weight:600;font-size:1.05rem;line-height:1.25;min-width:0}
-  .mast .nm span{display:block;font-weight:400;font-size:.8rem;color:var(--mute);
-                 white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  /* Nav sits in its own right-aligned group so the two buttons align to each other, not by margin
-     hacks. Primary (A minha situação) is filled, secondary is outlined: that hierarchy is the logic. */
-  .mast .nav{margin-left:auto;display:flex;align-items:center;gap:10px;flex:none}
-  .mast .mastnav{display:inline-flex;align-items:center;height:40px;
-                 padding:0 16px;border:1.5px solid var(--pri);border-radius:var(--r);
-                 color:var(--pri);font-weight:600;font-size:.92rem;text-decoration:none;white-space:nowrap}
-  .mast .mastnav:hover{background:var(--pri);color:#fff}
-  .mast .mastnav.primary{background:var(--pri);color:#fff}
-  .mast .mastnav.primary:hover{background:var(--pri-dark);border-color:var(--pri-dark)}
-  @media (max-width:600px){
-    .mast .wrap{flex-wrap:wrap}
-    .mast .nm span{white-space:normal}
-    .mast .nav{width:100%;margin-left:0;margin-top:4px}
-    .mast .mastnav{flex:1;justify-content:center}
+  .mast .nm{font-weight:600;font-size:1.02rem;line-height:1.2;min-width:0;letter-spacing:-.01em}
+  .mast .nm span{display:block;margin-top:2px;font-weight:400;font-size:.74rem;line-height:1.3;
+                 color:var(--mute);letter-spacing:0;white-space:nowrap}
+  /* Text links on a baseline, not buttons. Underline on hover is the whole interaction - a nav
+     that looks clickable without shouting. 44px target kept via padding. */
+  /* grid-row:1 keeps the nav beside the name instead of wrapping under it - both are in the
+     `main` column, so without it they stack into two rows and the band grows by 25px */
+  .mast .nav{flex:none;margin-left:auto;display:flex;align-items:center;
+             gap:clamp(14px,2vw,28px)}
+
+  /* ---- header search: the flexible spine ------------------------------------------------------ */
+  .hsearch{flex:1 1 auto;position:relative;min-width:0;max-width:660px;
+           display:flex;align-items:stretch;
+           border:1.5px solid var(--hair-strong);border-radius:var(--r);background:var(--surface);
+           transition:border-color .16s ease,box-shadow .16s ease}
+  .hsearch:focus-within{border-color:var(--pri);
+    box-shadow:0 0 0 3px color-mix(in oklab, var(--pri) 16%, transparent)}
+  /* while the panel is open the bar and the panel are one shape */
+  .hsearch.open{border-bottom-left-radius:0;border-bottom-right-radius:0}
+
+  /* Mode selector, inside the bar. Real radios, so it works with no JS and announces as a group;
+     the input is visually hidden and the label does the work. */
+  .hs-modes{flex:none;display:flex;align-items:center;gap:2px;margin:0;padding:4px;border:0;
+            border-right:1px solid var(--hair)}
+  .hs-mode{position:relative;display:inline-flex;align-items:center;min-height:36px;padding:0 11px;
+           border-radius:4px;font-size:.78rem;font-weight:600;color:var(--mute);cursor:pointer;
+           white-space:nowrap;transition:color .14s ease,background .14s ease}
+  .hs-mode input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+  .hs-mode:hover{color:var(--ink)}
+  .hs-mode:has(input:checked){background:var(--bg2);color:var(--ink)}
+  .hs-mode:has(input:focus-visible){outline:3px solid var(--focus);outline-offset:2px}
+
+  /* 22ch floor: a NIF is 9 digits plus the icon, the clear button and the submit. Without a floor
+     the flex line collapses the input first and a full NIF renders as "046". */
+  .hs-field{flex:1 1 22ch;min-width:0;display:flex;align-items:center;gap:8px;padding:0 8px 0 11px}
+  .hs-icon{width:15px;height:15px;flex:none;color:var(--mute)}
+  .hsearch:focus-within .hs-icon{color:var(--pri)}
+  .hs-field input{flex:1 1 auto;min-width:0;min-height:44px;border:0;background:none;
+                  font:inherit;font-size:.9rem;color:var(--ink);outline:none}
+  .hs-field input::placeholder{color:var(--mute)}
+  .hs-field input::-webkit-search-cancel-button{display:none}
+  .hs-clear{flex:none;width:28px;height:28px;display:grid;place-items:center;border:0;
+            background:none;cursor:pointer;border-radius:4px;color:var(--mute)}
+  .hs-clear svg{width:14px;height:14px}
+  .hs-clear:hover{background:var(--bg2);color:var(--ink)}
+  .hs-go{flex:none;min-height:36px;margin:4px 4px 4px 0;padding:0 14px;border:0;
+         border-radius:4px;background:var(--pri);color:#fff;font:inherit;font-size:.8rem;
+         font-weight:600;cursor:pointer;white-space:nowrap}
+  .hs-go:hover{background:var(--pri-dark)}
+  .hs-clear:focus-visible,.hs-go:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+  /* Panel. A ruled sheet, not a floating card: hairline border continuing the bar's, one modest
+     shadow to lift it off the text underneath, no blur. */
+  .hs-panel{position:absolute;z-index:60;top:100%;left:-1.5px;right:-1.5px;
+            background:var(--surface);border:1.5px solid var(--pri);border-top:1px solid var(--hair);
+            border-radius:0 0 var(--r) var(--r);
+            /* within the one-elevation budget: 28px blur, same family as the back-to-top's 18px.
+               34px tripped test-design.js and it was right to - a dropdown needs separation from
+               the text underneath, not a spotlight. */
+            box-shadow:0 10px 28px color-mix(in oklab, var(--ink) 13%, transparent);
+            max-height:min(64vh,460px);display:flex;flex-direction:column;overflow:hidden}
+  .hs-panel[hidden]{display:none}
+  .hs-body{overflow-y:auto;min-height:0}
+  .hs-group{display:flex;align-items:center;gap:8px;padding:9px 13px;background:var(--bg2);
+            border-bottom:1px solid var(--hair);
+            font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:600;
+            letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+  .hs-item{display:flex;align-items:center;gap:11px;width:100%;padding:11px 13px;
+           border:0;border-bottom:1px solid var(--hair);background:none;cursor:pointer;
+           font:inherit;text-align:left;text-decoration:none;color:var(--ink);min-height:44px}
+  .hs-item:last-child{border-bottom:0}
+  .hs-item:hover,.hs-item:focus-visible{background:var(--bg2);outline:0}
+  .hs-item:focus-visible{box-shadow:inset 3px 0 0 var(--pri)}
+  .hs-item .t{flex:1;min-width:0;font-size:.9rem;font-weight:600}
+  .hs-item .d{display:block;font-weight:400;font-size:.78rem;color:var(--mute);margin-top:2px}
+  .hs-item mark{background:color-mix(in srgb, var(--pri) 22%, transparent);color:inherit;
+                border-radius:2px;padding:0 1px}
+  .hs-empty{padding:26px 13px;text-align:center;font-size:.88rem;color:var(--mute)}
+  .hs-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0;
+           padding:8px 13px;border-top:1px solid var(--hair);background:var(--bg2);
+           font-size:.7rem;color:var(--mute)}
+  /* These three are <p>, and the global prose rule caps every <p> at --measure (64ch). Inside a
+     620px panel that cut the tinted group and footer bands short of the right edge, which read as
+     a rendering fault. UI text is not prose and does not take the measure. */
+  .hs-group,.hs-foot,.hs-empty{max-width:none}
+
+  /* Mobile: the bar drops to its own full-width row under the name, the modes stack above the
+     field, and the panel becomes a sheet anchored to the bar rather than a narrow dropdown. */
+  /* ---- filter surface: chips, groups, badges, keyboard state --------------------------------- */
+  .hs-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 13px;
+            border-bottom:1px solid var(--hair)}
+  .hs-chip{display:inline-flex;align-items:center;gap:5px;min-height:30px;padding:0 10px;
+           border:1px solid var(--hair-strong);border-radius:999px;background:var(--bg);
+           font:inherit;font-size:.75rem;font-weight:600;color:var(--ink2);cursor:pointer;
+           white-space:nowrap}
+  .hs-chip:hover{border-color:var(--pri);color:var(--pri)}
+  .hs-chip:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  .hs-chip .n{font-family:'IBM Plex Mono',monospace;font-size:.66rem;color:var(--mute)}
+  .hs-group .c{margin-left:auto;font-size:.66rem;letter-spacing:0;text-transform:none;
+               color:var(--mute)}
+  /* the badge is the CIRS article the sector deducts under - real provenance, not a label */
+  .hs-badge{flex:none;font-family:'IBM Plex Mono',monospace;font-size:.64rem;font-weight:600;
+            padding:3px 7px;border-radius:3px;background:var(--bg2);color:var(--ink2);
+            border:1px solid var(--hair)}
+  .hs-badge.pot{background:color-mix(in srgb, var(--pri) 9%, transparent);color:var(--pri);
+                border-color:color-mix(in srgb, var(--pri) 26%, transparent)}
+  .hs-item[aria-selected="true"]{background:var(--bg2);box-shadow:inset 3px 0 0 var(--pri)}
+  .hs-item .v{flex:none;font-family:'IBM Plex Mono',monospace;font-size:.78rem;
+              font-variant-numeric:tabular-nums;color:var(--ink2)}
+
+  /* the wordmark is the first thing to go, not the search: the mark still identifies the site */
+  @media (max-width:1180px){ .mast .nm{display:none} }
+  @media (max-width:980px){ .mast .nav{display:none} .hs-go{padding:0 11px} }
+
+  /* ---- MOBILE: header at the bottom, search as a pill that opens a sheet ----------------------
+     Ported from the Refúgio Animal Header/SearchBar pair. On a phone the header is anchored to the
+     BOTTOM of the viewport - thumb reach - and the search collapses to a single-line pill. Tapping
+     it promotes the whole bar to a fixed sheet sitting above the header, with the panel opening
+     UPWARDS so the results are not buried under the keyboard.
+     --kb is written by JS from visualViewport: when the keyboard is up the sheet rides on top of
+     it instead of being covered by it. */
+  @media (max-width:760px){
+    :root{--kb:0px}
+    .mast{position:fixed;left:0;right:0;bottom:0;top:auto;z-index:70;
+          border-top:1px solid var(--hair-strong);border-bottom:0;
+          padding-bottom:env(safe-area-inset-bottom,0px)}
+    /* TWO ROWS. The search gets a row to itself - it is the reason the bar exists and sharing a
+       line with the mark and three links left it under 200px. The row below carries the mark and
+       the destinations the search does not reach. */
+    .mast .wrap{display:grid;grid-template-columns:auto minmax(0,1fr);
+                gap:9px 12px;min-height:0;padding-block:9px}
+    .hsearch{grid-column:1 / -1;grid-row:1}
+    .mast .mark{grid-column:1;grid-row:2}
+    .mast .nm{display:none}
+    .mast .nav{display:flex;grid-column:2;grid-row:2;justify-self:end;margin-left:0;
+               gap:clamp(16px,5vw,26px)}
+    .mast .mastnav{min-height:34px;font-size:.84rem}
+    /* the page must not end underneath the fixed bar; --mast-h is measured, so this follows the
+       bar instead of guessing at a two-row height */
+    body{padding-bottom:calc(var(--mast-h,120px) + 26px)}
+    /* the .to-top offset is NOT set here - the base rule appears later in the sheet and wins at
+       equal specificity, so this override did nothing and the button sat on top of the fixed bar.
+       It lives next to the base rule instead; see the media query under .to-top. */
+
+    /* collapsed pill */
+    .hsearch{flex:1 1 auto;max-width:none;border-radius:999px;overflow:hidden}
+    .hs-modes{display:none}
+    .hs-field{padding:0 4px 0 13px}
+    .hs-field input{min-height:42px;font-size:.88rem}
+    .hs-go{margin:3px;padding:0 13px;border-radius:999px}
+    .hs-panel{display:none}
+
+    /* promoted sheet */
+    /* overflow:visible is load-bearing: the collapsed pill sets overflow:hidden to clip its own
+       999px radius, and that was clipping the panel, which is positioned OUTSIDE the form's box
+       at bottom:100%. The panel measured 420px tall and painted nothing. */
+    .hsearch.sheet{position:fixed;left:8px;right:8px;z-index:95;overflow:visible;
+                   bottom:calc(var(--kb) + 74px + env(safe-area-inset-bottom,0px));
+                   flex-wrap:wrap;border-radius:var(--r);border-color:var(--pri);
+                   box-shadow:0 -10px 30px color-mix(in oklab, var(--ink) 16%, transparent)}
+    .hsearch.sheet .hs-modes{display:flex;width:100%;order:2;border-right:0;
+                             border-top:1px solid var(--hair);padding:5px}
+    .hsearch.sheet .hs-mode{flex:1;justify-content:center;min-height:42px}
+    .hsearch.sheet .hs-field{order:1;width:100%}
+    .hsearch.sheet .hs-go{order:1}
+    /* panel opens UPWARDS, above the field, clear of the keyboard */
+    .hsearch.sheet .hs-panel{display:flex;top:auto;bottom:100%;left:-1.5px;right:-1.5px;
+      border-radius:var(--r) var(--r) 0 0;border-top:1.5px solid var(--pri);
+      border-bottom:1px solid var(--hair);max-height:min(58vh,420px);
+      box-shadow:0 -12px 30px color-mix(in oklab, var(--ink) 14%, transparent)}
+    .hs-backdrop{position:fixed;inset:0;z-index:90;background:rgba(18,32,51,.42);border:0}
+    /* The sheet lives inside .mast, and .mast is a stacking context at z-index:70 - so the sheet's
+       z-index:95 resolves INSIDE it and the backdrop at 90 painted over the whole header, swallowing
+       every tap on the mode buttons. The header itself has to clear the backdrop while the sheet is
+       up. Caught by a click that timed out with "hs-backdrop intercepts pointer events". */
+    .mast:has(.hsearch.sheet){z-index:96}
   }
+  .mast .mastnav{display:inline-flex;align-items:center;min-height:44px;padding:0 2px;
+                 color:var(--ink2);font-weight:600;font-size:.88rem;text-decoration:none;
+                 white-space:nowrap;border-bottom:2px solid transparent}
+  .mast .mastnav:hover{color:var(--pri);border-bottom-color:var(--pri)}
+  .mast .mastnav[aria-current="page"]{color:var(--pri);border-bottom-color:var(--pri)}
+  /* A second @media (max-width:760px) block lived here, left over from the masthead layout before
+     the search became the spine. It set `.mast .mark{grid-column:auto}` and made the nav span both
+     columns - and being LATER in the sheet it silently beat the two-row rules above, so the mark
+     was thrown to the right edge and the nav to the left, reversed. Deleted rather than patched:
+     two media blocks at the same breakpoint fighting each other is the bug, not the values. */
 
   header{padding:52px 0 40px;background:var(--bg2);border-bottom:1px solid var(--rule)}
+  /* Centred, as of 30-07-2026. This rule has to carry the alignment itself: `header .wrap` is
+     element+class and beats a bare `.hero-band` on specificity regardless of order, so setting
+     text-align on .hero-band alone left the type LEFT-aligned inside a centred block - which reads
+     as a mistake rather than a choice, because the two lines shared a left edge. */
   header .wrap{text-align:center}
   .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:.11em;
            text-transform:uppercase;color:var(--pri);font-weight:600}
@@ -159,14 +418,14 @@
   .sub{color:var(--ink2);font-size:1.08rem;max-width:60ch;margin:0;line-height:1.6}
 
   /* signature: a ceiling that keeps filling after it is full */
-  .thesis{margin:28px 0 10px;padding:20px 22px;background:#fff;
+  .thesis{margin:28px 0 10px;padding:20px 22px;background:var(--surface);
           border:1px solid var(--rule);border-left:4px solid var(--pri);border-radius:var(--r)}
   .thesis .line{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
                 font-family:'IBM Plex Mono',monospace;font-size:.95rem}
   .thesis .line b{font-weight:600}
   .dots{flex:1;border-bottom:1px dotted var(--rule);transform:translateY(-4px)}
   .meter{margin-top:14px;height:18px;display:flex;border:1px solid var(--ink);
-         border-radius:2px;overflow:hidden;background:#fff}
+         border-radius:2px;overflow:hidden;background:var(--surface)}
   .meter .used{background:var(--pri)}
   .meter .void{flex:1;background:repeating-linear-gradient(135deg,var(--red) 0 5px,#fff 5px 10px)}
   .meter-key{display:flex;gap:20px;margin-top:9px;font-size:.76rem;color:var(--ink2);flex-wrap:wrap;
@@ -180,19 +439,13 @@
   section:first-of-type{border-top:0}
   h2{font-weight:600;font-size:1.4rem;letter-spacing:-.01em;margin:0 0 .55em;color:var(--pri-dark)}
   .note{color:var(--mute);font-size:.9rem;font-weight:400}
-  /* Justified, but only with hyphenation on. Portuguese has long words, and justifying without
-     hyphens tears rivers of whitespace down a column. lang="pt" on <html> is what lets the
-     browser load the right dictionary. Short runs (notes, list items, badges) stay ragged:
-     justifying three words just spaces them out stupidly. */
-  p{margin:0 0 .95em;text-align:justify;hyphens:auto;-webkit-hyphens:auto;text-wrap:pretty}
-  p.note,.badge,.meter-key,caption,.step .n{text-align:left;hyphens:manual}
-  .sub{text-align:left;hyphens:manual}          /* display type: justification looks broken */
-  header .sub{text-align:center;margin-left:auto;margin-right:auto;hyphens:manual}
-  #faz .lead,#faz .r-item,#faz .r-item div{text-align:left;hyphens:manual}
-  .safe li,.step div{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
-  @media (max-width:640px){                      /* narrow columns river no matter what */
-    p,.safe li,.step div{text-align:left;hyphens:auto}
-  }
+  /* Text was justified with hyphens:auto until 30-07-2026. The intent was sound - Portuguese has
+     long words and hyphenation does reduce the rivers - but at a 64ch measure it still read as a
+     2009 PDF, and the mobile query already had to undo it. Now left-ragged everywhere, with
+     text-wrap:pretty handling orphans. The declarations are DELETED rather than overridden in the
+     editorial layer, because a dead rule that contradicts the system is what a future reader
+     "restores" by accident. anti-patterns #35. */
+  p{margin:0 0 .95em;text-wrap:pretty}
 
   /* numbered steps: real sequence, so numbering carries meaning */
   .steps{display:grid;gap:18px}
@@ -207,7 +460,10 @@
   table{width:100%;border-collapse:collapse;font-size:.9rem}
   caption{text-align:left;padding-bottom:8px}
   th,td{border-bottom:1px solid var(--rule);padding:11px 10px 11px 0;text-align:left;vertical-align:top}
-  thead th,tr:first-child th{background:var(--bg2);font-family:'IBM Plex Mono',monospace;
+  /* `tr:first-child th` is a fallback for tables written without a <thead>. It is scoped away from
+     .ledger, where the first row is DATA, not a header - unscoped it set the first ledger row in
+     mono uppercase and only that row, which looked like a rendering fault. */
+  thead th,.tscroll tr:first-child th{background:var(--bg2);font-family:'IBM Plex Mono',monospace;
      font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);
      font-weight:600;padding-left:10px}
   td:last-child{font-family:'IBM Plex Mono',monospace;white-space:nowrap;text-align:right}
@@ -246,30 +502,119 @@
   #copymsg.ok{color:var(--green);font-weight:600}
 
   /* feedback form */
-  .form{margin:6px 0 18px;max-width:620px}
-  .field{margin:0 0 16px}
-  .field label{display:block;font-weight:600;font-size:.92rem;margin:0 0 6px}
-  .field input,.field textarea{width:100%;font:inherit;color:var(--ink);background:#fff;
-    border:1px solid var(--rule);border-radius:var(--r);padding:10px 12px;min-height:44px}
-  .field textarea{min-height:110px;resize:vertical}
-  .field input:focus,.field textarea:focus{outline:3px solid var(--focus);outline-offset:1px;
-    border-color:var(--pri)}
-  .field .note{margin:6px 0 0}
+  /* ---- feedback form ---------------------------------------------------------------------------
+     One bounded block, ruled top and bottom like the colophon and the ledger, with numbered field
+     indices so it reads as a form to be completed rather than three boxes in a column. */
+  .form{margin:18px 0 0;max-width:74ch;border-top:2px solid var(--ink);padding-top:20px}
+  .field{margin:0 0 18px}
+  .field label{display:flex;align-items:baseline;gap:9px;font-weight:600;font-size:.94rem;
+               margin:0 0 8px;color:var(--ink)}
+  .field .fi{font-family:'IBM Plex Mono',monospace;font-size:.6rem;font-weight:600;
+             letter-spacing:.08em;color:var(--pri)}
+  .field .opt{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:.62rem;
+              font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+  .field input,.field textarea{width:100%;font:inherit;font-size:.95rem;color:var(--ink);
+    background:var(--surface);border:1.5px solid var(--hair-strong);border-radius:var(--r);
+    padding:11px 13px;min-height:46px}
+  .field input::placeholder,.field textarea::placeholder{color:var(--mute)}
+  .field textarea{min-height:132px;resize:vertical;line-height:1.55}
+  .field input:focus-visible,.field textarea:focus-visible{outline:3px solid var(--focus);
+    outline-offset:2px;border-color:var(--pri)}
+  /* the textarea's own footer: the security promise on the left, the counter on the right */
+  .field-foot{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+              margin:7px 0 0;font-size:.75rem;color:var(--mute)}
+  .field-foot .sec{display:inline-flex;align-items:baseline;gap:6px}
+  .field-foot .sec::before{content:"\2713";color:var(--green);font-weight:700}
+  .field-foot .cnt{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;
+                   white-space:nowrap}
+  .field-foot .cnt.near{color:var(--amber)}
+  .field-foot .cnt.over{color:var(--red);font-weight:600}
+  .field-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 22px}
+  .field-note{margin:0 0 20px;font-size:.83rem;line-height:1.55;color:var(--mute);max-width:66ch}
+  .form-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+                padding-top:18px;border-top:1px solid var(--hair)}
+  .form-actions .cf-turnstile{margin:0;flex:1 1 240px;min-width:0}
+  .form-actions .cta-main{flex:none}
+  .form-status{margin:12px 0 0;font-size:.9rem}
+  .form-status:empty{display:none}
+  .form-status.err{color:var(--red);font-weight:600}
+  .form-status.ok{color:var(--green);font-weight:600}
   .hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-  #fb-status:empty{display:none}
-  #fb-status.err{color:var(--red);font-weight:600}
-  #fb-status.ok{color:var(--green);font-weight:600}
-  .cf-turnstile{margin:0 0 14px}
-  footer{color:var(--ink2);font-size:.87rem;padding:34px 0 60px;background:var(--bg2);
-         border-top:3px solid var(--pri)}
+  @media (max-width:600px){ .field-pair{grid-template-columns:minmax(0,1fr);gap:0} }
+  /* ---- footer ------------------------------------------------------------------------------------
+     On the same [rail] grid as the masthead, the alert band and every chapter - the last block on
+     the page should not be the one that ignores the grid. The 3px blue top rule became the ink
+     rule the rest of the page uses to close a block. */
+  footer{color:var(--ink2);font-size:.9rem;background:var(--bg2);
+         border-top:2px solid var(--ink)}
+  .foot{display:grid;grid-template-columns:[rail] 148px [main] minmax(0,1fr);column-gap:48px}
+  /* align-self:start, for the third time in this sheet: a grid item stretches by default, so a
+     two-word rail label drew a 340px blue line down the margin. */
+  .foot-idx{grid-column:rail;align-self:start;margin:0;padding-left:13px;
+            border-left:2px solid color-mix(in srgb, var(--pri) 55%, transparent);
+            font-family:'IBM Plex Mono',monospace;font-size:.66rem;font-weight:600;
+            letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+  .foot-main{grid-column:main}
+  .foot-claim{margin:0 0 clamp(24px,3vw,34px);max-width:62ch;color:var(--ink)}
+  .foot-nav{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px;
+            padding:clamp(22px,2.6vw,30px) 0;
+            border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+  .foot-nav h2{margin:0 0 11px;font-family:'IBM Plex Mono',monospace;font-size:.62rem;
+               font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--mute)}
+  .foot-nav ul{margin:0;padding:0;list-style:none;max-width:none}
+  .foot-nav li{margin:0}
+  /* stacked links with a real target size - the old row of pipe-separated links had none */
+  .foot-nav a{display:inline-flex;align-items:center;min-height:34px;color:var(--ink);
+              text-decoration:none;border-bottom:1px solid transparent}
+  .foot-nav a:hover{color:var(--pri);border-bottom-color:var(--pri)}
+  .foot-lic{margin:clamp(18px,2.2vw,24px) 0 0;font-size:.8rem;color:var(--mute);max-width:66ch}
+  .foot-lic b{color:var(--ink2);font-weight:600}
+  @media (max-width:900px){
+    .foot{grid-template-columns:minmax(0,1fr);row-gap:16px}
+    .foot-idx,.foot-main{grid-column:1}
+  }
+  @media (max-width:560px){ .foot-nav{grid-template-columns:minmax(0,1fr);gap:20px} }
   #faz .lead{color:var(--ink2);margin:0 0 14px;max-width:70ch}
-  #faz .coming-head{margin:26px 0 10px;font-weight:600;color:var(--ink)}
-  .ready{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px}
-  @media (max-width:600px){ .ready{grid-template-columns:1fr} }
-  .r-item{display:flex;gap:10px;align-items:flex-start;font-size:.95rem;line-height:1.5}
-  .r-item .dot{flex:none;width:11px;height:11px;border-radius:50%;margin-top:6px}
-  .dot.ok{background:var(--green)}
-  .dot.dev{background:var(--amber)}
+  /* ---- displayed statement + closing terms -----------------------------------------------------
+     For a section that is one person's argument. The answer gets a line of its own at display size
+     between two rules; the terms get a bounded note at the end. No quotation marks, no oversized
+     opening glyph, no italic - this is a statement being made, not a testimonial being quoted, and
+     a pull-quote treatment would turn an argument into a blurb. */
+  .statement{margin:clamp(26px,3.2vw,38px) 0;padding:clamp(20px,2.4vw,28px) 0;
+             border-top:2px solid var(--ink);border-bottom:1px solid var(--hair-strong);
+             max-width:26ch;
+             font-size:clamp(1.3rem,2.4vw,1.85rem);font-weight:600;line-height:1.18;
+             letter-spacing:-.022em;color:var(--ink);text-wrap:balance}
+  .terms{margin:clamp(24px,3vw,34px) 0 0;padding-left:15px;
+         border-left:2px solid var(--green);font-size:.95rem;color:var(--ink2)}
+
+  /* ---- register ---------------------------------------------------------------------------------
+     The "what it reads" list. A real <h3> for each state so the outline is navigable, and the state
+     is a WORD in that heading rather than a coloured dot - colour alone fails the greyscale gate and
+     fails anyone who cannot see it. Green and amber still appear, on the heading's rule, but they
+     only ever repeat what the word already says. */
+  .reg-h{display:flex;align-items:baseline;gap:12px;margin:clamp(26px,3vw,36px) 0 0;
+         padding:0 0 9px;border-bottom:2px solid var(--green);
+         font-family:'IBM Plex Mono',monospace;font-size:.66rem;font-weight:600;
+         letter-spacing:.13em;text-transform:uppercase;color:var(--green)}
+  .reg-h span{margin-left:auto;letter-spacing:.06em;color:var(--mute);font-weight:400}
+  .reg-h.dev{border-bottom-color:var(--amber);color:var(--amber)}
+  .reg{margin:0}
+  .reg > div{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.35fr) auto;
+             gap:4px 26px;align-items:baseline;
+             padding:13px 0;border-bottom:1px solid var(--hair)}
+  .reg dt{font-size:.98rem;font-weight:600;color:var(--ink);margin:0}
+  .reg dd{margin:0;font-size:.92rem;line-height:1.5;color:var(--ink2);max-width:52ch}
+  /* the source is the provenance of the row - mono, because it is a reference, not prose */
+  .reg dd.src{justify-self:end;font-family:'IBM Plex Mono',monospace;font-size:.68rem;
+              letter-spacing:.04em;color:var(--mute);white-space:nowrap;max-width:none}
+  .reg.dev dt{color:var(--ink)}
+  @media (max-width:700px){
+    .reg > div{grid-template-columns:minmax(0,1fr) auto;gap:3px 14px}
+    .reg dt{grid-column:1}
+    .reg dd:not(.src){grid-column:1 / -1}
+    .reg dd.src{grid-column:2;grid-row:1}
+  }
   .cta-row{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px;margin:22px 0 4px}
   .cta-main{background:var(--pri);color:#fff;text-decoration:none;font-weight:600;
             padding:13px 26px;border-radius:var(--r);cursor:pointer;font-size:1.02rem;
@@ -277,41 +622,579 @@
   .cta-main:hover{background:var(--pri-dark);color:#fff}
   .cta-alt{color:var(--pri);font-weight:600;text-decoration:none;text-underline-offset:3px}
   .cta-alt:hover{color:var(--pri-dark);text-decoration:underline}
-  .badges{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:18px 0 0}
-  .badge{font-family:'IBM Plex Mono',monospace;font-size:.72rem;color:var(--ink2);
-         border:1px solid var(--rule);border-radius:2px;padding:5px 10px;background:#fff}
-  .badge b{color:var(--pri);font-weight:600}
   @media (max-width:560px){ header{padding:34px 0 28px} .thesis .line{font-size:.8rem} }
   @media (prefers-reduced-motion:no-preference){
     .thesis{animation:rise .45s cubic-bezier(.2,.7,.3,1) both}
     @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   }
+
+  /* ---- hero entrance ---------------------------------------------------------------------------
+     The brief's GSAP timeline (eyebrow -> title -> lead -> dossier, overlapping) as plain CSS
+     animation-delay. Unlike the scroll reveals below this needs no observer: a CSS animation always
+     runs, so `both` cannot strand an element at opacity 0. It is still inside the no-preference
+     query, so reduced-motion users get the finished layout with no animation at all. */
+  @media (prefers-reduced-motion:no-preference){
+    header .eyebrow,header h1,header .sub,header .cta-row,header .frontmatter,.ledger{
+      animation:heroIn .6s cubic-bezier(.2,.7,.3,1) both}
+    header .eyebrow{animation-duration:.5s}
+    header h1{animation-delay:.08s}
+    header .sub{animation-delay:.18s}
+    header .cta-row{animation-delay:.26s}
+    header .frontmatter{animation-delay:.34s}
+    .ledger{animation-delay:.42s;animation-duration:.7s}
+    @keyframes heroIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  }
+
+  /* ---- scroll reveal -------------------------------------------------------------------------
+     Layered reveals, no library. The design brief asked for GSAP + ScrollTrigger from a CDN; that
+     is 70 KB of third-party script on a site whose whole claim is that you can read everything it
+     runs, and _headers already announces a script-src CSP. IntersectionObserver does the same job
+     in the block below.
+     The DEFAULT STATE IS VISIBLE. .reveal only becomes hidden inside the no-preference media query
+     AND only once .js-reveal is set on <html> by the script itself. So content stays on screen for
+     reduced-motion users, for no-JS users, and if the observer never fires - the failure mode of
+     the brief's CSS (a bare `.signal-card{opacity:0}` revealed only by ScrollTrigger) is a blank
+     page, which on a page about someone's taxes is not an acceptable way to fail. */
+  @media (prefers-reduced-motion:no-preference){
+    .js-reveal .reveal{opacity:0;transform:translateY(14px)}
+    .js-reveal .reveal.in{opacity:1;transform:none;
+      transition:opacity .55s cubic-bezier(.2,.7,.3,1),transform .55s cubic-bezier(.2,.7,.3,1)}
+    .js-reveal .reveal.in:nth-child(2){transition-delay:.08s}
+    .js-reveal .reveal.in:nth-child(3){transition-delay:.16s}
+    .js-reveal .reveal.in:nth-child(4){transition-delay:.24s}
+  }
+
+  /* The .dossier / .signal / .proof-card / .badge card families lived here until 30-07-2026 and
+     are DELETED, not left dangling: they were a fake dashboard in the hero (anti-patterns #17),
+     floating cards (#7), an oversized shadow (#8) and a feature grid (#27). Their replacements are
+     .ledger, .spec and .frontmatter, all ruled rather than boxed. Dead CSS for a banned pattern is
+     how the pattern comes back. */
+  .chip-demo{font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:600;
+             letter-spacing:.07em;text-transform:uppercase;color:var(--amber);
+             background:#fdf6e7;border:1px solid #e6d3a8;border-radius:2px;padding:3px 9px}
+
+  /* ==============================================================================================
+     EDITORIAL LAYER (v2, 30-07-2026)
+     ----------------------------------------------------------------------------------------------
+     The token retune alone did not read as a redesign, and the reason was structural, not chromatic:
+     every section was 38px of padding around a 1.4rem heading and a justified paragraph in one
+     940px column. Same rhythm forty times down the page, so nothing had rank and the eye had
+     nowhere to rest. This layer changes the ARCHITECTURE - scale, rhythm, banding, measure - and
+     deliberately sits at the end so it reads as one intentional pass rather than edits smeared
+     through the sheet above.
+     ============================================================================================ */
+
+  /* Animatable custom property: lets the card lift interpolate a real value instead of toggling. */
+  @property --lift{ syntax:'<length>'; inherits:false; initial-value:0px }
+
+  :root{
+    --measure:64ch;                       /* prose measure, independent of the container */
+    --band:color-mix(in oklab, var(--surface) 78%, var(--bg));
+    --hair:color-mix(in oklab, var(--ink) 12%, transparent);
+    --hair-strong:color-mix(in oklab, var(--ink) 22%, transparent);
+    --step:clamp(56px, 7vw, 104px);       /* the one vertical rhythm unit every section uses */
+  }
+
+  /* ---- THE EDITORIAL GRID ----------------------------------------------------------------------
+     The single biggest structural decision on the page, and the one that was missing when the
+     30-07-2026 pass "looked identical": every section is a two-column grid with a narrow RAIL on
+     the left carrying the chapter number, and the content in the main column.
+
+     Why this and not a centred column: the reference for this product is a statutory instrument or
+     a ledger, and the defining feature of both is the marginal rail - the article number sits
+     outside the text block, the text block keeps a fixed measure, and the reader always knows
+     where they are. A page of full-width stacked prose sections is a blog. This is not a blog.
+
+     The rail number is `position: sticky`, so through a long chapter it stays beside you. With
+     twelve chapters and a 13,000px page, that is orientation, not decoration.
+
+     No wrapper markup: the counter is generated on `section::before` and every child is pushed to
+     the main column by a single rule. */
+  .wrap{max-width:1180px;counter-reset:sec}
+  section{
+    padding:var(--step) 0;position:relative;
+    display:grid;grid-template-columns:[rail] 148px [main] minmax(0,1fr);column-gap:48px}
+  section > *{grid-column:main;min-width:0}
+  /* The chapter rule is a pseudo-element, not a border, so it can be DRAWN. See the motion block
+     below: it rules itself across the page as the chapter arrives, which is the gesture a ledger
+     makes. A border cannot be scaled; this can. */
+  section::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;
+    background:var(--hair-strong);transform-origin:0 50%}
+  section:first-of-type::after{display:none}
+  /* The rail carries a running head - number AND short chapter label - the way a book's margin
+     does. It was 132px of empty column holding one small pill, which is a lot of page to spend on
+     nothing. The label is written by JS from each h2; without JS the number alone still shows. */
+  section::before{
+    counter-increment:sec;content:counter(sec,decimal-leading-zero) " " attr(data-ch);
+    grid-column:rail;grid-row:1 / span 99;
+    /* clears the sticky masthead. --mast-h is measured in JS, so the offset follows the header
+       instead of a hardcoded guess: at top:28px the running head slid UNDER the masthead the
+       moment the header became sticky, and the chapter number simply disappeared. */
+    position:sticky;top:calc(var(--mast-h,72px) + 22px);align-self:start;justify-self:stretch;
+    font-family:'IBM Plex Mono',monospace;font-size:.66rem;font-weight:600;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--mute);line-height:1.5;
+    padding:0 0 0 13px;border-left:2px solid color-mix(in oklab, var(--pri) 55%, transparent)}
+  section:nth-of-type(even){
+    background:var(--band);
+    box-shadow:0 0 0 100vmax var(--band);
+    clip-path:inset(0 -100vmax);
+    border-top-color:transparent}
+  section:first-of-type{border-top:0}
+
+  section > h2{
+    font-weight:600;font-size:clamp(1.55rem,3.4vw,2.35rem);line-height:1.12;
+    letter-spacing:-.022em;color:var(--ink);margin:0 0 .7em;max-width:24ch;text-wrap:balance}
+  section > h2 .note{display:block;margin-top:.5em;
+    font-size:clamp(.9rem,1.15vw,1rem);font-weight:400;line-height:1.5;
+    letter-spacing:0;color:var(--mute);max-width:52ch;text-wrap:pretty}
+  .box h2{font-size:1.25rem;max-width:none}
+
+  /* ---- hero: claim left, proof right ----------------------------------------------------------
+     Was a centred stack - eyebrow, title, paragraph, buttons, badges, all on the centre line. That
+     composition is the reason the page still read as a template after the type scale grew: bigger
+     centred text is still centred text. Now asymmetric, left-aligned, with the example dossier as
+     the second column so the promise and a picture of the output are read together. */
+  /* ---- hero band (concept C) --------------------------------------------------------------------
+     Title and prose share a BASELINE, not a centre: align-items:end is what removes the 141px of
+     drift the centred version had, and with it the 206px of void underneath the shorter column.
+     Two textures in the top row - display type on the left, running prose on the right - and one
+     ruled strip along the base. Never two ruled blocks. */
+  /* The hero sits on the SAME rail grid as every chapter below it. Measured before this change:
+     the h1 started at x=154 while every section heading started at x=350 - 196px of disagreement
+     between the first screen and the entire rest of the page, which is why the hero read as
+     detached however well it was composed internally.
+     Inside the rail, main is a 5-column sub-grid. The title takes columns 1-3 and the prose 4-5,
+     so the prose column lands exactly on a colophon-strip edge instead of 41px off it. Every
+     vertical edge in the hero now belongs to one grid. */
+  /* CENTRED, reading top to bottom (30-07-2026). This reverses the asymmetric band: side by side,
+     the h1 and the prose competed for the first read and the prose wrapped to six lines in a
+     narrow column. Centred and stacked, there is one reading order and one column of text.
+     What must NOT come back with the centring is the stack that made the original centred hero
+     generic - eyebrow, title, paragraph, TWO BUTTONS, a row of pills. There are no actions here at
+     all now; the masthead owns them. test-design.js pins that. */
+  .hero-band{display:block;text-align:center}
+  /* One centred column. Each block gets its own measure so the ragged edges stay symmetrical -
+     centred text with an uneven measure is what makes a centred layout look accidental. */
+  /* Wider measures. At 19ch/60ch the type sat in a ~700px island inside an 1180px column, so the
+     hero read as a narrow strip with 240px of empty paper either side. Centred type needs a
+     measure that is generous but still capped - uncapped it stops being readable, uncapped-and-
+     centred it stops looking set. */
+  .hero-inner{display:block}
+  .hero-band h1{margin:0 auto;max-width:26ch}
+  .hero-aside{margin:0 auto;max-width:76ch}
+
+  /* The independence stamp leads, above the eyebrow. A left rule cannot centre, so it becomes a
+     short red rule ABOVE the text - the same mark, rotated into a centred composition. It is the
+     first thing read on a page that deliberately borrows the State's palette. */
+  /* max-width, not just max-content: the string is ~52 characters and at 390px it ran straight off
+     the right edge, cutting "NÃO É UM SERVIÇO DO ESTADO" in half. It now wraps and stays centred. */
+  .hero-stamp{width:max-content;max-width:100%;margin:0 auto clamp(20px,2.6vw,30px);padding-top:11px;
+              border-top:2px solid var(--red);
+              font-family:'IBM Plex Mono',monospace;font-size:.63rem;font-weight:600;
+              letter-spacing:.1em;text-transform:uppercase;line-height:1.7;color:var(--ink2)}
+  .hero-stamp span{color:var(--mute)}
+
+  /* The .lens family was deleted here on 30-07-2026 along with its markup - the header search
+     replaced it. Dead CSS for a removed component is how the component comes back. */
+  /* one rule, not two. There was a second `header .sub` further down in the editorial layer that
+     was silently winning on source order - the two disagreed on measure (48ch vs 56ch) and on
+     margin, so neither said what the standfirst actually does. */
+  header .sub{margin:clamp(18px,2.2vw,26px) auto 0;max-width:72ch;
+              font-size:clamp(1.04rem,1.6vw,1.22rem);line-height:1.58;color:var(--ink2)}
+  /* ---- marker highlight --------------------------------------------------------------------------
+     One phrase in the h1 is marked, the way someone marks the operative line in a document they
+     are working through. That is the concept: this product is about reading your own record and
+     finding the part that matters, so a hand mark is argument, not ornament.
+
+     Adapted from the .realistic-marker-highlight technique, with three changes for this system:
+       - the site's action blue at 26% instead of pink, so the mark belongs to the palette;
+       - the ink stays --ink over it (7.0:1, verified) - a highlight that costs legibility is a
+         decoration pretending to be emphasis;
+       - it DRAWS ON with scaleX from the left, the same gesture the chapter rules use, instead of
+         appearing. One motion vocabulary for the whole page.
+     .mark-filter is display:none-adjacent (0x0), so the defs load without occupying layout.
+     isolation:isolate keeps the z-index:-1 pseudo above the band background instead of behind it. */
+  .mark-filter{position:absolute;width:0;height:0;overflow:hidden}
+  .mark-hl{position:relative;isolation:isolate;white-space:nowrap}
+  .mark-hl::before{
+    content:"";position:absolute;z-index:-1;
+    /* 0.34em: the original 0.84em cut to 45%, then 10% off that again. The stroke sits under the
+       x-height, every ascender and the cap-height break out of it, and it stops reading as a
+       selection block. */
+    left:-.12em;right:-.12em;top:.62em;bottom:.04em;
+    background:color-mix(in srgb, var(--pri) 26%, transparent);
+    filter:url(#fb-marker);
+    /* the -0.7deg tilt is what stops it reading as an OS text selection: a selection is
+       perfectly rectangular and perfectly level, a hand mark is neither */
+    transform:rotate(-.7deg) scaleX(1);transform-origin:0 50%}
+  @media (prefers-reduced-motion:no-preference){
+    .mark-hl::before{animation:markIn .62s cubic-bezier(.2,.7,.3,1) .34s both}
+    @keyframes markIn{from{transform:rotate(-.7deg) scaleX(0)}
+                        to{transform:rotate(-.7deg) scaleX(1)}}
+  }
+  /* the warp filter distorts thin marks badly at small sizes; below the h1's smallest step the
+     mark falls back to a clean band, which still reads as a highlight */
+  @media (max-width:560px){ .mark-hl::before{filter:none;border-radius:.1em .3em .12em .34em} }
+
+  /* ---- back to top ---------------------------------------------------------------------------
+     A fixed control genuinely sits above the page, so this is one of the few places elevation is
+     legitimate - but it stays a CONTROL, not a card: control radius, hairline border, surface
+     fill, and a shadow soft enough to separate rather than to float (02-art-direction allows one
+     level; this is well under it).
+     `hidden` in the markup and only removed by script; `.in` is what actually shows it. */
+  .to-top{
+    position:fixed;z-index:30;
+    inset-block-end:clamp(16px,3vw,28px);inset-inline-end:clamp(16px,3vw,28px);
+    display:inline-flex;align-items:center;gap:8px;
+    min-height:44px;padding:0 15px;
+    font:600 .85rem/1 'IBM Plex Sans',system-ui,sans-serif;
+    color:var(--ink);background:var(--surface);
+    border:1px solid var(--hair-strong);border-radius:var(--r);cursor:pointer;
+    box-shadow:0 6px 18px color-mix(in oklab, var(--ink) 10%, transparent);
+    opacity:0;visibility:hidden;translate:0 8px}
+  .to-top svg{width:15px;height:15px;flex:none;color:var(--pri)}
+  .to-top.in{opacity:1;visibility:visible;translate:0}
+  .to-top:hover{border-color:var(--pri);color:var(--pri)}
+  .to-top:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  /* `translate` here is the independent TRANSFORM property, not a layout offset - compositor only,
+     no reflow. Note the terminating semicolons: without them a declaration block runs into the next
+     selector, which is how test-design.js came to read ".to-top.in" as "top .in" and flag this as
+     an animated layout property. */
+  @media (prefers-reduced-motion:no-preference){
+    .to-top{transition:opacity .22s ease,translate .22s cubic-bezier(.2,.7,.3,1),
+                       visibility 0s linear .22s,border-color .15s ease,color .15s ease;}
+    .to-top.in{transition:opacity .22s ease,translate .22s cubic-bezier(.2,.7,.3,1),
+                          visibility 0s,border-color .15s ease,color .15s ease;}
+  }
+  /* On mobile the masthead is fixed to the BOTTOM, so the button has to clear it. --mast-h is the
+     measured bar height, so this follows the two-row layout instead of guessing. This override has
+     to live AFTER the base rule: the same declaration inside the earlier @media block lost on
+     source order at equal specificity and the button sat on top of the bar. */
+  @media (max-width:760px){
+    .to-top{inset-block-end:calc(var(--mast-h,120px) + 16px + env(safe-area-inset-bottom,0px))}
+  }
+  @media (max-width:560px){ .to-top{padding:0 12px;font-size:.8rem} }
+  @media print{ .to-top{display:none} }
+
+  /* the counter is real, opt-in-fed data, so it gets mono tabular figures like every other number
+     on this site - it is a measurement, not a marketing line */
+  .hero-counter{margin:16px 0 0;font-size:.9rem;color:var(--green);font-weight:600}
+  .hero-counter[hidden]{display:none}
+  .hero-counter b{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;
+                  font-size:1.05rem}
+  .ab-more{display:inline-block;margin-left:6px;color:#9fc0ff;font-weight:600;
+           text-underline-offset:3px}
+
+  /* The colophon strip. Horizontal, so it reads as a masthead rule rather than as a table - that
+     difference is the whole point of concept C. The heavy top rule closes the band. */
+  /* ---- colophon strip -------------------------------------------------------------------------
+     Rebuilt 30-07-2026. It was a tiny mono label over a small grey value with one hairline on top
+     and nothing between the columns - four sentences floating in a row, no emphasis anywhere, so
+     the eye had no reason to stop. The information is the product's four hardest claims; it should
+     read as the specification block of a document.
+
+     What gives it weight now, all of it structural rather than decorative:
+       - the VALUE is the emphasis (1.05rem, 600, ink), the label demoted to a mono index above it;
+       - vertical hairlines divide the columns, so it reads as one ruled object instead of four
+         loose paragraphs;
+       - each column is numbered, which is what turns a list into a specification;
+       - a heavier rule closes the block underneath, so it is bounded top and bottom. */
+  .frontmatter{grid-column:1 / -1;margin:clamp(30px,4vw,46px) 0 0;max-width:none;text-align:left;
+               border-top:2px solid var(--ink);border-bottom:1px solid var(--hair-strong);
+               display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+  .frontmatter > div{display:block;padding:15px clamp(14px,1.8vw,22px) 16px;
+                     border-left:1px solid var(--hair)}
+  .frontmatter > div:first-child{border-left:0;padding-left:0}
+  .frontmatter > div:last-child{padding-right:0}
+  /* the counter is a generated ordinal, so the numbering cannot drift from the markup */
+  .frontmatter{counter-reset:fm}
+  .frontmatter dt{counter-increment:fm;display:flex;align-items:center;gap:7px;
+                  font-family:'IBM Plex Mono',monospace;font-size:.62rem;font-weight:600;
+                  letter-spacing:.13em;text-transform:uppercase;color:var(--mute);padding:0 0 9px}
+  .frontmatter dt::before{content:counter(fm,decimal-leading-zero);
+                          color:var(--pri);font-size:.58rem;letter-spacing:.06em}
+  .frontmatter dd{margin:0;font-size:1.05rem;font-weight:600;line-height:1.35;color:var(--ink);
+                  letter-spacing:-.008em}
+  .frontmatter dd a{color:var(--pri);text-decoration-thickness:1.5px;text-underline-offset:3px}
+
+  @media (max-width:900px){
+    .hero-band{grid-template-columns:minmax(0,1fr);row-gap:26px}
+    /* the 5-column sub-grid has to collapse too. Only .hero-band was being reset, so at 390px the
+       h1 still held columns 1-3 and the prose columns 4-5 of a 342px row - a 137px text column
+       wrapping every two words. */
+    .hero-inner{grid-template-columns:minmax(0,1fr);row-gap:22px}
+    .hero-band h1,.hero-aside,.lens,.frontmatter{grid-column:1 / -1}
+    /* .hero-stamp still asked for the [rail] line, which no longer exists once the band collapses
+       to one column - grid then invents an implicit column for it and the content column drops
+       from 342px to 246px. Both children have to be re-placed, not just the grid redefined. */
+    .hero-stamp,.hero-inner{grid-column:1 / -1;position:static}
+    .hero-band h1{max-width:none}
+    .hero-aside{padding-bottom:0}
+    /* two columns, and the dividers rotate with the layout: a vertical rule on the second column
+       only, horizontal rules under the first row. Left as four stacked cells the vertical borders
+       hang off nothing and the block loses the bounded look that gives it weight. */
+    .frontmatter{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .frontmatter > div{padding:13px 0 14px;border-left:0;border-top:1px solid var(--hair)}
+    .frontmatter > div:nth-child(odd){padding-right:18px}
+    .frontmatter > div:nth-child(even){padding-left:18px;border-left:1px solid var(--hair)}
+    .frontmatter > div:nth-child(-n+2){border-top:0}
+  }
+  @media (max-width:480px){
+    .frontmatter{grid-template-columns:minmax(0,1fr)}
+    .frontmatter > div,.frontmatter > div:nth-child(odd),.frontmatter > div:nth-child(even){
+      padding:12px 0 13px;border-left:0;border-top:1px solid var(--hair)}
+    .frontmatter > div:first-child{border-top:0}
+  }
+  /* The stacked, hairline-ruled version of .frontmatter was DELETED here on 30-07-2026. It was the
+     twin texture that made the hero unreadable; the horizontal strip in the hero-band block above
+     replaces it. Leaving both would have let the old one win on source order. */
+
+  /* ---- the ledger ------------------------------------------------------------------------------
+     No shadow, no radius, no card. A statement of account is ruled type on paper, and every time
+     this was drawn as floating cards it turned the page back into a SaaS landing. */
+  .ledger{margin:0;text-align:left;border-top:2px solid var(--ink);
+          border-bottom:1px solid var(--hair-strong)}
+  .ledger-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+               flex-wrap:wrap;padding:10px 0 12px}
+  .ledger-head .lt{font-family:'IBM Plex Mono',monospace;font-size:.72rem;font-weight:600;
+                   letter-spacing:.1em;text-transform:uppercase;color:var(--ink2)}
+  /* Three columns: what it is, what state it is in, the figure.
+     The state used to be a 3px coloured bar in the row's left gutter - detached from the text it
+     described, floating in the margin, and carrying the state in COLOUR ALONE. That is the exact
+     fault fixed in the register below it, in the same section, so the page contradicted itself
+     within one screen. The state is now a WORD; the colour only tints that word and repeats what
+     it already says. Also fixes the figure sitting ~800px from its own label: the label column is
+     capped and the state column pulls the number back toward it. */
+  .ledger table{width:100%;border-collapse:collapse;table-layout:fixed}
+  .ledger tr{border-top:1px solid var(--hair)}
+  .ledger th{width:52%;text-align:left;font-weight:600;font-size:.95rem;color:var(--ink);
+             padding:14px 20px 14px 0;vertical-align:baseline}
+  .ledger th span{display:block;font-weight:400;font-size:.79rem;color:var(--mute);
+                  margin-top:4px;line-height:1.45}
+  .ledger td.st{width:26%;text-align:left;vertical-align:baseline;padding:15px 12px 14px 0;
+                font-family:'IBM Plex Mono',monospace;font-size:.66rem;font-weight:600;
+                letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+  /* s- prefixed on purpose. The rows were class="warn"/"ok", and `.warn` is a GENERIC utility in
+     this sheet (border-left:4px amber, its own text colour) used for warning paragraphs. The row
+     inherited it and drew a 4px amber bar down the left of the table - the exact detached colour
+     bar this rebuild removed, reappearing from a name collision rather than from any rule here.
+     Found by walking the element chain at the pixel; inspecting the <th> showed nothing because
+     the border was on the <tr>. */
+  .ledger tr.s-warn .st{color:var(--amber)}
+  .ledger tr.s-due  .st{color:var(--red)}
+  .ledger tr.s-ok   .st{color:var(--green)}
+  .ledger td.v{text-align:right;vertical-align:baseline;padding:14px 0;
+               font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;
+               font-size:1.3rem;font-weight:600;color:var(--ink);
+               overflow-wrap:anywhere}
+  @media (max-width:700px){
+    .ledger table,.ledger tbody,.ledger tr,.ledger th,.ledger td{display:block;width:auto}
+    .ledger th{padding:13px 0 2px}
+    .ledger td.st{padding:0 0 2px}
+    .ledger td.v{text-align:left;padding:2px 0 14px;font-size:1.15rem}
+  }
+  .ledger-foot{margin:11px 0 12px;font-size:.8rem;line-height:1.5;color:var(--mute);max-width:56ch}
+
+  /* ---- contents ---------------------------------------------------------------------------------
+     Twelve chapters and no way to see the shape of them. A reader landing here had to scroll
+     13.000px to find out what the page even covered, which is most of why it read as endless -
+     length you can see the end of is not the same problem as length you cannot.
+     This is the contents page of a document, not site navigation: numbered, ruled, no chevrons,
+     no active-state tracking, two columns so twelve items read as a short list rather than a long
+     one. */
+  .toc{margin:0;padding:var(--step) 0 0;
+       display:grid;grid-template-columns:[rail] 148px [main] minmax(0,1fr);column-gap:48px}
+  /* align-self:start, or the rail marker stretches to the full height of the list beside it and
+     draws a 350px blue line down the margin for a two-word label */
+  .toc-h{grid-column:rail;align-self:start;position:sticky;top:calc(var(--mast-h,72px) + 22px);
+         margin:0;font-family:'IBM Plex Mono',monospace;font-size:.66rem;
+         font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
+         padding-left:13px;border-left:2px solid color-mix(in oklab, var(--pri) 55%, transparent)}
+  .toc ol{grid-column:main;margin:0;padding:0;list-style:none;
+          columns:2;column-gap:48px;border-top:1px solid var(--hair-strong)}
+  .toc li{break-inside:avoid}
+  .toc a{display:grid;grid-template-columns:34px minmax(0,1fr);gap:10px;align-items:baseline;
+         padding:11px 0;border-bottom:1px solid var(--hair);text-decoration:none;color:var(--ink);
+         font-size:.94rem;min-height:44px}
+  .toc a .n{font-family:'IBM Plex Mono',monospace;font-size:.7rem;font-weight:600;color:var(--pri)}
+  .toc a:hover{color:var(--pri)}
+  .toc a:hover .n{color:var(--pri-dark)}
+  @media (max-width:900px){
+    .toc{grid-template-columns:minmax(0,1fr);row-gap:14px}
+    /* position:static is the fix, not just the column change: sticky in a single-column grid pins
+       the label over the list it labels, so "NESTA PÁGINA" scrolled down on top of the chapter
+       rows. A rail marker only makes sense while there is a rail beside the content. */
+    .toc-h,.toc ol{grid-column:1}
+    .toc-h{position:static}
+    .toc ol{columns:1}
+  }
+
+  /* ---- collapsed reference --------------------------------------------------------------------
+     Lookup tables and citation lists are consulted, not read. Open by default they were ~1400px of
+     a 13.000px page, pushing everything after them out of reach. The disclosure keeps them in the
+     DOM (indexable, findable with ctrl-F once open, one click away) without spending scroll on
+     them. Only ever for REFERENCE - never for a caveat, a limit or a consequence. */
+  details.ref{margin:6px 0 4px;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+  details.ref > summary{cursor:pointer;list-style:none;padding:14px 0;min-height:44px;
+    display:flex;align-items:center;gap:10px;font-weight:600;font-size:.95rem;color:var(--pri)}
+  details.ref > summary::-webkit-details-marker{display:none}
+  details.ref > summary::before{content:"+";font-family:'IBM Plex Mono',monospace;font-weight:600;
+    width:20px;height:20px;flex:none;display:grid;place-items:center;line-height:1;
+    border:1px solid color-mix(in oklab, var(--pri) 40%, transparent);border-radius:3px}
+  details.ref[open] > summary::before{content:"\2212"}
+  details.ref > summary:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  details.ref[open] > summary{border-bottom:1px solid var(--hair)}
+  details.ref > :not(summary){margin-top:16px;margin-bottom:18px}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+  /* ---- specification list (replaces the banned three-card row) --------------------------------- */
+  .spec{margin:0;border-top:1px solid var(--hair-strong)}
+  .spec-row{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:8px 40px;
+            padding:22px 0;border-bottom:1px solid var(--hair)}
+  .spec dt{font-weight:600;font-size:1.05rem;color:var(--ink);margin:0}
+  .spec dt .k{display:block;font-family:'IBM Plex Mono',monospace;font-size:.68rem;font-weight:600;
+               letter-spacing:.12em;text-transform:uppercase;color:var(--pri);margin-bottom:7px}
+  .spec dd{margin:0;color:var(--ink2);max-width:58ch}
+
+  /* ---- prose ----------------------------------------------------------------------------------
+     Justified text in a 940px column produces rivers and reads like a 2009 PDF. Left-aligned with
+     a real measure and `pretty` (which prevents orphans) is both calmer and more modern. */
+  /* `.safe li` and `.step div` carried their own text-align:justify, so overriding `p` alone left
+     the network-request list and the safety list still justified - visible as rivers of white
+     down a 64ch column. All three prose carriers are unset together here. */
+  p,.safe li,.step div,.r-item div{
+    text-align:left;hyphens:manual;text-wrap:pretty}
+  p{margin:0 0 1.05em;max-width:var(--measure)}
+  .step div,.safe li{max-width:var(--measure)}
+  section > p:first-of-type,.lead{
+    font-size:clamp(1.02rem,1.5vw,1.16rem);line-height:1.62;color:var(--ink2);max-width:60ch}
+  li{text-wrap:pretty}
+  ul,ol{max-width:var(--measure)}
+
+  /* ---- the hero, given room -------------------------------------------------------------------
+     `balance` on the h1 stops the two-line headline breaking one word onto line two. */
+  /* Top padding cut from 104px to 64px on 30-07-2026. With the columns baseline-aligned the h1
+     necessarily sits lower than the taller prose column, so the old padding stacked ~260px of
+     empty paper above the title. The band is a header now, not a stage. */
+  header{padding:clamp(36px,4.2vw,54px) 0 clamp(26px,3.2vw,40px);
+         background:
+           radial-gradient(120% 90% at 50% -20%, color-mix(in oklab, var(--pri) 7%, transparent), transparent 62%),
+           var(--bg2)}
+  /* Down from clamp(2.1,6vw,3.7) - 59px to 49px at 1440. The brief was "a bit smaller without
+     losing the punch": the punch is the tight tracking and the two-line break, not the raw size,
+     and 49px still clears the prose beside it by 3.4x. Tighter leading (1.0) and a wider column
+     do the rest - the point of the change is a SHORTER hero, not a smaller one. */
+  h1{font-size:clamp(2.05rem,4.9vw,3.45rem);line-height:1.02;letter-spacing:-.032em;
+     text-wrap:balance}
+
+  /* ---- cards: container queries + an interpolated lift ---------------------------------------- */
+  /* :has() as a real layout signal: a ledger carrying an overdue row tightens its rhythm and
+     darkens its top rule, so the whole block reads as needing attention before any single row is
+     read. Not colour alone - the row keeps its marker and its label. */
+  /* The whole block's top rule used to turn red because ONE row was overdue - a 2px red line across
+     the entire statement for a single 80% ceiling, which overstated it and left the block reading
+     as an alarm. The row says "quase no limite" in amber where it belongs. Kept as a tightening of
+     the rhythm only, which is what :has() is genuinely useful for here. */
+  .ledger:has(tr.s-due) th{padding-top:12px;padding-bottom:12px}
+
+  /* ---- motion ------------------------------------------------------------------------------------
+     Rewritten 30-07-2026. The old version faded every block up by 16px - the default web reveal,
+     which says nothing and is the same gesture a marketing page uses. Motion here should say what
+     the page is: a record being ruled and filled in.
+
+     Two gestures only:
+       1. RULE  - the chapter's hairline draws left-to-right as the chapter arrives (scaleX).
+       2. ENTRY - rows of a ledger or a spec list arrive in sequence, 55ms apart, 8px, no more.
+     Both are transform/opacity, both scroll-driven where the browser supports it, both off
+     entirely under reduced-motion, and neither can leave anything invisible: the rule's resting
+     state is drawn and .reveal's resting state is visible. */
+  @supports (animation-timeline: view()){
+    @media (prefers-reduced-motion:no-preference){
+      section::after{animation:ruleIn linear both;animation-timeline:view();
+                     animation-range:entry 0% entry 92%}
+      @keyframes ruleIn{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+      .reveal{animation:revealIn linear both;animation-timeline:view();
+              animation-range:entry 10% cover 22%}
+      @keyframes revealIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+      .ledger tbody tr:nth-child(2) .reveal,.spec-row:nth-child(2){animation-delay:.055s}
+      .ledger tbody tr:nth-child(3) .reveal,.spec-row:nth-child(3){animation-delay:.11s}
+    }
+  }
+
+  /* ---- detail work ----------------------------------------------------------------------------- */
+  .safe li{padding:14px 0 14px 26px;border-bottom:1px solid var(--hair)}
+  th,td{padding:13px 12px 13px 0;border-bottom:1px solid var(--hair)}
+  thead th{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);
+           font-weight:600;border-bottom:1px solid var(--hair-strong)}
+  .box{border-radius:14px;padding:20px 22px;border-color:var(--hair)}
+  /* padding only. This rule used to also set border-top:1px hair-strong, which overrode the 2px ink
+     rule above it on source order - the footer was closing with a hairline while every other block
+     on the page closes with the ink rule. */
+  footer{padding:clamp(40px,5vw,64px) 0 clamp(48px,6vw,76px)}
+  header + .wrap,section + .wrap{padding-top:var(--step)}
+
+  /* The rail is the first thing to go: below ~900px it costs more width than the orientation is
+     worth, so the number moves inline above the heading and the grid collapses to one column. */
+  @media (max-width:900px){
+    section{grid-template-columns:minmax(0,1fr);column-gap:0}
+    section > *{grid-column:1}
+    section::before{grid-column:1;grid-row:auto;position:static;margin-bottom:16px;
+                    justify-self:start;width:max-content}
+    .spec-row{grid-template-columns:minmax(0,1fr);gap:6px}
+  }
+  @media (max-width:640px){
+    :root{--step:clamp(40px,9vw,60px)}
+    section > h2{max-width:none}
+    section:nth-of-type(even){box-shadow:0 0 0 100vw var(--band);clip-path:inset(0 -100vw)}
+  }
 </style>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <meta name="license" content="PolyForm Noncommercial 1.0.0; (c) 2026 Diogo Andrade; origem faturas.diogoandrade.com; ref fb-lic-e1ec0c96c9">
     <!-- analytics: Umami self-hosted, sem cookies e sem dados pessoais -->
-    <script defer src="https://analytics.d1060.com/script.js" data-website-id="1e64e3e0-fe5f-44d0-895b-ac8bfadd3538"></script>
+    <script defer src="https://analytics.d1060.com/script.js" data-website-id="1e64e3e0-fe5f-44d0-895b-ac8bfadd3538" data-exclude-search="true" data-exclude-hash="true"></script>
 </head>
 <body>
+<!-- Marker filter for .mark-hl. feTurbulence + feDisplacementMap warps the highlight's edges so
+     the mark reads as drawn by hand rather than as a rectangle behind a word. Inline SVG, so it
+     costs no request and needs no CSP exception. baseFrequency is horizontal-only (0 0.15) - a
+     vertical component makes the ends wobble into the line above. -->
+<svg class="mark-filter" aria-hidden="true" focusable="false" width="0" height="0"><defs>
+  <filter id="fb-marker" x="-4%" y="-25%" width="108%" height="150%">
+    <feTurbulence type="fractalNoise" baseFrequency="0 0.15" numOctaves="1" result="warp"/>
+    <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="24"
+                       in="SourceGraphic" in2="warp"/>
+  </filter>
+</defs></svg>
 <!-- Fatura Boa (c) 2026 Diogo Andrade. Licenca PolyForm Noncommercial 1.0.0
      (https://polyformproject.org/licenses/noncommercial/1.0.0). Uso nao-comercial apenas.
      Copia, redistribuicao ou uso comercial sem autorizacao viola a licenca e pode ser objecto
      de accao legal. Origem oficial: faturas.diogoandrade.com | ref fb-lic-e1ec0c96c9 -->
 <div hidden aria-hidden="true" data-fb-lic="PolyForm-Noncommercial-1.0.0" data-fb-ref="fb-lic-e1ec0c96c9" data-fb-origem="faturas.diogoandrade.com">Codigo protegido por direitos de autor. Licenca PolyForm Noncommercial 1.0.0: uso comercial ou redistribuicao sem autorizacao proibidos.</div>
 <a href="/hp/registo-e1ec0c96c9" hidden aria-hidden="true" rel="nofollow noindex" tabindex="-1">.</a>
+<!-- The safety rule. Rebuilt 30-07-2026: it was a flat navy rectangle with a bold sentence and a
+     small outlined pill floating right - the only page element with no structure at all, while
+     everything below it runs on a rail with a mono index and hairlines.
+     It now sits on the SAME [rail] grid as the masthead and every chapter, with a red rule and an
+     index in the rail. Red is the token for "blocked / real deadline"; this is the one rule on the
+     site that can cost someone their credentials, so it is the one place the red rule belongs. -->
 <details class="alertbar">
-  <summary><div class="wrap">
+  <summary><div class="wrap ab-head">
+    <p class="ab-idx">Regra de segurança</p>
     <p class="big">A tua password das Finanças só se escreve em páginas cujo endereço
-      <b>termina</b> em <code>.gov.pt</code>. Aqui, nunca.</p>
+      <b>termina</b> em <code>.gov.pt</code>.<span class="ab-never">Aqui, nunca.</span></p>
     <span class="why">Porquê</span>
   </div></summary>
   <div class="wrap ab-body">
-    <p class="small">Esta ferramenta <b>não te pede a password</b> e <b>não consegue vê-la</b>.
-      Funciona como uma extensão do navegador: só corre quando <b>tu</b> clicas, só dentro da página
-      do e-Fatura onde <b>já fizeste login</b>, e não vê mais nada. Se alguma vez um site te pedir
-      as credenciais das Finanças, é burla. Fecha-o.</p>
-    <p class="small tagline"><span class="tag">Não oficial</span> Projeto pessoal e independente.
-      <b>Não</b> é um serviço do Estado nem da Autoridade Tributária.</p>
+    <p class="ab-idx" aria-hidden="true">Porquê</p>
+    <div class="ab-text">
+      <p class="small">Esta ferramenta <b>não te pede a password</b> e <b>não consegue vê-la</b>.
+        Funciona como uma extensão do navegador: só corre quando <b>tu</b> clicas, só dentro da
+        página do e-Fatura onde <b>já fizeste login</b>, e não vê mais nada. Se alguma vez um site
+        te pedir as credenciais das Finanças, é burla. Fecha-o.</p>
+      <p class="small tagline"><span class="tag">Não oficial</span> Projeto pessoal e independente.
+        <b>Não</b> é um serviço do Estado nem da Autoridade Tributária.
+        <a class="ab-more" href="#como">Como funciona, em detalhe</a></p>
+    </div>
   </div>
 </details>
 <div class="mast">
@@ -338,53 +1221,167 @@
         <path class="cut" d="M15.75 24.5 L25.125 6.5 H27.375 L18 24.5 Z" opacity="0.18"/>
       </svg>
     </a>
+    <!-- The tagline that sat here read "A tua situação fiscal, das fontes oficiais" - word for
+         word the <h1>, both on screen at the same time. Removed: a running head repeats the
+         publisher, never the headline. -->
+    <!-- The tagline repeats the <h1> word for word, and both are on screen at once. Removed on that
+         basis, restored 30-07-2026 at the owner's explicit request after seeing it both ways.
+         Desktop only: below 1180px the whole lockup gives way to the search. The duplication check
+         in test-design.js carries a matching exception rather than being weakened. -->
     <div class="nm">Fatura Boa<span>A tua situação fiscal, das fontes oficiais</span></div>
+
+    <!-- HEADER SEARCH.
+         Structure ported from the Refúgio Animal SearchBar: a mode selector living inside the bar,
+         an expanding panel, a distinct mobile treatment, recent searches, Enter/Esc, and a footer
+         hint. What did NOT come across, because this project's system forbids it: backdrop blur
+         (anti-patterns #1), gradient buttons, 60px shadows, and the gold palette. Rules and tokens
+         instead.
+
+         Two modes, and each does something real:
+           NIF       - submits to /consulta, which already has the lookup and reads ?q=
+           SITUAÇÃO  - filters a static list of what the tool actually reads, all linking to /perfil
+
+         It does NOT query the API as you type. cae-db has a /search endpoint and using it live
+         would tell the server what someone is typing before they decide to search. Submitting on
+         Enter keeps the lookup an explicit act, which is the posture the whole product takes.
+
+         Ships without `hidden` so it works with no JS: the form submits to /consulta natively and
+         the mode radios are real inputs. JS only adds the panel, the filtering and the history. -->
+    <form class="hsearch" id="hsearch" action="/consulta" method="get" role="search">
+      <fieldset class="hs-modes">
+        <legend class="sr">O que queres procurar</legend>
+        <label class="hs-mode">
+          <input type="radio" name="mode" value="nif" checked>
+          <span>Consultar NIF</span>
+        </label>
+        <label class="hs-mode">
+          <input type="radio" name="mode" value="situacao">
+          <span>A minha situação</span>
+        </label>
+      </fieldset>
+
+      <div class="hs-field">
+        <svg class="hs-icon" aria-hidden="true" focusable="false" viewBox="0 0 16 16">
+          <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+          <path d="M10.5 10.5 14 14" fill="none" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round"/>
+        </svg>
+        <label class="sr" for="hs-q">NIF ou nome da empresa</label>
+        <input id="hs-q" name="q" type="search" autocomplete="off" inputmode="numeric"
+               placeholder="NIF ou nome da empresa">
+        <button type="button" class="hs-clear" id="hs-clear" hidden aria-label="Limpar">
+          <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8" fill="none"
+            stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </button>
+        <button type="submit" class="hs-go">Consultar</button>
+      </div>
+
+      <div class="hs-panel" id="hs-panel" hidden>
+        <div class="hs-body" id="hs-body"></div>
+        <p class="hs-foot"><span>Enter para pesquisar · Esc para fechar</span>
+          <span id="hs-count"></span></p>
+      </div>
+    </form>
+    <!-- Plain text links, not buttons. "A minha situação" was a filled blue button here AND
+         "Ver a minha situação" is the hero's primary - the same action, twice, above the fold,
+         competing. The masthead is navigation; the hero is where you act. -->
+    <!-- "A minha situação" and "Consultar NIF" were here until the search landed: they are now the
+         two SEARCH MODES, 400px to the left, in the same words. Four identical words twice in one
+         running head, and they were squeezing the input so hard a 9-digit NIF rendered as "046".
+         The nav keeps only what the search does not already reach. -->
     <nav class="nav">
-      <a class="mastnav primary" href="/perfil">A minha situação</a>
-      <a class="mastnav" href="/consulta">Consultar NIF</a>
+      <a class="mastnav" href="/deducoes">Deduções</a>
+      <a class="mastnav" href="/verificar">Verificar</a>
     </nav>
   </div>
 </div>
 
+<!-- HERO = document header band (concept C, 30-07-2026).
+     What it replaced and why, measured on the previous build at 1440x900:
+       20 discrete elements above the fold, 822px of hero in a 900px viewport, 206px of void under
+       the short column, 141px of vertical misalignment between the two columns, and - the
+       dominant fault - TWO ruled label/value tables side by side (front matter, 5 rows; ledger,
+       3 rows). Same texture, same weight, same rhythm: the eye saw twin tables competing and
+       neither won, so there was no first read.
+     The rule that comes out of that, and it governs any future change here:
+       ONE ruled texture above the fold. If the hero has more than one column, exactly one of them
+       may be ruled; the rest is type.
+     So: title and prose in the top band (two textures, not two tables), then a heavy rule, then
+     the front matter as ONE horizontal strip. The ledger left the hero entirely and now opens
+     chapter 02, where it gets full width and real scale. -->
 <header>
- <div class="wrap">
+ <div class="wrap hero-band">
+  <p class="hero-stamp">Ferramenta independente <span>· não é um serviço do Estado</span></p>
+  <div class="hero-inner">
   <!-- The keyword line lives INSIDE the <h1>. "Fontes oficiais, em vez de palpites" is the right
        thing to say to a human and worthless to a search engine - nobody types that. The eyebrow
        was already sitting here saying "e-Fatura / IRS"; making it a full phrase and moving it
        into the heading buys the search intent without changing what the page looks like. -->
-  <h1><span class="eyebrow">e-Fatura · IRS · Segurança Social</span>A tua situação fiscal,<br>das fontes oficiais.</h1>
+  <h1><span class="eyebrow">e-Fatura · IRS · Segurança Social</span>A tua situação fiscal,<br>das <span class="mark-hl">fontes oficiais</span>.</h1>
+
+  <div class="hero-aside">
+  <!-- Shortened 30-07-2026. The closing clause was "e o código é <a>verificável</a>" - the third
+       place that word appeared above the fold, after the colophon's CÓDIGO row and the nav's
+       "Verificar". Cutting it removes a duplicate AND a line of hero height. -->
   <p class="sub">Não te pede a password. Corre na sessão que <b>já tens aberta</b> nas Finanças
      e na Segurança Social, lê o que o Estado já sabe sobre ti, e mostra a tua situação: faturas,
-     rendas, situação fiscal, património e IRS. Tudo <b>no teu navegador</b>, e o código é
-     <a href="/verificar">verificável</a>.</p>
+     rendas, situação fiscal, património e IRS. Tudo <b>no teu navegador</b>.</p>
 
-  <div class="cta-row">
-    <a class="bm cta-main" href="/perfil">Ver a minha situação</a>
-    <a class="cta-alt" href="#como">Como funciona</a>
-  </div>
+  <!-- No action lives in the hero. "Ver a minha situação" is a search mode in the masthead, and
+       "Como funciona" moved into the alert bar's disclosure, where the explanation of how it works
+       already was. Two duplicates gone and the hero column gets shorter. -->
   <!-- Recovered-euro counter. Hidden until there is a real, non-zero number (no fake social proof).
-       Fed by opt-in, deduplicated per user server-side (cae-db /counter/total). -->
-  <p id="fb-counter" style="display:none;margin:10px 0 0;font-size:1rem;color:#0a7d33;font-weight:600"></p>
+       Fed by opt-in, deduplicated per user server-side (cae-db /counter/total). Styled by class
+       now rather than inline: it briefly existed twice with the same id while the CTA row was
+       being removed, which would have left the script writing into whichever came first. -->
+  <p id="fb-counter" class="hero-counter" hidden></p>
   <script>
   (function(){
     fetch("https://cae-db.diogoandrade.com/counter/total").then(function(r){return r.json();}).then(function(d){
       if(!d || !(d.recuperado>0)) return;
       var el=document.getElementById("fb-counter"); if(!el) return;
       var eur=Math.round(d.recuperado), users=d.users||0, cur=0, step=Math.max(1,Math.round(eur/40));
-      el.style.display="block";
+      el.hidden = false;
       var t=setInterval(function(){ cur+=step; if(cur>=eur){cur=eur;clearInterval(t);}
         el.innerHTML='<b>€'+cur.toLocaleString("pt-PT")+'</b> já encontrados para recuperar'+(users>1?' por '+users+' pessoas':'')+'.'; },25);
     }).catch(function(){});
   })();
   </script>
 
-  <div class="badges">
-    <span class="badge"><b>nunca</b> pede password</span>
-    <span class="badge">corre <b>na tua sessão</b></span>
-    <span class="badge">os dados <b>não saem</b> do navegador</span>
-    <span class="badge">código <b>verificável</b></span>
-    <span class="badge"><b>grátis</b>, sem contas</span>
-  </div>
+  </div><!-- /hero-aside -->
+
+  <!-- The colophon: the document's terms, stated once, as ONE horizontal strip across the base of
+       the band. It was a stacked 5-row table in the left column, which is what made it a twin of
+       the ledger. Horizontal, it stops being a table and becomes a masthead strip - a different
+       texture from everything above it. -->
+  <dl class="frontmatter">
+    <!-- The FONTES column was dropped: the eyebrow above the h1 already reads
+         "e-Fatura · IRS · Segurança Social" and does the SEO work. Four columns, wider each. -->
+    <div><dt>password</dt><dd>nunca pedida</dd></div>
+    <div><dt>dados</dt><dd>não saem do teu navegador</dd></div>
+    <div><dt>código</dt><dd><a href="/verificar">verificável</a></dd></div>
+    <div><dt>custo</dt><dd>grátis, sem contas</dd></div>
+  </dl>
+
+  <!-- LENS: the three things someone actually comes here to do, mapped to the three routes that
+       already exist (/perfil, /consulta, /deducoes). Adapted from the supplied hero mock, with two
+       deliberate departures:
+         1. The mock's switch was a pill track with a sliding indicator on a shadowed capsule -
+            anti-patterns #9 and #7. Here the tabs are a ruled row: the selected one carries a 2px
+            rule, the others nothing. Same affordance, no capsule.
+         2. The mock's search was decorative (a fake NIF in a mock panel). This one is REAL: the
+            field posts to /consulta, which already reads ?q= and does the lookup. A search box
+            that does not search is a lie about what the product does.
+       Only the entity lens gets a field, because it is the only one where a query means anything.
+       WITHOUT JS every panel is visible and every control works - the tabs only hide panels once
+       the script confirms it can also show them again. -->
+  <!-- The lens (3 tabs + 3 panels + CTA) was removed on 30-07-2026. The header search became the
+       same thing and better: same three destinations, persistent on scroll, with real filtering.
+       Measured before removal: 4 labels rendered in BOTH the masthead and the hero - "consultar
+       nif", "a minha situação", "consultar", "deduções". The hero keeps no action of its own;
+       the header owns them. Principle borrowed from HeroRail.tsx in lost-letters-room: the hero
+       carries one thing, never a stack of competing objects. -->
+  </div><!-- /hero-inner -->
 </div>
 </header>
 
@@ -400,21 +1397,112 @@
   </p>
 </div>
 
+<!-- Controlo e prova. This was three equal cards in a row until 30-07-2026 - which is
+     anti-patterns #27, the icon-bold-line-grey-line feature grid, written by the same hand that
+     banned it. It is now a specification list: term on the left, definition on the right, hairline
+     between rows. That is the form a statutory annex uses for exactly this content, it carries the
+     same information in less vertical space, and it cannot be mistaken for a SaaS landing page. -->
+<section id="prova">
+  <h2>Controlo e prova, primeiro</h2>
+  <dl class="spec">
+    <div class="spec-row reveal">
+      <dt><span class="k">sem passwords</span>Corre na tua sessão</dt>
+      <dd>O código corre no teu navegador, na sessão que já tens aberta. Não há credenciais tuas em
+        servidor nenhum, porque nunca chegam a ser pedidas.</dd>
+    </div>
+    <div class="spec-row reveal">
+      <dt><span class="k">código aberto</span>Verificável, não prometido</dt>
+      <dd>Cada versão publicada tem um hash público. Podes <a href="/verificar">confirmar</a> que o
+        que corre é exactamente o código que está no GitHub.</dd>
+    </div>
+    <div class="spec-row reveal">
+      <dt><span class="k">fica contigo</span>Os dados não saem</dt>
+      <dd>As faturas e o resto do registo ficam no navegador. Fechas o separador e desaparecem —
+        não há conta, não há histórico do teu lado nenhum.</dd>
+    </div>
+  </dl>
+</section>
+
 <section id="faz">
   <h2>O que já faz por ti</h2>
-  <p class="lead">Para muita gente já dá para montar uma visão útil, a partir do que o Estado já sabe:</p>
-  <div class="ready">
-    <div class="r-item"><span class="dot ok" aria-hidden="true"></span><div><b>Faturas do e-Fatura</b> - o setor certo para cada fatura pendente e quanto já usaste de cada teto de dedução.</div></div>
-    <div class="r-item"><span class="dot ok" aria-hidden="true"></span><div><b>Rendas</b> - os teus contratos de arrendamento e recibos (categoria F).</div></div>
-    <div class="r-item"><span class="dot ok" aria-hidden="true"></span><div><b>Situação fiscal</b> - dívidas, coimas e os próximos prazos da agenda fiscal.</div></div>
-    <div class="r-item"><span class="dot ok" aria-hidden="true"></span><div><b>Património e IMI</b> - os imóveis que tens e o respetivo VPT.</div></div>
-    <div class="r-item"><span class="dot ok" aria-hidden="true"></span><div><b>Histórico de IRS</b> - as liquidações e reembolsos de todos os anos.</div></div>
-    <div class="r-item"><span class="dot ok" aria-hidden="true"></span><div><b>Consultar NIF</b> - a atividade oficial de qualquer empresa.</div></div>
-  </div>
-  <p class="lead coming-head">O que ainda não</p>
-  <div class="ready">
-    <div class="r-item"><span class="dot dev" aria-hidden="true"></span><div><b>Atividade e recibos verdes</b> (categoria B) e <b>regime de IVA</b> - em desenvolvimento. Estes números podem estar incompletos, por isso aparecem marcados para confirmares.</div></div>
-  </div>
+
+  <!-- The example output. It lived in the hero until 30-07-2026, as the second of two ruled tables
+       side by side - see the note on .hero-band. Here it is the only ruled thing in its chapter,
+       it runs the full main column instead of ~470px, and it sits where it belongs semantically:
+       this chapter is literally "what it already does", and this is what it produces.
+       Still example data, still disclosed three ways: the chip, the footer sentence, the
+       aria-label. Round generic figures only - never a plausible personal balance. -->
+  <figure class="ledger" role="group"
+          aria-label="Exemplo do resumo que a ferramenta mostra. Os valores são inventados para ilustrar o formato.">
+    <figcaption class="ledger-head">
+      <span class="lt">Resumo · exemplo</span>
+      <span class="chip-demo">valores inventados</span>
+    </figcaption>
+    <table>
+      <caption class="sr">Exemplo do resumo, com valores inventados</caption>
+      <tbody>
+        <tr class="s-warn">
+          <th scope="row">Faturas por classificar<span>e-Fatura · com setor sugerido para cada uma</span></th>
+          <td class="st">por classificar</td>
+          <td class="v">12</td>
+        </tr>
+        <tr class="s-due">
+          <th scope="row">Teto de saúde já usado<span>o que passar daqui deixa de contar</span></th>
+          <td class="st">quase no limite</td>
+          <td class="v">80%</td>
+        </tr>
+        <tr class="s-ok">
+          <th scope="row">Situação nas Finanças<span>dívidas, coimas e próximos prazos</span></th>
+          <td class="st">regular</td>
+          <td class="v">Sem dívidas</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="ledger-foot">6 de 6 fontes lidas · <b>não é a situação de ninguém</b>. O que vais ver
+      são os teus dados, lidos na tua sessão, sempre como indicadores para confirmares.</p>
+  </figure>
+
+  <p class="lead">Para muita gente já dá para montar uma visão útil, a partir do que o Estado já sabe.
+    Cada linha diz o que é lido e de onde vem.</p>
+
+  <!-- Rebuilt 30-07-2026. It was a two-column list of "<b>Nome</b> - descrição" preceded by a
+       coloured dot, with "O que ainda não" set as a <p class="lead"> pretending to be a heading.
+       Three things were wrong: the dot carried the validated/unvalidated state in COLOUR ALONE,
+       the bold-dash-description run is the feature-grid texture wearing a list, and a fake heading
+       breaks the document outline for anyone navigating by headings.
+       Now a ruled register: term, source, and a WORD for the state. Same form as the colophon and
+       the search results, so the page has one way of showing a list of facts. -->
+  <h3 class="reg-h">Validado<span>6 fontes</span></h3>
+  <dl class="reg">
+    <div><dt>Faturas do e-Fatura</dt>
+      <dd>o setor certo para cada fatura pendente e quanto já usaste de cada teto</dd>
+      <dd class="src">e-Fatura</dd></div>
+    <div><dt>Rendas</dt>
+      <dd>os teus contratos de arrendamento e recibos (categoria F)</dd>
+      <dd class="src">Finanças</dd></div>
+    <div><dt>Situação fiscal</dt>
+      <dd>dívidas, coimas e os próximos prazos da agenda fiscal</dd>
+      <dd class="src">Finanças</dd></div>
+    <div><dt>Património e IMI</dt>
+      <dd>os imóveis que tens e o respetivo VPT</dd>
+      <dd class="src">Finanças</dd></div>
+    <div><dt>Histórico de IRS</dt>
+      <dd>as liquidações e reembolsos de todos os anos</dd>
+      <dd class="src">Finanças</dd></div>
+    <div><dt>Consultar NIF</dt>
+      <dd>a atividade oficial de qualquer empresa</dd>
+      <dd class="src">SICAE · VIES</dd></div>
+  </dl>
+
+  <h3 class="reg-h dev">Em desenvolvimento<span>confirma sempre</span></h3>
+  <dl class="reg dev">
+    <div><dt>Atividade e recibos verdes</dt>
+      <dd>categoria B. Os números podem estar incompletos, por isso aparecem marcados</dd>
+      <dd class="src">Finanças</dd></div>
+    <div><dt>Regime de IVA</dt>
+      <dd>enquadramento e prazos. Ainda não validado com dados reais</dd>
+      <dd class="src">Finanças</dd></div>
+  </dl>
 </section>
 
 <section><div class="box give">
@@ -512,6 +1600,12 @@
       "qual é o setor deste NIF?" - essa pergunta diria ao servidor exactamente onde compras.
       Antes descarregava o mapa inteiro pela mesma razão; agora faz o mesmo com uma fracção dos
       dados. Vê o teu IP, como qualquer servidor vê, e mais nada.</div></li>
+    <li class="step"><div class="n" aria-hidden="true">1b</div><div>
+      <b>GET <code>faturas.diogoandrade.com/offers.json</code></b> - o texto e os links da tira de
+      apoio no fundo do Resumo. <b>Não leva nada teu</b> e é <b>dados inertes</b>: a versão fixada
+      valida que cada link é https e escapa cada texto, por isso o feed nunca pode injetar código.
+      Se falhar, aparece a versão que já vem no código. Só é pedido <b>depois</b> de concordares.
+      </div></li>
     <li class="step"><div class="n" aria-hidden="true">2</div><div>
       <b>GET <code>obterDocumentosAdquirente</code></b>, no próprio e-Fatura, com a sessão que já
       tinhas aberta. É o mesmo pedido que a página faz sozinha. As faturas ficam no teu navegador:
@@ -586,6 +1680,12 @@
 
 <section>
   <h2>Que setor escolher para cada fatura <span class="note">(ano de rendimentos 2026)</span></h2>
+  <!-- REFERENCE, not reading. This is a lookup table: nobody reads it top to bottom, they come
+       back to it when they have a specific fatura in hand. Left open it contributed ~900px of
+       scroll to a page that was already 13.000px and pushed everything after it out of reach.
+       Collapsed by default, still in the DOM, still indexable, still one click away. -->
+  <details class="ref">
+    <summary>Ver a tabela de setores, taxas e tetos <span class="note">(6 linhas)</span></summary>
   <div class="tscroll"><table>
     <caption class="note" style="text-align:left;padding-bottom:6px">Resumo dos setores de dedução e respetivos limites</caption>
     <tr><th scope="col">Setor</th><th scope="col">O que inclui</th><th scope="col">Benefício</th></tr>
@@ -596,6 +1696,10 @@
     <tr><td>Restauração, cabeleireiro, ginásio, veterinário, oficina, transportes, jornais, livros...</td><td>Cada fatura no setor correto do <i>comerciante</i>. Ex: ginásio->Ginásios, restaurante->Restauração.</td><td>15% do IVA, pool partilhada máx €250</td></tr>
     <tr><td>Despesas Gerais Familiares</td><td>Tudo o resto com NIF (supermercado, roupa, combustível, telecom...).</td><td>35%, máx €250</td></tr>
   </table></div>
+  </details>
+  <!-- This paragraph stays OUTSIDE the <details>. It is the consequence line - classifying is a
+       declaration to the AT, and being accepted is not being right - and hiding it behind a
+       disclosure would be exactly the "uncertainty in a tooltip" that 01-design-philosophy bans. -->
   <p class="warn">A ferramenta só te propõe setores para os quais o comerciante <b>está mesmo
     registado</b>. Por isso o e-Fatura aceita-os todos, e é aí que está a confusão: <b>ser aceite
     não quer dizer que esteja certo</b>. Um hipermercado tem CAE de farmácia, mas se compraste
@@ -627,7 +1731,7 @@
 
 <section>
   <h2>Porque é que a Fatura Boa existe</h2>
-  <p>
+  <p class="lead">
     Sempre tive problemas com isto. Todos os anos a mesma coisa: dezenas de faturas pendentes à espera
     de serem classificadas, uma a uma, num menu que não ajuda nada. Deixava andar, esquecia-me, e
     chegava a Fevereiro a perder deduções que eram minhas por direito, só porque não tive paciência
@@ -640,9 +1744,14 @@
     de ano para ano. Ninguém fica bom numa coisa que faz de doze em doze meses. É aí que se perdem
     deduções, e não por distração.
   </p>
+  <!-- The section was six paragraphs of identical weight - a wall with no way in. The argument has
+       a shape: a complaint, a diagnosis, the one-line answer, the thing that made it possible, what
+       was built, and the terms. Giving the answer its own displayed line is the whole restructure;
+       the rest is a lead and a closing note. No quote marks and no pull-quote styling: this is a
+       statement, not a testimonial. -->
+  <p class="statement">É como teres alguém ao teu lado a passar as faturas contigo.</p>
   <p>
-    Se quiseres a versão curta do que isto é: <b>é como teres alguém ao teu lado a passar as
-    faturas contigo</b>. Alguém que faz isto todos os dias, que já sabe onde estão as armadilhas, e
+    Alguém que faz isto todos os dias, que já sabe onde estão as armadilhas, e
     que faz num par de segundos o que te levaria uma tarde. A diferença é que não decide nada por ti.
     Mostra-te o que sabe, explica-te porquê, e a escolha continua a ser tua. É basicamente o que eu
     faria se estivesse aí sentado, só que muito mais rápido e sem me chateares outra vez para o ano.
@@ -659,7 +1768,9 @@
     livraria e restaurante dentro, o que é mais comum do que parece), escolhe a que te dá mais dedução
     e que ainda tem espaço no teto anual. Tu revês e aprovas. Nada é submetido sem o teu clique.
   </p>
-  <p>
+  <!-- the terms, set apart from the story: a ruled closing note, the same form the sources list and
+       the colophon use for "this is the deal" -->
+  <p class="terms">
     É de graça e vai continuar a ser. Não vendo nada, não há conta para criar, não recolho nada teu.
     Se te poupar uma tarde e algum dinheiro no IRS, já valeu a pena.
   </p>
@@ -677,29 +1788,52 @@
     O mesmo para sugestões, dúvidas, ou se simplesmente não perceberes alguma coisa - se não se percebe,
     é problema meu, não teu.
   </p>
+  <!-- Rebuilt 30-07-2026. The fields were three unlabelled-looking boxes stacked at full width with
+       the privacy note buried under the email input and the Turnstile widget floating loose above a
+       bare button. It is now one ruled block on the page's own grid: numbered field indices like the
+       colophon, the two optional fields side by side, the counter and the security note on the
+       textarea's own footer, and the actions closed off by a rule. -->
   <form id="fb" class="form" method="post" action="/api/feedback" novalidate>
     <div class="field">
-      <label for="fb-msg">O que correu mal, ou o que sugeres</label>
+      <label for="fb-msg"><span class="fi">01</span>O que correu mal, ou o que sugeres</label>
       <textarea id="fb-msg" name="message" rows="5" maxlength="4000" required
-        placeholder="Ex: o Continente foi classificado como Saude e nao devia."></textarea>
+        placeholder="Ex: o Continente foi classificado como Saúde e não devia."></textarea>
+      <p class="field-foot">
+        <span class="sec">Sem código nem HTML, por segurança.</span>
+        <span class="cnt" id="fb-count">0/4000</span>
+      </p>
     </div>
-    <div class="field">
-      <label for="fb-ctx">Comerciante ou setor, se aplicavel <span class="note">(opcional)</span></label>
-      <input id="fb-ctx" name="context" type="text" maxlength="300" autocomplete="off">
+
+    <div class="field-pair">
+      <div class="field">
+        <label for="fb-ctx"><span class="fi">02</span>Comerciante ou setor
+          <span class="opt">opcional</span></label>
+        <input id="fb-ctx" name="context" type="text" maxlength="300" autocomplete="off"
+               placeholder="Ex: Continente, ou C05">
+      </div>
+      <div class="field">
+        <label for="fb-mail"><span class="fi">03</span>O teu email
+          <span class="opt">se quiseres resposta</span></label>
+        <input id="fb-mail" name="email" type="email" maxlength="200" autocomplete="email"
+               placeholder="nome@exemplo.pt">
+      </div>
     </div>
-    <div class="field">
-      <label for="fb-mail">O teu email, se quiseres resposta <span class="note">(opcional)</span></label>
-      <input id="fb-mail" name="email" type="email" maxlength="200" autocomplete="email">
-      <p class="note">Uso-o so para te responder. Nada mais. Nao fica guardado em nenhuma base de dados: vai dentro do email que me e enviado, e fica na minha caixa de correio ate eu o apagar.</p>
-    </div>
+
+    <p class="field-note">O email serve <b>só</b> para te responder. Não fica guardado em base de
+      dados nenhuma: vai dentro da mensagem que me é enviada e fica na minha caixa de correio até
+      eu a apagar.</p>
+
     <div class="hp" aria-hidden="true">
       <label for="fb-web">Nao preencher</label>
       <input id="fb-web" name="website" type="text" tabindex="-1" autocomplete="off">
     </div>
-    <div class="cf-turnstile" data-sitekey="0x4AAAAAAD4tEJIzRGNSghRB" data-callback="fbToken"
-         data-theme="light" data-size="flexible"></div>
-    <p><button type="submit" class="bm" id="fb-send">Enviar</button></p>
-    <p id="fb-status" role="status" aria-live="polite" class="note"></p>
+
+    <div class="form-actions">
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAD4tEJIzRGNSghRB" data-callback="fbToken"
+           data-theme="light" data-size="flexible"></div>
+      <button type="submit" class="bm cta-main" id="fb-send">Enviar</button>
+    </div>
+    <p id="fb-status" role="status" aria-live="polite" class="form-status"></p>
   </form>
   <p id="fb-fallback" class="box" hidden>
     O formulário está a ser preparado. Entretanto, o caminho mais rápido é o GitHub ou o email.
@@ -729,6 +1863,10 @@
     Isto mexe com uma declaração fiscal, por isso as regras usadas aqui vêm de fontes oficiais e ficam
     à vista para poderes confirmar. Se achares que interpretei alguma coisa mal, diz.
   </p>
+  <!-- Provenance, kept complete and kept in the DOM, but collapsed: it is a citation list. The
+       sentence above it is the load-bearing part and stays open. -->
+  <details class="ref">
+    <summary>Ver todas as fontes e diplomas <span class="note">(links oficiais)</span></summary>
   <ul class="safe">
     <li><b>Atividades dos comerciantes (NIF para CAE):</b>
       <a href="http://www.sicae.pt/Consulta.aspx" target="_blank" rel="noopener">SICAE</a>,
@@ -742,17 +1880,73 @@
     <li><b>Lista de códigos CAE:</b> CAE Rev.3 (INE / Decreto-Lei n.º 381/2007). Nota: o Estado está a
       migrar para a CAE Rev.4 (Decreto-Lei n.º 9/2025) - a ferramenta reconhece as duas e revalida os
       comerciantes periodicamente.</li>
-    <li><b>Tetos e percentagens:</b> ano de rendimentos 2026 (Lei n.º 73-A/2025). O teto das rendas para 2026 é €900.</li>
+    <li><b>Tetos e percentagens:</b> ano de rendimentos 2026. O teto das rendas para 2026 é €900,
+      fixado pela norma transitória do <b>Decreto-Lei n.º 97/2026, de 20 de maio</b> (art. 15.º
+      n.º 1), que eleva o limite da alínea a) do n.º 1 do art. 78.º-E do CIRS; os €1.000 do n.º 10
+      só se aplicam a partir de 2027.</li>
   </ul>
+  </details>
 </section>
 
 </div>
 
-<footer class="wrap">
-  <p>Ferramenta comunitária e independente. <b>Não</b> afiliada à Autoridade Tributária. Sem garantias, confirma sempre nas Finanças.</p>
-  <p><a href="/perfil">A minha situação</a> | <a href="/consulta">Consultar NIF</a> | <a href="/verificar">Verificar</a> | <a href="/sobre">Sobre</a> | <a href="/privacidade">Privacidade</a> | <a href="/termos">Termos</a> | <a id="gh2" href="#" target="_blank" rel="noopener">Código no GitHub</a></p>
-  <p class="note"><a href="https://polyformproject.org/licenses/noncommercial/1.0.0" target="_blank" rel="noopener">PolyForm Noncommercial 1.0.0</a> - livre para uso pessoal, proibido monetizar. Feito por <a href="https://diogoandrade.com" target="_blank" rel="noopener">Diogo Andrade</a>.</p>
+<!-- Rebuilt 30-07-2026. It was three stacked paragraphs, the middle one a run of seven links
+     separated by pipe characters that wrapped mid-list - "Código / no GitHub" on two lines. A pipe
+     is not a separator, it is a character that happens to be vertical.
+     Now the page's rail grid one last time: the independence statement in the main column, the
+     links in named groups, and the licence closing the block under a rule. -->
+<footer>
+ <div class="wrap foot">
+  <p class="foot-idx">Fatura Boa</p>
+  <div class="foot-main">
+    <p class="foot-claim">Ferramenta comunitária e independente. <b>Não</b> afiliada à Autoridade
+      Tributária. Sem garantias — confirma sempre nas Finanças.</p>
+
+    <nav class="foot-nav" aria-label="Rodapé">
+      <div>
+        <h2>Usar</h2>
+        <ul>
+          <li><a href="/perfil">A minha situação</a></li>
+          <li><a href="/consulta">Consultar NIF</a></li>
+          <li><a href="/deducoes">Deduções</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Confiar</h2>
+        <ul>
+          <li><a href="/verificar">Verificar o código</a></li>
+          <li><a id="gh2" href="#" target="_blank" rel="noopener">Código no GitHub</a></li>
+          <li><a href="/sobre">Sobre</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Legal</h2>
+        <ul>
+          <li><a href="/privacidade">Privacidade</a></li>
+          <li><a href="/termos">Termos</a></li>
+          <li><a href="https://polyformproject.org/licenses/noncommercial/1.0.0"
+                 target="_blank" rel="noopener">Licença</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <p class="foot-lic"><b>PolyForm Noncommercial 1.0.0</b> — livre para uso pessoal, proibido
+      monetizar. Feito por <a href="https://diogoandrade.com" target="_blank" rel="noopener">Diogo
+      Andrade</a>.</p>
+  </div>
+ </div>
 </footer>
+
+<!-- Back to top. Ships `hidden`; only the script at the bottom of this file can reveal it, so a
+     no-JS visitor never gets a parked control that does nothing. A word plus an arrow rather than
+     a bare icon - 01-design-philosophy substitutes a word for an icon wherever one will do. -->
+<button type="button" id="to-top" class="to-top" hidden>
+  <svg aria-hidden="true" focusable="false" viewBox="0 0 16 16">
+    <path d="M8 13.5V3M8 3 3.5 7.5M8 3l4.5 4.5" fill="none" stroke="currentColor"
+          stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  Topo
+</button>
 
 <script>
   // Set these two constants at deploy time.
@@ -798,29 +1992,79 @@
   window.fbToken = function (t) { fbToken = t; };
   var fbLoadedAt = Date.now();
   var fbForm = document.getElementById("fb");
+
+  /* ---- input safety, ported from recibo-certo/src/lib/feedback-sanitize.ts --------------------
+   * These two are a COURTESY COPY. The authoritative versions run in functions/api/feedback.js,
+   * because anything here can be bypassed by posting straight to the endpoint. The point of having
+   * them client-side is that someone who pastes a snippet is told immediately instead of after a
+   * round trip. If one copy changes, change both - they are deliberately identical.
+   *
+   * The first alternative needs `<` followed by a letter, `!` or `/` - a real tag - so writing
+   * "dedução < 250 > 0" in a message is not mistaken for code. */
+  var FB_DANGEROUS =
+    /<\/?[a-z!][^>]*>|<\s*script|javascript:|vbscript:|on[a-z]+\s*=|data:text\/html|srcdoc\s*=|\{\{[\s\S]*\}\}|<%[\s\S]*%>/i;
+  function fbHasCode(s) { return FB_DANGEROUS.test(s); }
+  function fbSanitise(s) {
+    var out = "", src = String(s).replace(/<\/?[a-z!][^>]*>/gi, "");
+    for (var i = 0; i < src.length; i++) {
+      var c = src.charCodeAt(i);
+      if (c < 0x20 && c !== 0x09 && c !== 0x0a && c !== 0x0d) continue;
+      if (c === 0x7f) continue;
+      if (c === 0x200b || c === 0x200c || c === 0x200d || c === 0x2060 || c === 0xfeff) continue;
+      out += src.charAt(i);
+    }
+    return out.trim();
+  }
+
+  /* live counter. Counts the RAW length, which is what the server caps - counting the sanitised
+   * string would let 4.000 zero-width characters read as "0/4000". */
+  (function () {
+    var ta = document.getElementById("fb-msg"), out = document.getElementById("fb-count");
+    if (!ta || !out) return;
+    var MAXLEN = 4000;
+    function tick() {
+      var n = ta.value.length;
+      out.textContent = n + "/" + MAXLEN;
+      out.className = "cnt" + (n > MAXLEN ? " over" : n > MAXLEN * 0.9 ? " near" : "");
+    }
+    ta.addEventListener("input", tick);
+    tick();
+  })();
+
   fbForm.addEventListener("submit", function (e) {
     e.preventDefault();
     var st = document.getElementById("fb-status");
     var btn = document.getElementById("fb-send");
-    var msg = document.getElementById("fb-msg").value.trim();
-    if (!msg) { st.className = "note err"; st.textContent = "Escreve a mensagem primeiro."; return; }
-    if (!fbToken) { st.className = "note err"; st.textContent = "Aguarda um segundo pela verificacao e tenta outra vez."; return; }
-    btn.disabled = true; st.className = "note"; st.textContent = "A enviar...";
+    var rawMsg = document.getElementById("fb-msg").value;
+    var rawCtx = document.getElementById("fb-ctx").value;
+    var msg = fbSanitise(rawMsg);
+    if (!msg) { st.className = "form-status err"; st.textContent = "Escreve a mensagem primeiro."; return; }
+    if (fbHasCode(rawMsg) || fbHasCode(rawCtx)) {
+      st.className = "form-status err";
+      st.textContent = "A mensagem parece conter codigo ou HTML. Tira-o e tenta outra vez.";
+      return;
+    }
+    if (!fbToken) { st.className = "form-status err"; st.textContent = "Aguarda um segundo pela verificacao e tenta outra vez."; return; }
+    btn.disabled = true; st.className = "form-status"; st.textContent = "A enviar...";
     fetch("/api/feedback", {
       method: "POST", headers: { "content-type": "application/json" },
       body: JSON.stringify({
         message: msg,
-        context: document.getElementById("fb-ctx").value.trim(),
-        email: document.getElementById("fb-mail").value.trim(),
+        context: fbSanitise(rawCtx),
+        email: fbSanitise(document.getElementById("fb-mail").value),
         website: document.getElementById("fb-web").value,
         token: fbToken, elapsed: Date.now() - fbLoadedAt
       })
     }).then(function (r) { return r.json(); }).then(function (d) {
-      if (d.ok) { fbForm.reset(); st.className = "note ok"; st.textContent = "Enviado. Obrigado, leio tudo."; }
-      else { st.className = "note err"; st.textContent = d.error || "Nao consegui enviar."; btn.disabled = false; }
+      if (d.ok) {
+        fbForm.reset();
+        var c = document.getElementById("fb-count"); if (c) c.textContent = "0/4000";
+        st.className = "form-status ok"; st.textContent = "Enviado. Obrigado, leio tudo.";
+      }
+      else { st.className = "form-status err"; st.textContent = d.error || "Nao consegui enviar."; btn.disabled = false; }
       if (window.turnstile) { turnstile.reset(); fbToken = ""; }
     }).catch(function () {
-      st.className = "note err";
+      st.className = "form-status err";
       st.textContent = "Falhou o envio. Tenta o GitHub, ou outra vez daqui a pouco.";
       btn.disabled = false;
     });
@@ -832,6 +2076,460 @@
   // faturas page.) The SRI-pinned "verified" variant lives on /verificar.
   var loader = "javascript:(function(){if(!/(portaldasfinancas\\.gov\\.pt|seg-social\\.pt)$/.test(location.host)){alert('Abre uma pagina das Financas ou da Seguranca Social e faz login primeiro.');return;}window.__FB_PROFILE=1;var s=document.createElement('script');s.charset='utf-8';s.src='" + HOST + "/tool.js?v='+Date.now();document.body.appendChild(s);})();";
   document.getElementById("bookmarklet").setAttribute("href", loader);
+
+  /* Scroll reveal, no library.
+   *
+   * ARMING ORDER IS THE WHOLE TRICK, and it is not a style preference. .js-reveal on <html> is
+   * what makes .reveal elements transparent; without it they are plain visible content. So the
+   * class is added INSIDE the observer's first callback, never before it. Consequence: if the
+   * observer never delivers, nothing is ever hidden.
+   *
+   * That is not hypothetical. Rendering it in a non-compositing browser pane on 30-07-2026, the
+   * lifecycle was frozen - requestAnimationFrame ran zero times and even a bare observer on
+   * <body> never fired - and the earlier version of this code, which armed first and observed
+   * after, left the dossier and the whole proof section permanently invisible. Any environment
+   * that throttles the rendering lifecycle reproduces it. Content that only appears if an
+   * animation callback runs is content you can lose.
+   *
+   * IntersectionObserver always delivers an initial callback per observed element once the
+   * lifecycle runs, so arming in the first callback costs one frame and nothing else. The
+   * setTimeout is the second belt: no delivery within a second and we simply stay visible.
+   * Reduced-motion is handled in CSS, so nothing here depends on a transition having run. */
+  (function () {
+    var els = [].slice.call(document.querySelectorAll(".reveal"));
+    if (!els.length || !("IntersectionObserver" in window)) return;   // leave them visible
+    /* Where the browser has scroll-driven animations the stylesheet already does this on the
+     * compositor, so the observer stands down entirely - otherwise both would drive the same
+     * elements and .js-reveal would hold at opacity 0 underneath a CSS animation. */
+    if (window.CSS && CSS.supports && CSS.supports("animation-timeline", "view()")) return;
+    var armed = false, alive = false;
+    function arm() { if (!armed) { armed = true; document.documentElement.className += " js-reveal"; } }
+    var io = new IntersectionObserver(function (entries) {
+      alive = true;
+      arm();
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        e.target.className += " in";
+        io.unobserve(e.target);
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.1 });
+    els.forEach(function (el) { io.observe(el); });
+    setTimeout(function () { if (!alive) { io.disconnect(); } }, 1000);
+  })();
+
+
+  /* Running heads + contents.
+   *
+   * The rail label is DERIVED from each chapter's own <h2>, not hand-maintained: a list of twelve
+   * hardcoded labels is a list that goes stale the first time a heading is reworded. The .note
+   * parenthetical is stripped, and the result is trimmed at a word boundary so the rail never
+   * shows half a word.
+   *
+   * The contents block is an enhancement and is built here rather than written into the markup for
+   * the same reason. Nothing depends on it: every chapter is reachable by scrolling, the rail still
+   * shows its number from the CSS counter with no JS, and the page is complete without either. */
+  (function () {
+    var secs = [].slice.call(document.querySelectorAll(".wrap > section"));
+    if (!secs.length) return;
+
+    function shorten(s, max) {
+      s = s.replace(/\s+/g, " ").trim();
+      if (s.length <= max) return s;
+      var cut = s.slice(0, max);
+      var sp = cut.lastIndexOf(" ");
+      return (sp > max * 0.5 ? cut.slice(0, sp) : cut).replace(/[,;:.—-]+$/, "");
+    }
+
+    var items = [];
+    secs.forEach(function (sec, i) {
+      var h = sec.querySelector("h2");
+      if (!h) return;
+      var clone = h.cloneNode(true);
+      [].slice.call(clone.querySelectorAll(".note")).forEach(function (n) { n.remove(); });
+      var full = clone.textContent.replace(/\s+/g, " ").trim();
+      sec.setAttribute("data-ch", shorten(full, 22));
+      if (!sec.id) sec.id = "cap-" + (i + 1);
+      items.push({ id: sec.id, n: String(i + 1).padStart(2, "0"), title: full });
+    });
+    if (items.length < 4) return;
+
+    var nav = document.createElement("nav");
+    nav.className = "toc";
+    nav.setAttribute("aria-label", "Índice da página");
+    nav.innerHTML =
+      '<p class="toc-h">Nesta página</p><ol>' +
+      items.map(function (it) {
+        return '<li><a href="#' + it.id + '"><span class="n">' + it.n + '</span>' +
+               esc(it.title) + "</a></li>";
+      }).join("") + "</ol>";
+
+    var first = document.querySelector(".wrap > section");
+    if (first) first.parentNode.insertBefore(nav, first);
+
+    function esc(s) {
+      return s.replace(/[&<>"]/g, function (c) {
+        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+      });
+    }
+  })();
+
+  /* Header search.
+   *
+   * Two references, both ported as BEHAVIOUR, not code - they are React/Tailwind and this project
+   * has no build step:
+   *   - Refugio Animal Header + SearchBar: mode selector inside the bar, bottom-anchored header on
+   *     mobile, collapsed pill that promotes to a sheet, visualViewport keyboard tracking.
+   *   - Recibo Certo ActivityCombobox: debounced filtering with a pending state, grouped results,
+   *     quick chips, browse-by-area with counts, provenance badges, full arrow-key navigation with
+   *     an active descendant, recent selections, and the keyboard hint footer.
+   *
+   * What did NOT come across, because this project's system forbids it: backdrop blur, gradient
+   * fills, oversized shadows, and any network call while typing. cae-db exposes /search and using
+   * it per keystroke would tell the server what someone is typing before they choose to search.
+   * Everything below filters a static, local dataset. NIF mode submits to /consulta on Enter.
+   *
+   * No JS: the form still posts to /consulta and the mode radios are real inputs. */
+  (function () {
+    var form  = document.getElementById("hsearch");
+    if (!form) return;
+    var input = document.getElementById("hs-q");
+    var panel = document.getElementById("hs-panel");
+    var body  = document.getElementById("hs-body");
+    var count = document.getElementById("hs-count");
+    var hint  = form.querySelector(".hs-foot span");
+    var clear = document.getElementById("hs-clear");
+    var go    = form.querySelector(".hs-go");
+    if (!input || !panel || !body) return;
+
+    var mq = window.matchMedia("(max-width:760px)");
+
+    /* ---- dataset -----------------------------------------------------------------------------
+     * The 16 real deduction sectors, straight from tool.js SECTORS + CEIL, plus what the tool
+     * reads. Rate, ceiling and CIRS article are the values the engine actually computes with, so
+     * the badge is provenance rather than a label. Nothing here is invented. */
+    var POT = "bolsa do IVA, teto conjunto 250 EUR";
+    var SECT = [
+      ["C05","Saúde","15% do total, até 1.000 €","78.º-C","Teto próprio",0],
+      ["C06","Educação","30% do total, até 800 €","78.º-D","Teto próprio",0],
+      ["C07","Imóveis / habitação","15% do total, até 900 €","78.º-E","Teto próprio",0],
+      ["C08","Lares","25% do total, até 403,75 €","84.º","Teto próprio",0],
+      ["C99","Despesas gerais familiares","35% do total, até 250 €","78.º-B","Teto próprio",0],
+      ["C01","Reparação de automóveis","15% do IVA · "+POT,"78.º-F","Bolsa do IVA",1],
+      ["C02","Reparação de motociclos","15% do IVA · "+POT,"78.º-F","Bolsa do IVA",1],
+      ["C03","Alojamento e restauração","15% do IVA · "+POT,"78.º-F","Bolsa do IVA",1],
+      ["C04","Cabeleireiros e beleza","15% do IVA · "+POT,"78.º-F","Bolsa do IVA",1],
+      ["C09","Veterinárias","15% do IVA · "+POT,"78.º-F","Bolsa do IVA",1],
+      ["C10","Transportes públicos","100% do IVA · "+POT,"78.º-F","Bolsa do IVA",1],
+      ["C11","Ginásios","30% do IVA · "+POT,"78.º-F","Bolsa do IVA",1],
+      ["C12","Jornais e revistas","100% do IVA · "+POT,"78.º-F","Bolsa do IVA",1],
+      ["C13","Livros","15% do IVA · "+POT,"78.º-F","Bolsa do IVA",1],
+      ["C14","Atividades artísticas","15% do IVA · "+POT,"78.º-F","Bolsa do IVA",1],
+      ["C15","Museus e monumentos","15% do IVA · "+POT,"78.º-F","Bolsa do IVA",1]
+    ];
+    var TOPICS = [
+      ["Faturas do e-Fatura","setor de cada fatura pendente e tetos já usados","/perfil"],
+      ["Rendas","contratos de arrendamento e recibos (categoria F)","/perfil"],
+      ["Situação fiscal","dívidas, coimas e próximos prazos","/perfil"],
+      ["Património e IMI","os imóveis que tens e o respetivo VPT","/perfil"],
+      ["Histórico de IRS","liquidações e reembolsos de todos os anos","/perfil"],
+      ["Verificar o código","confirmar que o que corre é o que está publicado","/verificar"]
+    ];
+
+    var ITEMS = SECT.map(function (s) {
+      return { t: s[0] + " · " + s[1], d: s[2], badge: s[3], grp: s[4], pot: s[5],
+               href: "/deducoes#" + s[0].toLowerCase() };
+    }).concat(TOPICS.map(function (t) {
+      return { t: t[0], d: t[1], badge: "", grp: "O que a ferramenta lê", pot: 0, href: t[2] };
+    }));
+
+    var GROUPS = [];
+    ITEMS.forEach(function (i) { if (GROUPS.indexOf(i.grp) === -1) GROUPS.push(i.grp); });
+    function countIn(g) { return ITEMS.filter(function (i) { return i.grp === g; }).length; }
+
+    var MODES = {
+      nif: { action:"/consulta", ph:"NIF ou nome da empresa", im:"numeric", go:"Consultar",
+             hint:"Enter para pesquisar · Esc para fechar" },
+      situacao: { action:"/perfil", ph:"Setor, dedução, artigo do CIRS…", im:"text", go:"Abrir",
+             hint:"↑↓ navegar · Enter selecionar · Esc fechar" }
+    };
+
+    /* ---- history ---- */
+    var HKEY = "fb-hsearch-history";
+    function hist() { try { return (JSON.parse(localStorage.getItem(HKEY)||"[]")||[]).slice(0,5); }
+                      catch (e) { return []; } }
+    function remember(q) { try {
+      var h = hist().filter(function (x) { return x !== q; }); h.unshift(q);
+      localStorage.setItem(HKEY, JSON.stringify(h.slice(0,5)));
+    } catch (e) {} }
+
+    function esc(s) { return String(s).replace(/[&<>"]/g, function (c) {
+      return { "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]; }); }
+    function hi(text, q) {
+      if (!q) return esc(text);
+      var i = text.toLowerCase().indexOf(q.toLowerCase());
+      if (i < 0) return esc(text);
+      return esc(text.slice(0,i)) + "<mark>" + esc(text.slice(i,i+q.length)) + "</mark>" +
+             esc(text.slice(i+q.length));
+    }
+
+    function mode() { var r = form.querySelector('input[name="mode"]:checked');
+                      return r ? r.value : "nif"; }
+
+    var open = false, active = -1, rows = [], pending = false, tDeb;
+
+    function match(q) {
+      if (!q) return ITEMS;
+      var n = q.toLowerCase();
+      return ITEMS.filter(function (i) {
+        return (i.t + " " + i.d + " " + i.badge + " " + i.grp).toLowerCase().indexOf(n) !== -1;
+      });
+    }
+
+    function render() {
+      var m = mode(), q = input.value.trim(), html = "", n = null;
+
+      if (m === "situacao") {
+        var hits = match(q);
+        n = hits.length;
+
+        if (q) {
+          /* quick chips, then results grouped by how the sector deducts */
+          if (hits.length) {
+            html += '<div class="hs-chips">' + hits.slice(0,4).map(function (i) {
+              return '<button type="button" class="hs-chip" data-q="' + esc(i.t) + '">' +
+                     hi(i.t.length > 30 ? i.t.slice(0,30) + "…" : i.t, q) + "</button>";
+            }).join("") + "</div>";
+            GROUPS.forEach(function (g) {
+              var inG = hits.filter(function (i) { return i.grp === g; });
+              if (!inG.length) return;
+              html += '<p class="hs-group">' + esc(g) +
+                      '<span class="c">' + inG.length + "</span></p>" + inG.map(row(q)).join("");
+            });
+          } else {
+            html = '<p class="hs-empty">Nada corresponde a &ldquo;' + esc(q) + '&rdquo;.</p>';
+          }
+        } else {
+          /* no query: browse by area, then everything grouped */
+          html += '<p class="hs-group">Explorar por área</p><div class="hs-chips">' +
+            GROUPS.map(function (g) {
+              return '<button type="button" class="hs-chip" data-q="' + esc(g) + '">' +
+                     esc(g) + '<span class="n">' + countIn(g) + "</span></button>";
+            }).join("") + "</div>";
+          GROUPS.forEach(function (g) {
+            var inG = ITEMS.filter(function (i) { return i.grp === g; });
+            html += '<p class="hs-group">' + esc(g) +
+                    '<span class="c">' + inG.length + "</span></p>" + inG.map(row("")).join("");
+          });
+        }
+      } else {
+        var h = hist();
+        if (!q && h.length) {
+          html = '<p class="hs-group">Pesquisas recentes</p>' + h.map(function (x) {
+            return '<a class="hs-item" role="option" href="/consulta?q=' + encodeURIComponent(x) +
+                   '"><span class="t">' + esc(x) + "</span></a>"; }).join("");
+        } else if (q) {
+          html = '<p class="hs-group">Consultar</p><a class="hs-item" role="option" ' +
+                 'href="/consulta?q=' + encodeURIComponent(q) + '"><span class="t">' + esc(q) +
+                 '<span class="d">ver a atividade oficial desta entidade</span></span></a>';
+        } else {
+          html = '<p class="hs-empty">Escreve um NIF ou o nome de uma empresa.</p>';
+        }
+      }
+
+      body.innerHTML = html;
+      rows = [].slice.call(body.querySelectorAll(".hs-item"));
+      active = -1;
+      if (count) count.textContent = pending ? "a filtrar…"
+        : (n === null ? "" : n + (n === 1 ? " resultado" : " resultados"));
+    }
+
+    function row(q) {
+      return function (i) {
+        return '<a class="hs-item" role="option" href="' + i.href + '"><span class="t">' +
+               hi(i.t, q) + '<span class="d">' + hi(i.d, q) + "</span></span>" +
+               (i.badge ? '<span class="hs-badge' + (i.pot ? " pot" : "") + '">' +
+                          esc(i.badge) + "</span>" : "") + "</a>";
+      };
+    }
+
+    function setActive(n) {
+      if (rows[active]) rows[active].removeAttribute("aria-selected");
+      active = n;
+      if (rows[active]) {
+        rows[active].setAttribute("aria-selected", "true");
+        rows[active].scrollIntoView({ block: "nearest" });
+      }
+    }
+
+    /* ---- open / close, with the mobile sheet promotion ---- */
+    var backdrop = null;
+    function setOpen(v) {
+      open = v;
+      panel.hidden = !v;
+      form.classList.toggle("open", v);
+      if (mq.matches) {
+        form.classList.toggle("sheet", v);
+        if (v && !backdrop) {
+          backdrop = document.createElement("div");
+          backdrop.className = "hs-backdrop";
+          backdrop.addEventListener("click", function () { setOpen(false); input.blur(); });
+          document.body.appendChild(backdrop);
+        } else if (!v && backdrop) { backdrop.remove(); backdrop = null; }
+      }
+      if (!v) setActive(-1);
+    }
+
+    /* keyboard height, so the sheet rides above it instead of under it */
+    function kb() {
+      var vv = window.visualViewport;
+      var h = vv ? Math.max(0, window.innerHeight - vv.height - vv.offsetTop) : 0;
+      document.documentElement.style.setProperty("--kb", (h > 60 ? h : 0) + "px");
+    }
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", kb);
+      window.visualViewport.addEventListener("scroll", kb);
+    }
+
+    function applyMode() {
+      var c = MODES[mode()];
+      form.setAttribute("action", c.action);
+      input.placeholder = c.ph;
+      input.setAttribute("inputmode", c.im);
+      if (go) go.textContent = c.go;
+      if (hint) hint.textContent = c.hint;
+      render();
+    }
+
+    input.addEventListener("input", function () {
+      if (clear) clear.hidden = !input.value;
+      pending = true;
+      if (count) count.textContent = "a filtrar…";
+      clearTimeout(tDeb);
+      tDeb = setTimeout(function () { pending = false; render(); if (!open) setOpen(true); }, 160);
+    });
+    input.addEventListener("focus", function () { kb(); render(); setOpen(true); });
+
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        if (!rows.length) return;
+        e.preventDefault();
+        if (!open) setOpen(true);
+        setActive(e.key === "ArrowDown"
+          ? Math.min(active + 1, rows.length - 1)
+          : Math.max(active - 1, 0));
+      } else if (e.key === "Enter" && active >= 0 && rows[active]) {
+        e.preventDefault();
+        rows[active].click();
+      }
+    });
+
+    body.addEventListener("click", function (e) {
+      var chip = e.target.closest(".hs-chip");
+      if (!chip) return;
+      input.value = chip.getAttribute("data-q") || "";
+      if (clear) clear.hidden = !input.value;
+      render();
+      input.focus();
+    });
+
+    form.addEventListener("change", function (e) {
+      if (e.target.name === "mode") { applyMode(); input.focus(); }
+    });
+
+    /* The query ends up in a URL and is echoed back on /consulta, so it is sanitised before it
+     * leaves - same cleaner as the feedback form (control characters, zero-width, tags). A NIF or
+     * a company name never legitimately contains any of it. Length is capped for the same reason
+     * the feedback endpoint caps: a query string is not a payload channel. */
+    var Q_DANGEROUS = /[<>]|javascript:|data:/i;
+    function cleanQ(s) {
+      var out = "", src = String(s).replace(/<\/?[a-z!][^>]*>/gi, "").slice(0, 120);
+      for (var i = 0; i < src.length; i++) {
+        var c = src.charCodeAt(i);
+        if (c < 0x20 || c === 0x7f) continue;
+        if (c === 0x200b || c === 0x200c || c === 0x200d || c === 0x2060 || c === 0xfeff) continue;
+        out += src.charAt(i);
+      }
+      return out.trim();
+    }
+
+    form.addEventListener("submit", function (e) {
+      if (mode() === "situacao") {
+        e.preventDefault();
+        window.location.href = (rows[active] && rows[active].getAttribute("href")) || "/perfil";
+        return;
+      }
+      var q = cleanQ(input.value);
+      if (Q_DANGEROUS.test(q)) q = q.replace(/[<>]/g, "");
+      input.value = q;                       // what is submitted is what the field now shows
+      if (!q) { e.preventDefault(); input.focus(); return; }
+      remember(q);
+    });
+
+    if (clear) clear.addEventListener("click", function () {
+      input.value = ""; clear.hidden = true; input.focus(); render(); });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && open) { setOpen(false); input.blur(); } });
+    document.addEventListener("mousedown", function (e) {
+      if (open && !form.contains(e.target) && !(backdrop && e.target === backdrop)) setOpen(false); });
+
+    applyMode();
+    setOpen(false);
+  })();
+  /* --mast-h: the sticky masthead's real height, so everything that has to sit below it uses one
+   * measured number instead of a hardcoded guess. The chapter running heads and the contents rail
+   * both stick to `calc(var(--mast-h) + 22px)`; with the old fixed 28px they slid underneath the
+   * masthead the moment it became sticky and the chapter numbers vanished.
+   * A ResizeObserver rather than a one-off read: the masthead changes height when the search
+   * promotes to a sheet, when the nav wraps, and across every breakpoint. */
+  (function () {
+    var mast = document.querySelector(".mast");
+    if (!mast) return;
+    function set() {
+      document.documentElement.style.setProperty("--mast-h",
+        Math.round(mast.getBoundingClientRect().height) + "px");
+    }
+    set();
+    if ("ResizeObserver" in window) new ResizeObserver(set).observe(mast);
+    else window.addEventListener("resize", set);
+  })();
+
+  /* Back to top.
+   *
+   * Shown once the hero has left the viewport, hidden again when it returns - an IntersectionObserver
+   * on <header> rather than a scroll listener, so nothing runs on every frame of a 12.000px page.
+   *
+   * The button ships in the markup with `hidden`, and only JS can remove it. No JS means no button,
+   * which is the correct outcome: it is a scroll affordance, not content, and a permanently parked
+   * control that does nothing would be worse than its absence.
+   *
+   * The jump is `behavior:"instant"` on purpose. html{scroll-behavior:smooth} is set globally, so
+   * a plain scrollTo would animate ~12.000px and take several seconds - the opposite of what a
+   * back-to-top is for. Focus moves to the masthead home link afterwards, otherwise a keyboard user
+   * jumps the viewport and leaves their focus stranded at the bottom of the document. */
+  (function () {
+    var btn = document.getElementById("to-top");
+    var hero = document.querySelector("header");
+    if (!btn || !hero) return;
+
+    btn.hidden = false;
+    btn.classList.remove("in");          // starts out, revealed only past the hero
+
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) {
+        btn.classList.toggle("in", !entries[0].isIntersecting);
+      }, { rootMargin: "-40px 0px 0px 0px" }).observe(hero);
+    } else {
+      btn.classList.add("in");           // no observer: just leave it available
+    }
+
+    btn.addEventListener("click", function () {
+      try { window.scrollTo({ top: 0, behavior: "instant" }); }
+      catch (e) { window.scrollTo(0, 0); }   // older engines reject the options object
+      var home = document.querySelector(".mast .mark");
+      if (home) home.focus({ preventScroll: true });
+    });
+  })();
 </script>
 </body>
 </html>
