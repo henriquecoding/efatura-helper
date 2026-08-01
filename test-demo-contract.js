@@ -108,7 +108,7 @@ const iDemo = idx.indexOf('<section id="demonstracao"');
 const iFaz = idx.indexOf('<section id="faz">');
 if (!(iProva < iDemo && iDemo < iFaz)) bad("#demonstracao nao esta entre #prova e #faz");
 else ok("#demonstracao entre #prova e #faz");
-const summary = idx.slice(idx.indexOf("data-demo-summary"), idx.indexOf("data-demo-root"));
+const summary = idx.slice(idx.indexOf("data-demo-summary"), idx.indexOf("</div>", idx.indexOf("</ul>", idx.indexOf("data-demo-summary"))));
 let links = 0;
 for (const href of ["/#empresa-form", "/perfil", "/deducoes", "/base-legal", "/verificar"])
   if (summary.indexOf('href="' + href) !== -1) links++;

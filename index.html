@@ -1318,34 +1318,50 @@
   <p class="sb-status visually-hidden" id="sb-status" role="status"></p>
   <div id="sb-result" class="sb-result" hidden></div>
 
-  <!-- The demo launcher lives HERE, beside the actual tool (owner decision 01-08-2026: "onde
-       esta de fato a ferramenta, nao la embaixo"). The #demonstracao section further down keeps
-       the no-JS summary and a second trigger for whoever scrolled past. -->
-  <button type="button" class="demo-launch demo-launch-top" data-demo-open hidden>
-    <span class="demo-launch-device" aria-hidden="true">
-      <span class="dl-screen">
-        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-grafico"></use></svg>
-      </span>
-      <span class="dl-base"></span>
-    </span>
-    <span class="demo-launch-txt">
-      <b>Ver a demonstração guiada</b>
-      <span class="dl-sub">Sete jornadas encenadas, passo a passo — do NIF ao plano de faturas.</span>
-      <span class="dl-meta mono">Dados ilustrativos &middot; nada é submetido &middot; ~2 min</span>
-    </span>
-    <span class="demo-launch-go" aria-hidden="true">
-      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-seta"></use></svg>
-    </span>
-  </button>
 </div>
 
 <!-- The hero carries NO action. Every control lives in the search above it, which is the one place
      an action belongs on this page; a hero CTA stack would repeat it 300px lower. -->
 <header class="page-hero">
-  <div class="wrap">
-    <span class="eyebrow">Consulta pública &middot; fontes verificáveis</span>
-    <h1>Consultar uma empresa</h1>
-    <p class="lead">Nome, CAE, setor da dedução, morada e IVA — explicado sem linguagem técnica.</p>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">Consulta pública &middot; fontes verificáveis</span>
+      <h1>Consultar uma empresa</h1>
+      <p class="lead">Nome, CAE, setor da dedução, morada e IVA — explicado sem linguagem técnica.</p>
+    </div>
+<!-- FB:DEMO:START (gerado por make-shell.mjs - nao editar a mao) -->
+<button type="button" class="demo-launch demo-launch-top" data-demo-open data-demo-start="empresa" hidden>
+  <span class="demo-launch-device" aria-hidden="true">
+    <span class="dl-screen">
+      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-grafico"></use></svg>
+    </span>
+    <span class="dl-base"></span>
+  </span>
+  <span class="demo-launch-txt">
+    <b>Ver a demonstração guiada</b>
+    <span class="dl-sub">Sete jornadas encenadas, passo a passo — do NIF ao plano de faturas.</span>
+    <span class="dl-meta mono">Dados ilustrativos &middot; nada é submetido</span>
+  </span>
+  <span class="demo-launch-go" aria-hidden="true">
+    <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-seta"></use></svg>
+  </span>
+</button>
+
+<dialog class="demo-modal" data-demo-modal aria-label="Mesa Fiscal — demonstração guiada com dados ilustrativos">
+  <div class="demo-shell" data-demo-root hidden>
+    <div class="demo-device">
+      <div class="demo-screen">
+        <header class="demo-chrome demo-titlebar"></header>
+        <div class="demo-workspace">
+          <nav class="demo-chrome demo-tabs" aria-label="Demonstrações das funcionalidades"></nav>
+          <figure class="demo-stage" aria-label="Demonstração com dados ilustrativos"></figure>
+        </div>
+      </div>
+      <div class="demo-base" aria-hidden="true"></div>
+    </div>
+  </div>
+</dialog>
+<!-- FB:DEMO:END -->
   </div>
 </header>
 
@@ -1595,20 +1611,6 @@
     Abrir a demonstração guiada
   </button>
 
-  <dialog class="demo-modal" data-demo-modal aria-label="Mesa Fiscal — demonstração guiada com dados ilustrativos">
-    <div class="demo-shell" data-demo-root hidden>
-      <div class="demo-device">
-        <div class="demo-screen">
-          <header class="demo-chrome demo-titlebar"></header>
-          <div class="demo-workspace">
-            <nav class="demo-chrome demo-tabs" aria-label="Demonstrações das funcionalidades"></nav>
-            <figure class="demo-stage" aria-label="Demonstração com dados ilustrativos"></figure>
-          </div>
-        </div>
-        <div class="demo-base" aria-hidden="true"></div>
-      </div>
-    </div>
-  </dialog>
 </section>
 
 <section id="faz">

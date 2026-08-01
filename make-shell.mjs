@@ -14,16 +14,18 @@ import { readFileSync, writeFileSync } from "fs";
 
 const START = "<!-- FB:SHELL:START (gerado por make-shell.mjs - nao editar a mao) -->";
 const END = "<!-- FB:SHELL:END -->";
+const DEMO_START = "<!-- FB:DEMO:START (gerado por make-shell.mjs - nao editar a mao) -->";
+const DEMO_END = "<!-- FB:DEMO:END -->";
 const FOOT_START = "<!-- FB:FOOTER:START (gerado por make-shell.mjs - nao editar a mao) -->";
 const FOOT_END = "<!-- FB:FOOTER:END -->";
 
 // The four modes, in nav order. This array is the single source of truth for destination, label
 // and order; test-shell-sync.js compares every page against it.
 export const MODES = [
-  { id: "empresa", href: "/", label: "Empresa", icon: "fb-empresa" },
-  { id: "situacao", href: "/perfil", label: "A minha situação", short: "Situação", icon: "fb-situacao" },
-  { id: "deducoes", href: "/deducoes", label: "Deduções", icon: "fb-deducoes" },
-  { id: "legal", href: "/base-legal", label: "Base legal e fiscal", short: "Base legal", icon: "fb-legal" },
+  { id: "empresa", href: "/", label: "Empresa", icon: "fb-empresa", demo: "empresa" },
+  { id: "situacao", href: "/perfil", label: "A minha situação", short: "Situação", icon: "fb-situacao", demo: "situacao" },
+  { id: "deducoes", href: "/deducoes", label: "Deduções", icon: "fb-deducoes", demo: "deducoes" },
+  { id: "legal", href: "/base-legal", label: "Base legal e fiscal", short: "Base legal", icon: "fb-legal", demo: "legal" },
 ];
 
 // page -> which mode is CURRENT. null means a support page: it carries the same nav, but no link
@@ -133,6 +135,46 @@ ${navItems}
 ${END}`;
 }
 
+/* The Mesa Fiscal launcher + dialog, on EVERY navbar route (owner decision 01-08-2026 - the
+   report had confined it to the homepage). `data-demo-start` makes the demo open on the journey
+   that matches the page you launched it from, instead of always Empresa. */
+function demoBlock(mode) {
+  const journey = (MODES.find((m) => m.id === mode) || {}).demo || "empresa";
+  return `${DEMO_START}
+<button type="button" class="demo-launch demo-launch-top" data-demo-open data-demo-start="${journey}" hidden>
+  <span class="demo-launch-device" aria-hidden="true">
+    <span class="dl-screen">
+      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-grafico"></use></svg>
+    </span>
+    <span class="dl-base"></span>
+  </span>
+  <span class="demo-launch-txt">
+    <b>Ver a demonstração guiada</b>
+    <span class="dl-sub">Sete jornadas encenadas, passo a passo — do NIF ao plano de faturas.</span>
+    <span class="dl-meta mono">Dados ilustrativos &middot; nada é submetido</span>
+  </span>
+  <span class="demo-launch-go" aria-hidden="true">
+    <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-seta"></use></svg>
+  </span>
+</button>
+
+<dialog class="demo-modal" data-demo-modal aria-label="Mesa Fiscal — demonstração guiada com dados ilustrativos">
+  <div class="demo-shell" data-demo-root hidden>
+    <div class="demo-device">
+      <div class="demo-screen">
+        <header class="demo-chrome demo-titlebar"></header>
+        <div class="demo-workspace">
+          <nav class="demo-chrome demo-tabs" aria-label="Demonstrações das funcionalidades"></nav>
+          <figure class="demo-stage" aria-label="Demonstração com dados ilustrativos"></figure>
+        </div>
+      </div>
+      <div class="demo-base" aria-hidden="true"></div>
+    </div>
+  </div>
+</dialog>
+${DEMO_END}`;
+}
+
 const FOOTER = `${FOOT_START}
 <footer class="site-footer">
   <div class="wrap">
@@ -200,6 +242,10 @@ for (const [file, mode] of Object.entries(PAGES)) {
   const out2 = replaceBlock(out, FOOT_START, FOOT_END, FOOTER, file);
   if (out2 === null) { missing.push(file + " (sem marcadores FB:FOOTER)"); continue; }
   out = out2;
+
+  // the demo block is optional: only the four navbar routes carry the markers
+  const out3 = replaceBlock(out, DEMO_START, DEMO_END, demoBlock(mode), file);
+  if (out3 !== null) out = out3;
 
   if (out !== src) {
     changed++;

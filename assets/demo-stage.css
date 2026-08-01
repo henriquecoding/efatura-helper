@@ -392,8 +392,22 @@
   .demo-launch-device .dl-screen { background: Canvas; border-color: CanvasText; }
 }
 
-/* top placement, beside the search: centred, and clearly a door into a demonstration */
-.demo-launch-top { margin: 22px auto 0; }
+/* IN-HERO placement (owner decision 01-08-2026): the launcher is the hero's right-hand column,
+   beside the section's own copy - not a floating dock and not a card three chapters below.
+   It STACKS: at ~380px the three-column form left the title on three lines and the meta line
+   broken mid-phrase. Device on top, then the text, then the affordance. */
+.demo-launch-top {
+  margin: 0; max-width: none;
+  grid-template-columns: 1fr; justify-items: start; gap: 12px;
+  padding: 22px 24px;
+}
+.demo-launch-top .demo-launch-device { flex-direction: row; }
+.demo-launch-top .demo-launch-txt { gap: 5px; }
+.demo-launch-top .demo-launch-txt b { font-size: 1.12rem; }
+.demo-launch-top .dl-meta { line-height: 1.6; }
+.demo-launch-top .demo-launch-go {
+  width: 40px; height: 40px; justify-self: start; margin-top: 2px;
+}
 .demo-launch-again { margin-top: 16px; }
 .demo-launch-again svg { width: 19px; height: 19px; }
 
@@ -403,3 +417,4 @@
   .demo-titlebar { gap: 10px; }
   .demo-pause { padding: 7px 10px; font-size: .8rem; }
 }
+

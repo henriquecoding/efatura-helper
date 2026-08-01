@@ -8,12 +8,19 @@ let fails = 0;
 const bad = (m) => { console.log("  FAIL " + m); fails++; };
 const ok = (m) => console.log("  ok   " + m);
 
+/* Mount the hero (which now carries the launcher and the dialog) together with the
+   #demonstracao section (which carries the no-JS summary) - the controller looks these up
+   document-wide since the launcher moved into each route's hero. */
 const idx = fs.readFileSync("index.html", "utf8");
+const heroStart = idx.indexOf('<header class="page-hero">');
+// NOT indexOf("</header>"): the dialog inside the hero contains its own <header class="demo-
+// titlebar">, so the first closing tag truncated the slice mid-dialog and nothing mounted.
+const heroEnd = idx.indexOf("<!-- FB:DEMO:END -->", heroStart) + "<!-- FB:DEMO:END -->".length;
 const secStart = idx.indexOf('<section id="demonstracao"');
 const secEnd = idx.indexOf("</section>", secStart) + "</section>".length;
-const sectionHtml = idx.slice(secStart, secEnd);
 
-const page = "<!doctype html><html lang='pt'><body>" + sectionHtml + "</body></html>";
+const page = "<!doctype html><html lang='pt'><body>" +
+  idx.slice(heroStart, heroEnd) + idx.slice(secStart, secEnd) + "</body></html>";
 const dom = new JSDOM(page, { runScripts: "dangerously", pretendToBeVisual: true });
 const w = dom.window, doc = w.document;
 
@@ -108,12 +115,14 @@ setTimeout(() => {
   if (fails === 0) ok("disclosure triplo presente (chip, figcaption, nome do figure)");
 
   // --- one polite status channel -------------------------------------------------------------
-  const statuses = doc.querySelectorAll('#demonstracao [role="status"]');
+  // the status lives inside the dialog, which now sits in the hero - scope by the shell, not
+  // by #demonstracao (which no longer contains the stage)
+  const statuses = doc.querySelectorAll('[data-demo-root] [role="status"]');
   if (statuses.length !== 1) bad(`${statuses.length} regioes de status, esperada 1`);
   else ok("um unico canal role=status");
 
   // --- decorative svg hidden; window dots not clickable --------------------------------------
-  for (const svg of doc.querySelectorAll("#demonstracao svg"))
+  for (const svg of doc.querySelectorAll("[data-demo-root] svg, [data-demo-open] svg"))
     if (!svg.getAttribute("aria-hidden")) { bad("svg decorativo sem aria-hidden na demo"); break; }
   const dots = doc.querySelector(".demo-dots");
   if (dots && (dots.tagName === "BUTTON" || dots.querySelector("button, a")))

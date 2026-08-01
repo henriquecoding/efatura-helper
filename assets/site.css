@@ -298,6 +298,24 @@ summary:focus-visible, [tabindex]:focus-visible {
   font-size: clamp(1.02rem, 1.5vw, 1.16rem); line-height: 1.62;
   max-width: 60ch; margin: 0 auto; color: var(--ink2);
 }
+
+/* Hero with a right-hand column. The copy stops being centred here - a centred column beside a
+   card reads as accidental - so it ranges left and the launcher sits opposite it.
+   Specificity note: these are written as `.page-hero .hero-*` (0,2,0) because the long-form
+   pages' own inline <style> loads AFTER this file and carries centring rules at (0,1,0); a bare
+   `.hero-grid` lost the tie and the h1 stayed centred beside a left-ranged card. */
+.page-hero .hero-grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(340px, 400px);
+  gap: 44px; align-items: center; text-align: left;
+}
+.page-hero .hero-copy, .page-hero .hero-copy > * { text-align: left; }
+.page-hero .hero-copy > * { margin-inline: 0; }
+.page-hero .hero-grid h1 { max-width: 15ch; }
+.page-hero .hero-grid .lead { max-width: 44ch; }
+@media (max-width: 1040px) {
+  /* below this the two columns squeeze the h1 into a ladder; stack and keep the reading order */
+  .page-hero .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+}
 .chapter { display: block; padding: calc(var(--step) * .55) 0 0; border: 0; }
 .chapter::after, .chapter::before { content: none; }
 .chapter > h2 {

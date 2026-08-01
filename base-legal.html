@@ -28,6 +28,10 @@
     <!-- analytics: Umami self-hosted, sem cookies e sem dados pessoais -->
     <script defer src="https://analytics.d1060.com/script.js" data-website-id="1e64e3e0-fe5f-44d0-895b-ac8bfadd3538" data-domains="faturas.diogoandrade.com" data-exclude-search="true" data-exclude-hash="true"></script>
     <script defer src="/metrics.js"></script>
+<link rel="stylesheet" href="/assets/demo-stage.css">
+<script defer src="/assets/demo-fixtures.js"></script>
+<script defer src="/assets/demo-stage-core.js"></script>
+<script defer src="/assets/demo-stage.js"></script>
 </head>
 <body data-home-mode="legal">
 <!-- Fatura Boa (c) 2026 Diogo Andrade. Licenca PolyForm Noncommercial 1.0.0
@@ -157,11 +161,46 @@
 </div>
 
 <header class="page-hero">
-  <div class="wrap">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
     <span class="eyebrow">Fontes oficiais &middot; leitura verificável</span>
     <h1>A base legal, explicada sem juridiquês</h1>
     <p class="lead">Encontra a regra, percebe como foi aplicada e abre o artigo oficial para
       confirmar.</p>
+    </div>
+<!-- FB:DEMO:START (gerado por make-shell.mjs - nao editar a mao) -->
+<button type="button" class="demo-launch demo-launch-top" data-demo-open data-demo-start="legal" hidden>
+  <span class="demo-launch-device" aria-hidden="true">
+    <span class="dl-screen">
+      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-grafico"></use></svg>
+    </span>
+    <span class="dl-base"></span>
+  </span>
+  <span class="demo-launch-txt">
+    <b>Ver a demonstração guiada</b>
+    <span class="dl-sub">Sete jornadas encenadas, passo a passo — do NIF ao plano de faturas.</span>
+    <span class="dl-meta mono">Dados ilustrativos &middot; nada é submetido</span>
+  </span>
+  <span class="demo-launch-go" aria-hidden="true">
+    <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-seta"></use></svg>
+  </span>
+</button>
+
+<dialog class="demo-modal" data-demo-modal aria-label="Mesa Fiscal — demonstração guiada com dados ilustrativos">
+  <div class="demo-shell" data-demo-root hidden>
+    <div class="demo-device">
+      <div class="demo-screen">
+        <header class="demo-chrome demo-titlebar"></header>
+        <div class="demo-workspace">
+          <nav class="demo-chrome demo-tabs" aria-label="Demonstrações das funcionalidades"></nav>
+          <figure class="demo-stage" aria-label="Demonstração com dados ilustrativos"></figure>
+        </div>
+      </div>
+      <div class="demo-base" aria-hidden="true"></div>
+    </div>
+  </div>
+</dialog>
+<!-- FB:DEMO:END -->
   </div>
 </header>
 

@@ -102,6 +102,10 @@
 <link rel="stylesheet" href="/assets/pages/deducoes.css">
 <script defer src="/assets/site.js"></script>
 <script defer src="/assets/deducoes.js"></script>
+<link rel="stylesheet" href="/assets/demo-stage.css">
+<script defer src="/assets/demo-fixtures.js"></script>
+<script defer src="/assets/demo-stage-core.js"></script>
+<script defer src="/assets/demo-stage.js"></script>
 </head>
 <body data-home-mode="deducoes">
 
@@ -231,11 +235,46 @@
 </div>
 
 <header class="page-hero">
-  <div class="wrap">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
     <span class="eyebrow">IRS <span id="hero-ano">2026</span> &middot; taxas, tetos e regras</span>
     <h1>Percebe quanto podes deduzir</h1>
     <p class="lead">Vê o que conta, quanto vale e qual é a base legal — antes de classificares uma
       fatura.</p>
+    </div>
+<!-- FB:DEMO:START (gerado por make-shell.mjs - nao editar a mao) -->
+<button type="button" class="demo-launch demo-launch-top" data-demo-open data-demo-start="deducoes" hidden>
+  <span class="demo-launch-device" aria-hidden="true">
+    <span class="dl-screen">
+      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-grafico"></use></svg>
+    </span>
+    <span class="dl-base"></span>
+  </span>
+  <span class="demo-launch-txt">
+    <b>Ver a demonstração guiada</b>
+    <span class="dl-sub">Sete jornadas encenadas, passo a passo — do NIF ao plano de faturas.</span>
+    <span class="dl-meta mono">Dados ilustrativos &middot; nada é submetido</span>
+  </span>
+  <span class="demo-launch-go" aria-hidden="true">
+    <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-seta"></use></svg>
+  </span>
+</button>
+
+<dialog class="demo-modal" data-demo-modal aria-label="Mesa Fiscal — demonstração guiada com dados ilustrativos">
+  <div class="demo-shell" data-demo-root hidden>
+    <div class="demo-device">
+      <div class="demo-screen">
+        <header class="demo-chrome demo-titlebar"></header>
+        <div class="demo-workspace">
+          <nav class="demo-chrome demo-tabs" aria-label="Demonstrações das funcionalidades"></nav>
+          <figure class="demo-stage" aria-label="Demonstração com dados ilustrativos"></figure>
+        </div>
+      </div>
+      <div class="demo-base" aria-hidden="true"></div>
+    </div>
+  </div>
+</dialog>
+<!-- FB:DEMO:END -->
   </div>
 </header>
 

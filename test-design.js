@@ -187,17 +187,22 @@ console.log("\nshell - composition");
   }
   ok("security rule is real text naming .gov.pt on all four modes");
 
-  /* 3. No action controls in the hero. Every mode owns its action in the search bar above; a CTA
-   *    stack 300px below the same button is what made the previous centred hero generic. */
+  /* 3. The hero carries no action EXCEPT the Mesa Fiscal launcher.
+   *    Original rule: every mode owns its action in the search bar, and a CTA stack 300px below
+   *    the same button is what made the previous centred hero generic. That still holds.
+   *    Owner exception (01-08-2026): the demo launcher is the hero's right-hand column. It is not
+   *    a duplicate of the page's action - it opens an explanation, and it is the only control the
+   *    hero may hold. A second control still fails here. */
   for (const p of SHELL_PAGES) {
     const src = fs.readFileSync(p, "utf8");
     const hero = (src.match(/<header class="page-hero[^"]*">[\s\S]*?<\/header>/) || [""])[0]
       .replace(/<!--[\s\S]*?-->/g, "");
     if (!hero) { bad(p + ": no .page-hero"); continue; }
-    const acts = (hero.match(/<button|class="[^"]*\bbtn\b/g) || []).length;
-    if (acts) bad(p + ": " + acts + " action control(s) in the hero - the search bar owns actions");
+    const controls = hero.match(/<button[^>]*>|class="[^"]*\bbtn\b[^"]*"/g) || [];
+    const stray = controls.filter((c) => !/demo-launch|data-demo-open/.test(c));
+    if (stray.length) bad(p + ": " + stray.length + " action control(s) in the hero beyond the demo launcher");
   }
-  ok("no action controls in any hero");
+  ok("hero holds only the demo launcher (the documented exception), no other action");
 
   /* 4. Every hero caps its own measure. Centred or ranged left, text with an uneven measure reads
    *    as accidental rather than set. */

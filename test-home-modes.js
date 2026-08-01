@@ -41,10 +41,12 @@ for (const [file, spec] of Object.entries(MODES)) {
   if (!hero.querySelector(".eyebrow")) bad(`${file}: hero sem eyebrow`);
   if (!hero.querySelector(".lead")) bad(`${file}: hero sem lead`);
 
-  // 4. NO action control in the hero. Every mode owns its action in the search bar above it;
-  //    a CTA stack in the hero is what turned the old centred hero generic.
-  const heroActions = hero.querySelectorAll("button, .btn, input[type=submit]");
-  if (heroActions.length) bad(`${file}: ${heroActions.length} controlo(s) de acao no hero`);
+  // 4. The hero holds NO action except the Mesa Fiscal launcher (owner exception 01-08-2026).
+  //    Every mode still owns its real action in its own search bar; a CTA stack in the hero is
+  //    what turned the old centred hero generic, and that is still what this catches.
+  const heroActions = [...hero.querySelectorAll("button, .btn, input[type=submit]")]
+    .filter((el) => !el.closest("[data-demo-open]") && !el.matches("[data-demo-open]"));
+  if (heroActions.length) bad(`${file}: ${heroActions.length} controlo(s) de acao no hero alem do launcher`);
 
   // 5. the search configuration belongs to the mode
   if (spec.search) {

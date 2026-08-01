@@ -16,14 +16,14 @@
   function init() {
     var FIX = window.FB_DEMO_FIXTURES;
     var CORE = window.FBDemoCore;
-    var section = document.getElementById("demonstracao");
-    if (!FIX || !CORE || !section) return;
-    var rootShell = section.querySelector("[data-demo-root]");
-    var summary = section.querySelector("[data-demo-summary]");
-    // Any number of triggers may open the demo (the main one sits beside the search, a second
-    // in the section itself); the dialog is one.
+    if (!FIX || !CORE) return;
+    /* The launcher now lives in each route's HERO, so #demonstracao (homepage only) can no
+       longer be the anchor - everything is looked up document-wide. Any number of triggers may
+       open the demo; there is exactly one dialog. */
+    var rootShell = document.querySelector("[data-demo-root]");
+    var summary = document.querySelector("[data-demo-summary]");
     var launchers = Array.prototype.slice.call(document.querySelectorAll("[data-demo-open]"));
-    var modal = section.querySelector("[data-demo-modal]");
+    var modal = document.querySelector("[data-demo-modal]");
     if (!rootShell || !launchers.length || !modal) return;
 
     var reduced = false, fineHover = false;
@@ -351,11 +351,16 @@
           if (!reduced) panels[ji].querySelector(".demo-play").textContent = "Repetir demonstração";
           announce(ji, ai, "Demonstração concluída.");
         }
-      } else if (autoplay && blocks.isEmpty()) {
-        clock.play();
-        setLive("run");
       } else {
-        clock.seek(reduced ? 1 : 0);
+        /* Paint the act's first frame BEFORE deciding to play. Without this, an act entered
+           straight into autoplay had nothing on screen (and no aria-current) until the first
+           rAF tick - which on a slow first frame, or in a test that asserts synchronously, is a
+           blank stage and a ruler with no current step. */
+        clock.seek(0);
+        if (autoplay && blocks.isEmpty()) {
+          clock.play();
+          setLive("run");
+        }
       }
     }
 
@@ -372,10 +377,24 @@
       panels.forEach(function (p, i) { p.hidden = i !== ji; });
       active = ji;
       panels[ji].querySelector(".demo-play").textContent = reduced ? "Percorrer passos" : "Reproduzir";
-      // In reduced motion the panel opens on the journey's FINAL state - the useful one.
-      enterAct(ji, reduced ? FIX.journeys[ji].acts.length - 1 : 0, false);
-      if (!opts.auto) blocks.add("manual");
-      announce(ji, reduced ? FIX.journeys[ji].acts.length - 1 : 0);
+
+      /* Picking a tool STARTS ITS DEMONSTRATION (owner decision 01-08-2026): no second click on
+       * "Reproduzir". The earlier behaviour parked the new journey behind a `manual` block, which
+       * the report recommended so keyboard arrows could not fire scenes while browsing - that
+       * concern is still met, because arrows only MOVE focus here; a journey starts on explicit
+       * activation (click / Enter / Space), which is exactly the intent to watch it.
+       * Reduced motion still opens on the final state and never animates. */
+      if (reduced) {
+        enterAct(ji, FIX.journeys[ji].acts.length - 1, false);
+        announce(ji, FIX.journeys[ji].acts.length - 1);
+        return;
+      }
+      blocks.remove("manual");
+      blocks.remove("explicit");
+      blocks.remove("focus");     // the click that selected the tab focused it; that is not a pause
+      blocks.remove("hover");
+      enterAct(ji, 0, true);
+      announce(ji, 0);
     }
 
     /* ------------------------------------------------------------------ interactions */
@@ -478,20 +497,33 @@
      * the dialog opens, and goes back to parked when it closes. No IntersectionObserver - the
      * dialog IS the visibility signal. */
     selectJourney(0, { auto: true });
-    blocks.add("offscreen");
+    blocks.add("offscreen");   // parked until the dialog opens - selectJourney's play waits here
     rootShell.hidden = false;
     launchers.forEach(function (l) { l.hidden = false; });
     if (summary) summary.hidden = true;
 
-    function openModal() {
+    function journeyIndex(id) {
+      for (var i = 0; i < FIX.journeys.length; i++) if (FIX.journeys[i].id === id) return i;
+      return -1;
+    }
+
+    function openModal(e) {
+      // Each route's launcher names its own journey, so /deducoes opens on Deduções rather than
+      // always on Empresa. An unknown or absent id simply keeps whatever is selected.
+      var trigger = e && e.currentTarget;
+      var wanted = trigger && trigger.getAttribute ? trigger.getAttribute("data-demo-start") : null;
+      var wi = wanted ? journeyIndex(wanted) : -1;
+      var activeBefore = active;
+      if (wi >= 0 && wi !== active) selectJourney(wi);
       if (typeof modal.showModal === "function") modal.showModal();
       else modal.setAttribute("open", "");       // jsdom and old engines: non-modal fallback
       // showModal focuses the first focusable element - in some engines that is a TAB, whose
       // focusin would arm the `focus` block and kill the advertised autoplay at birth. Focus the
       // transport (exempt) and clear any stale focus reason before deciding to play.
-      try { panels[active].querySelector(".demo-play").focus(); } catch (e) {}
+      try { panels[active].querySelector(".demo-play").focus(); } catch (err) {}
       blocks.remove("focus");
       blocks.remove("offscreen");
+      if (wi >= 0 && wi !== activeBefore) return;   // selectJourney already started this one
       if (!reduced && act === 0 && !completed) {
         // first open plays once from the top; a re-open resumes wherever it was left
         blocks.remove("manual");
