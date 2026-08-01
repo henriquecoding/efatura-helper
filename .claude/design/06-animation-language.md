@@ -93,6 +93,30 @@ Loops of any kind. Parallax. Scroll-hijacking. Anything triggered by mouse posit
 animations on content below the first two viewports (by then it is just latency). Motion on
 anything showing a deadline, a debt, or a legal figure — those are read, not experienced.
 
+## The Mesa Fiscal stage (01-08-2026)
+
+The guided demo in `#demonstracao` is choreography, and it obeys a stricter contract than the
+rest of the site, pinned by `test-demo-core.js` and `test-demo-browser.js`:
+
+- **One clock.** A single `requestAnimationFrame` loop measures time, fills the act bar and
+  decides the act cut. A `setTimeout` for the cut is banned — when the two were separate
+  timelines, a pause split them (the Recibo Certo lesson).
+- **Finite.** Every journey runs once and stops on a static final act. Nothing loops; the "live"
+  dot does not pulse.
+- **Pause reasons are a set**, not a boolean: `explicit`, `focus`, `hover`, `offscreen`,
+  `document-hidden`, `manual`, `reduced-motion`, `completed`. The clock runs only while the set
+  is empty, so a `mouseleave` can never un-pause a person who pressed the button.
+- **Transition ≠ dwell.** An act may stay on screen for four seconds because it is being read;
+  its animation never lasts four seconds.
+- **Everything derives from progress.** Item reveal, typed characters and the fake cursor are
+  pure functions of the clock's progress, so seek, pause, replay and reduced motion always
+  produce the same frame.
+- **The fake cursor** exists only where it clarifies an action, only with a fine pointer, never
+  under reduced motion, and disappears when a real cursor enters the scene.
+- **Reduced motion** opens each journey on its final, useful state and turns the transport into a
+  manual step-through. No content ever waits for a callback to become visible — that rule is not
+  weakened here.
+
 ## Checklist
 
 - [ ] Content visible with JS disabled

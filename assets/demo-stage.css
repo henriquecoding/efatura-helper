@@ -1,0 +1,322 @@
+/* Mesa Fiscal - the guided demo's own stylesheet. Everything here is scoped to #demonstracao
+ * or .demo-*; nothing leaks into the site.
+ *
+ * MATERIAL - the one documented exception to the glassmorphism ban (anti-patterns): the CHROME of
+ * this device (titlebar, tab rail) is translucent, in the spirit of the Liquid Glass reference
+ * (CodePen yyNvNGQ / Apple HIG), translated to tokens:
+ *   glass-filter   -> backdrop-filter, promoted only via @supports, solid fallback first
+ *   glass-overlay  -> a token-mixed translucent wash
+ *   glass-specular -> 1px inset light edges, no big glow
+ *   glass-content  -> text/icons in a normal layer, never under the filter
+ * The feTurbulence distortion of the reference is deliberately NOT ported (cost, text warping,
+ * engine drift). The fiscal CONTENT panel stays opaque, warm and editorial - glass never sits
+ * under a number someone needs to read.
+ */
+
+#demonstracao {
+  --demo-bezel: color-mix(in oklab, var(--pri-dark) 86%, black);
+  --demo-screen-a: var(--pri-dark);
+  --demo-screen-b: color-mix(in oklab, var(--pri) 55%, var(--pri-dark));
+  --demo-content: color-mix(in oklab, var(--surface) 96%, var(--bg));
+  --demo-glass: color-mix(in srgb, var(--surface) 30%, transparent);
+  --demo-glass-solid: color-mix(in oklab, var(--pri-dark) 88%, var(--surface));
+  --demo-glass-stroke: color-mix(in srgb, white 34%, transparent);
+  --demo-glass-hair: color-mix(in srgb, white 16%, transparent);
+  --demo-specular: color-mix(in srgb, white 55%, transparent);
+  --demo-shadow: 0 18px 48px color-mix(in srgb, var(--ink) 18%, transparent);
+  --demo-device-radius: 2.25rem;
+  --demo-screen-radius: 1.5rem;
+  --demo-panel-radius: 1rem;
+  --demo-blur: 1.125rem;
+  --demo-ease: cubic-bezier(.16, 1, .3, 1);
+}
+
+/* ------------------------------------------------------------------ device frame
+   A laptop as a pedagogic frame: dark bezel, screen, a neutral base bar. No logo, no camera
+   notch, no wallpaper - the kinship is the organisation, not the brand. */
+.demo-shell { margin-top: 26px; }
+.demo-device {
+  background: var(--demo-bezel);
+  border-radius: var(--demo-device-radius);
+  padding: 14px;
+  box-shadow: var(--demo-shadow);
+  isolation: isolate;
+}
+.demo-screen {
+  border-radius: var(--demo-screen-radius);   /* concentric: device radius minus padding */
+  background: linear-gradient(145deg, var(--demo-screen-a), var(--demo-screen-b));
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  min-block-size: 560px;
+}
+.demo-base {
+  height: 10px; margin: 0 auto; width: 38%;
+  background: color-mix(in oklab, var(--demo-bezel) 70%, white);
+  border-radius: 0 0 12px 12px;
+}
+
+/* ------------------------------------------------------------------ glass chrome */
+.demo-chrome {
+  background: var(--demo-glass-solid);        /* solid fallback FIRST */
+  border: 1px solid var(--demo-glass-hair);
+  color: #fff;
+}
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .demo-chrome {
+    background: var(--demo-glass);
+    -webkit-backdrop-filter: blur(var(--demo-blur)) saturate(1.08);
+    backdrop-filter: blur(var(--demo-blur)) saturate(1.08);
+    border-color: var(--demo-glass-stroke);
+    box-shadow:
+      inset 0 1px 0 var(--demo-specular),
+      inset 1px 0 0 color-mix(in srgb, white 22%, transparent);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .demo-chrome {
+    background: var(--demo-glass-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* titlebar */
+.demo-titlebar {
+  display: flex; align-items: center; gap: 14px;
+  margin: 10px 10px 0; padding: 9px 14px;
+  border-radius: 12px;
+}
+.demo-dots { display: inline-flex; gap: 6px; }
+.demo-dots i {
+  width: 11px; height: 11px; border-radius: 50%;
+  background: color-mix(in srgb, white 38%, transparent);
+  border: 1px solid var(--demo-glass-stroke);
+}
+.demo-app-title { font-weight: 600; font-size: .95rem; }
+.demo-live {
+  margin-left: auto; display: inline-flex; align-items: center; gap: 7px;
+  font: 600 .68rem/1 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: color-mix(in srgb, white 85%, transparent);
+}
+.demo-live::before {
+  content: ""; width: 8px; height: 8px; border-radius: 50%;
+  background: color-mix(in srgb, white 45%, transparent);
+}
+.demo-live.is-run::before { background: #6BE3A2; }   /* static dot - it never pulses */
+.demo-live.is-done::before { background: var(--pri-light); }
+.demo-pause {
+  min-height: 40px; padding: 7px 14px; cursor: pointer;
+  border: 1px solid var(--demo-glass-stroke); border-radius: 9px;
+  background: color-mix(in srgb, white 14%, transparent);
+  color: #fff; font: 600 .85rem/1.2 inherit;
+}
+.demo-pause:hover { background: color-mix(in srgb, white 24%, transparent); }
+
+/* workspace: tab rail + stage */
+.demo-workspace {
+  flex: 1; display: grid; grid-template-columns: 200px minmax(0, 1fr);
+  gap: 12px; padding: 12px 10px 14px;
+  min-block-size: 0;
+}
+.demo-tabs {
+  border-radius: 14px; padding: 10px;
+  align-self: start;
+}
+/* the ARIA tablist is the flex container - the buttons are ITS children, not the nav's */
+.demo-tablist { display: flex; flex-direction: column; gap: 2px; }
+.demo-group { color: color-mix(in srgb, white 62%, transparent); margin: 8px 6px 4px; }
+.demo-group:first-child { margin-top: 2px; }
+.demo-tab {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 44px; padding: 8px 10px; border: 0; border-radius: 9px;
+  background: transparent; color: color-mix(in srgb, white 88%, transparent);
+  font: 400 .92rem/1.2 inherit; cursor: pointer; text-align: left;
+}
+.demo-tab svg { width: 19px; height: 19px; flex: none; }
+.demo-tab:hover { background: color-mix(in srgb, white 14%, transparent); }
+.demo-tab[aria-selected="true"] {
+  background: color-mix(in srgb, white 22%, transparent);
+  color: #fff; font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--pri-light);
+}
+.demo-report {
+  margin-top: 10px; padding: 9px 10px; min-height: 44px; display: flex; align-items: center;
+  color: color-mix(in srgb, white 72%, transparent);
+  font-size: .84rem; text-decoration: underline; text-underline-offset: 3px;
+  border-top: 1px solid var(--demo-glass-hair);
+}
+.demo-report:hover { color: #fff; }
+
+/* ------------------------------------------------------------------ the opaque stage */
+.demo-stage {
+  position: relative; margin: 0; min-width: 0;
+  background: var(--demo-content);
+  border-radius: var(--demo-panel-radius);
+  padding: 18px 20px 16px;
+  display: flex; flex-direction: column;
+  min-block-size: 440px;
+}
+.demo-panel[hidden] { display: none; }
+.demo-panel { display: flex; flex-direction: column; flex: 1; min-block-size: 0; }
+.demo-panel-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+  flex-wrap: wrap; margin-bottom: 8px;
+}
+.demo-panel-title { margin: 0; font-size: 1.15rem; color: var(--pri-dark); }
+.demo-panel-sub { margin: 2px 0 0; font-size: .88rem; color: var(--mute); max-width: 44ch; }
+
+.demo-scene {
+  flex: 1; min-block-size: 190px;
+  display: flex; flex-direction: column; justify-content: center; gap: 8px;
+  padding: 6px 2px;
+}
+.demo-item { opacity: 0; transform: translateY(6px); }
+.demo-item.is-on {
+  opacity: 1; transform: none;
+  transition: opacity .32s var(--demo-ease), transform .32s var(--demo-ease);
+}
+
+.demo-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border: 1px solid var(--rule); border-radius: 8px;
+  background: var(--surface); font-size: .92rem; max-width: none;
+}
+.demo-row svg { width: 18px; height: 18px; flex: none; color: var(--pri); }
+.demo-row-ok svg { color: var(--green); }
+.demo-row-warn svg { color: var(--amber); }
+.demo-row-muted { color: var(--ink2); }
+.demo-row-muted svg { color: var(--mute); }
+
+.demo-kv {
+  display: grid; grid-template-columns: minmax(120px, .8fr) 1.2fr; gap: 12px;
+  padding: 7px 10px; border-bottom: 1px solid var(--bg3); font-size: .92rem;
+}
+.demo-kv .demo-k { color: var(--mute); }
+.demo-kv .demo-v { font-weight: 600; }
+
+.demo-field {
+  display: flex; flex-direction: column; gap: 4px;
+  border: 1px solid var(--hair-strong); border-radius: 8px;
+  padding: 9px 12px; background: var(--surface); max-width: 380px;
+}
+.demo-field-label { font-size: .78rem; font-weight: 600; color: var(--ink2); }
+.demo-field-value {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 1.05rem; min-height: 1.4em;
+}
+/* the caret only blinks while its act is actually running; it is decoration, not meaning */
+.demo-field-value::after { content: "▏"; color: var(--pri); opacity: 0; }
+.demo-item.is-on .demo-field-value:empty::after,
+.demo-item.is-on .demo-field-value::after { opacity: .7; }
+
+.demo-bar { max-width: 380px; }
+.demo-bar-head { display: flex; justify-content: space-between; gap: 12px; font-size: .88rem; }
+.demo-bar-note { color: var(--mute); }
+.demo-bar-track {
+  display: block; height: 8px; margin-top: 4px; border-radius: 99px;
+  background: var(--bg3); overflow: hidden;
+}
+.demo-bar-fill {
+  display: block; height: 100%; width: 100%;
+  background: var(--pri); transform-origin: left; transform: scaleX(0);
+}
+
+.demo-badge {
+  display: inline-flex; align-items: center; gap: 8px; width: fit-content;
+  font: 600 .74rem/1 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .07em; text-transform: uppercase;
+  border: 1px solid var(--rule); border-radius: 4px; padding: 8px 10px;
+  color: var(--ink2); background: var(--bg2); margin: 2px 0;
+}
+.demo-badge-ok { color: var(--green); border-color: var(--green); background: #E9F5EE; }
+.demo-note {
+  font-size: .86rem; color: var(--ink2); background: var(--bg2);
+  border-radius: 6px; padding: 8px 11px; margin: 0; max-width: none;
+}
+.demo-note-warn { background: #FDF8EC; color: var(--amber); }
+
+.demo-say {
+  margin: 10px 0 0; padding-top: 10px; border-top: 1px solid var(--rule);
+  font-size: .95rem; color: var(--ink); min-height: 2.6em; max-width: none;
+}
+
+/* act ruler */
+.demo-acts {
+  list-style: none; margin: 8px 0 0; padding: 0; max-width: none;
+  display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px;
+}
+.demo-acts li { max-width: none; }
+.demo-act {
+  width: 100%; min-height: 44px; padding: 6px 2px 4px;
+  border: 0; background: transparent; cursor: pointer;
+  display: flex; flex-direction: column; gap: 5px; align-items: stretch;
+}
+.demo-act-track {
+  display: block; height: 4px; border-radius: 99px; background: var(--bg3); overflow: hidden;
+}
+.demo-act-fill {
+  display: block; height: 100%; width: 100%;
+  background: var(--pri); transform-origin: left; transform: scaleX(0);
+}
+.demo-act-label {
+  font: 600 .68rem/1.2 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .06em; text-transform: uppercase; color: var(--mute); text-align: left;
+}
+.demo-act[aria-current="step"] .demo-act-label { color: var(--pri-dark); }
+
+/* transport + CTA: always mounted, always the same zone - no layout shift at the end */
+.demo-foot {
+  display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  margin-top: 12px;
+}
+.demo-foot .btn { min-height: 44px; padding: 10px 16px; font-size: .92rem; }
+.demo-figcap { margin: 10px 0 0; font-size: .78rem; color: var(--mute); max-width: none; }
+
+/* fake cursor */
+.demo-cursor {
+  position: absolute; top: 0; left: 0; width: 20px; height: 20px;
+  color: var(--pri-dark); opacity: 0; pointer-events: none; z-index: 5;
+  filter: none;
+}
+
+/* ------------------------------------------------------------------ responsive */
+@media (max-width: 1024px) {
+  .demo-workspace { grid-template-columns: 1fr; }
+  /* the nav is the scroll container (it is the grid item, so it can be width-constrained);
+     min-width: 0 defeats the grid's min-content floor that was letting it grow to 751px */
+  .demo-tabs {
+    align-self: stretch; padding: 8px; min-width: 0;
+    overflow-x: auto; scroll-snap-type: x proximity;
+  }
+  .demo-tablist { flex-direction: row; gap: 4px; width: max-content; }
+  .demo-tab { scroll-snap-align: start; white-space: nowrap; flex: none; }
+  .demo-group { display: none; }     /* the rail label has no room in a strip */
+  .demo-report { display: none; }    /* the real link still exists in the page footer */
+}
+@media (max-width: 760px) {
+  .demo-device { padding: 8px; border-radius: 18px; }
+  .demo-screen { border-radius: 12px; min-block-size: 0; }
+  .demo-base { display: none; }      /* a phone-width laptop is a squashed laptop; drop the metaphor */
+  .demo-titlebar { margin: 6px 6px 0; }
+  .demo-stage { padding: 14px; }
+  .demo-acts { grid-auto-flow: row; grid-template-columns: repeat(3, 1fr); }
+  .demo-kv { grid-template-columns: 1fr; gap: 2px; }
+}
+
+/* ------------------------------------------------------------------ preferences */
+@media (prefers-reduced-motion: reduce) {
+  .demo-item, .demo-item.is-on { opacity: 1; transform: none; transition: none; }
+  .demo-field-value::after { content: ""; }
+  .demo-cursor { display: none; }
+}
+@media (forced-colors: active) {
+  .demo-device, .demo-screen { background: Canvas; box-shadow: none; }
+  .demo-chrome {
+    background: Canvas; color: CanvasText;
+    -webkit-backdrop-filter: none; backdrop-filter: none;
+    border: 1px solid CanvasText; box-shadow: none;
+  }
+  .demo-tab { color: ButtonText; }
+  .demo-tab[aria-selected="true"] { forced-color-adjust: none; border: 2px solid Highlight; }
+  .demo-act-fill, .demo-bar-fill { background: Highlight; }
+}

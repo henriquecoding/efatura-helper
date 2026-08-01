@@ -65,8 +65,8 @@ The three that matter most, so they are never not loaded:
 
 ## 5. Working rules
 
-- Run `npm test` before saying anything is done. 27 checks; all must pass. `test-network.js` needs a
-  browser — it reports SKIP without one, and a SKIP is not a pass. Set `CHROME_PATH` and get 27/27.
+- Run `npm test` before saying anything is done. 31 checks; all must pass. `test-network.js` needs a
+  browser — it reports SKIP without one, and a SKIP is not a pass. Set `CHROME_PATH` and get 31/31.
 - `npm run dev` → http://localhost:4173.
 - The browser pane does not composite frames here. To actually *see* a page, render it with
   `playwright-core` and the local Chrome, and look at the PNG. Do not claim a visual result you
@@ -81,6 +81,10 @@ The three that matter most, so they are never not loaded:
 - The site is four routes with one shell: `/` Empresa, `/perfil` Situação, `/deducoes` Deduções,
   `/base-legal` Base legal. Each is a real URL with its own canonical, not a tab. `test-home-modes.js`
   pins that.
+- The Mesa Fiscal (`#demonstracao` on the homepage) is a supplement: illustrative fixtures only,
+  zero network/storage, one RAF clock, finite runs, glass confined to the device chrome (the one
+  documented exception in `.claude/design/anti-patterns.md`). Its four `test-demo-*.js` are part
+  of the gate; the no-JS summary list must always carry the seven destinations.
 - The static table in `deducoes.html` stays hand-maintained. It is the third *independent* source in
   `test-deducoes-sync.js`'s three-way agreement; generating it would compare a file to its own
   derivative and quietly retire the invariant.

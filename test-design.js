@@ -202,6 +202,63 @@ console.log("\nshell - composition");
   else ok("active nav state: wash + weight + rule (survives greyscale)");
 }
 
+/* ---- Mesa Fiscal: the ONE documented glass exception --------------------------------------
+ * Glassmorphism stays banned in the product. assets/demo-stage.css is the single sheet allowed
+ * to use backdrop-filter, and ONLY on the .demo-chrome selectors (the device's navigation
+ * chrome). This block is what keeps the exception an exception: blur may never spread to the
+ * stage, a panel, a card or a table, the solid fallback must come before the @supports
+ * promotion, and the preference fallbacks must exist. */
+console.log("\nassets/demo-stage.css - the demo chrome exception");
+{
+  const demoCss = fs.readFileSync("assets/demo-stage.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+
+  // Every backdrop-filter must live in a rule whose SELECTOR (not the @supports/@media prelude
+  // above it) names .demo-chrome. Walk back from each occurrence to the nearest opening brace
+  // whose prelude is a selector, skipping at-rule preludes.
+  const lines = demoCss.split("\n");
+  let blurOutside = 0;
+  lines.forEach((line, i) => {
+    if (!/backdrop-filter/.test(line) || /none/.test(line)) return;
+    for (let j = i; j >= 0; j--) {
+      const m = lines[j].match(/^([^{}]+)\{\s*$/) || lines[j].match(/^([^{}@]+)\{/);
+      if (!m) continue;
+      const sel = m[1].trim();
+      if (sel.startsWith("@")) continue;          // at-rule prelude: keep walking to the selector
+      if (!/\.demo-chrome/.test(sel)) { bad(`backdrop-filter fora do chrome: "${sel.slice(0, 60)}"`); blurOutside++; }
+      break;
+    }
+  });
+  if (!blurOutside) ok("backdrop-filter apenas em .demo-chrome");
+  for (const banned of ["demo-stage", "demo-panel", "demo-row", "demo-kv", "demo-scene"]) {
+    const re = new RegExp("\\." + banned + "[^{]*\\{[^}]*backdrop-filter", "m");
+    if (re.test(demoCss)) bad(`blur no conteudo: .${banned}`);
+  }
+
+  // solid fallback FIRST, promotion only via @supports
+  const iSolid = demoCss.indexOf(".demo-chrome {");
+  const iSupports = demoCss.indexOf("@supports");
+  if (iSolid === -1 || iSupports === -1 || iSolid > iSupports)
+    bad("o fallback solido nao precede a promocao @supports");
+  else ok("fallback solido antes do @supports de blur");
+
+  if (!/prefers-reduced-transparency/.test(demoCss)) bad("sem fallback de transparencia reduzida");
+  else ok("prefers-reduced-transparency coberto");
+  if (!/prefers-reduced-motion/.test(demoCss)) bad("sem bloco de reduced motion");
+  if (!/forced-colors:\s*active/.test(demoCss)) bad("sem bloco de forced-colors");
+  else ok("reduced motion e forced-colors cobertos");
+
+  if (/transition:\s*all/.test(demoCss)) bad("transition: all na demo");
+  if (/animation[^;]*:(?:[^;]*\b(width|height|top|left|margin)\b)/.test(demoCss)) bad("animacao de layout na demo");
+  if (/#(8b5cf6|a855f7|7c3aed|9333ea)|violet|purple/i.test(demoCss)) bad("violeta na demo");
+  else ok("sem transition:all, sem animacao de layout, sem violeta");
+
+  // one elevation level only: the device shadow token
+  const shadows = (demoCss.match(/box-shadow:(?![^;]*inset)[^;]*;/g) || [])
+    .filter((s) => !/var\(--demo-shadow\)|none/.test(s));
+  if (shadows.length) bad(`${shadows.length} sombra(s) alem de --demo-shadow - um nivel de elevacao apenas`);
+  else ok("um unico nivel de elevacao (--demo-shadow)");
+}
+
 console.log(fails
   ? `\n  ${fails} DESIGN CHECK(S) FAILED - fix the CSS, or amend .claude/design/ and say why`
   : "\n  design acceptance: all checks pass");

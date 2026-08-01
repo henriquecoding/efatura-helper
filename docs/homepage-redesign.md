@@ -103,3 +103,32 @@ additive redirects, not renames, and update sitemap.xml + every canonical in the
 2026-07-30 rendas correction is the argument for building it: the repo carried a stale 2025 ceiling
 for months with `verified: true` on it. Scope it as a job that re-reads each article's dedicated
 DRE page, compares `FragmentoVersaoId`, and fails when an id moves.
+
+---
+
+## v3 — Mesa Fiscal (01-08-2026)
+
+**Intenção.** Uma demonstração guiada e finita das sete jornadas (Empresa, Instalar, Situação,
+Classificar, Deduções, Base legal, Verificar), encenada dentro de uma moldura de portátil, para a
+pessoa ver o caminho antes de usar. Especificação-mestre: relatório "demonstrações animadas".
+
+**Colocação.** `#demonstracao`, entre `#prova` e `#faz`. Nunca no hero — o hero da rota Empresa
+tem uma ação exclusiva e `test-home-modes.js` proíbe controlos adicionais lá.
+
+**Exceção visual.** Material translúcido (blur + aresta especular) apenas no chrome do
+dispositivo — titlebar e rail de tabs. O palco fiscal é opaco. Registado em
+`anti-patterns.md` §1 e §20 e validado por `test-design.js`.
+
+**Não objetivos.** Não é um vídeo, não é um dashboard falso, não é uma SPA, não executa
+`tool.js`, não lê dados de ninguém, não promete funcionalidades incompletas (a vista pessoal de
+deduções termina no estado bloqueado honesto; fontes sem cobertura publicada têm estado neutro).
+
+**Decisões.** Sem biblioteca de animação (o relógio é um único `requestAnimationFrame` em
+`demo-stage-core.js`, testável em Node com tempo falso). Sem loop: cada jornada corre uma vez e
+para num ato estático. Pausa por razões independentes (explícita, foco, hover, offscreen,
+separador escondido, manual, reduced-motion). Em reduced motion abre no estado final e o
+transporte vira "Percorrer passos".
+
+**Bloqueios conhecidos.** A vista pessoal de deduções não está pronta (chaves de storage
+divergentes + `#personal-view` vazio) e por isso NÃO é encenada como funcional. Movimentos
+financeiros e Segurança Social têm cobertura por confirmar no manifesto.

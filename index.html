@@ -1157,6 +1157,10 @@
 <link rel="stylesheet" href="/assets/pages/empresa.css">
 <script defer src="/assets/site.js"></script>
 <script defer src="/assets/empresa.js"></script>
+<link rel="stylesheet" href="/assets/demo-stage.css">
+<script defer src="/assets/demo-fixtures.js"></script>
+<script defer src="/assets/demo-stage-core.js"></script>
+<script defer src="/assets/demo-stage.js"></script>
 </head>
 <body data-home-mode="empresa">
 <!-- Marker filter for .mark-hl. feTurbulence + feDisplacementMap warps the highlight's edges so
@@ -1535,6 +1539,45 @@
         não há conta, não há histórico do teu lado nenhum.</dd>
     </div>
   </dl>
+</section>
+
+<!-- MESA FISCAL. A guided, FINITE demonstration of the seven journeys, staged inside a laptop
+     frame. Everything on the stage is an illustrative fixture: no network, no storage, no
+     personal data, no execution of the bookmarklet. The translucent material is confined to the
+     device CHROME (the documented exception in .claude/design/anti-patterns.md); the fiscal
+     content panel is opaque paper. Without JavaScript the summary list below carries the same
+     seven destinations, so no fact lives only in the animation. -->
+<section id="demonstracao" aria-labelledby="demo-title">
+  <span class="eyebrow">Demonstração guiada · dados ilustrativos</span>
+  <h2 id="demo-title">Vê o caminho antes de usar</h2>
+  <p class="lead">Escolhe uma funcionalidade e percorre cada passo. A encenação não usa os teus
+    dados, não abre as Finanças e não submete nada.</p>
+
+  <div class="demo-summary" data-demo-summary>
+    <p>JavaScript acrescenta a encenação. As funcionalidades continuam disponíveis:</p>
+    <ul>
+      <li><a href="/#empresa-form">Consultar empresa</a></li>
+      <li><a href="/perfil">A minha situação</a></li>
+      <li><a href="/perfil#instalar">Classificar faturas (instalar a ferramenta)</a></li>
+      <li><a href="/deducoes">Deduções</a></li>
+      <li><a href="/base-legal">Base legal</a></li>
+      <li><a href="/perfil#instalar">Instalar</a></li>
+      <li><a href="/verificar">Verificar</a></li>
+    </ul>
+  </div>
+
+  <div class="demo-shell" data-demo-root hidden>
+    <div class="demo-device">
+      <div class="demo-screen">
+        <header class="demo-chrome demo-titlebar"></header>
+        <div class="demo-workspace">
+          <nav class="demo-chrome demo-tabs" aria-label="Demonstrações das funcionalidades"></nav>
+          <figure class="demo-stage" aria-label="Demonstração com dados ilustrativos"></figure>
+        </div>
+      </div>
+      <div class="demo-base" aria-hidden="true"></div>
+    </div>
+  </div>
 </section>
 
 <section id="faz">

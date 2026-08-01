@@ -14,7 +14,13 @@ into something worse.
 These are the things that make a page look like it was generated. They are banned because they are
 *someone else's* visual language, arrived at by default rather than by decision.
 
-1. **Glassmorphism.** Frosted translucent panels. Banned outright.
+1. **Glassmorphism.** Frosted translucent panels. Banned outright. *One documented exception
+   (01-08-2026): the navigation chrome of the Mesa Fiscal in `#demonstracao` — titlebar and tab
+   rail only — requested explicitly as an Apple-inspired frame. The blur never enters the content
+   panel, never carries meaning, has a solid fallback that precedes the `@supports` promotion, and
+   is validated for contrast, `prefers-reduced-transparency` and `forced-colors` by
+   `test-design.js`. The exception does not generalise: a second glass surface anywhere else is
+   still this ban firing.*
 2. **Neumorphism.** Soft extruded plastic. Banned outright.
 3. **Purple/violet gradient anything.** The single strongest "an AI made this" signal in 2026.
 4. **Gradient text.** Especially on headings.
@@ -39,7 +45,11 @@ These are the things that make a page look like it was generated. They are banne
 17. **Fake dashboards** in a hero as a product screenshot.
 18. **3D tilt on hover.**
 19. **Spotlight-follows-cursor** border effects.
-20. **Typewriter text animation.**
+20. **Typewriter text animation.** *One circumscribed exception (01-08-2026): a short typed
+    sequence inside a SIMULATED form field of the Mesa Fiscal, when it demonstrates the real
+    interaction, derives every character from the stage clock's progress (seek-safe), and shows
+    the final state immediately under reduced motion. Marketing copy, headings and prose are
+    still never typed.*
 
 ## B. The template smells
 

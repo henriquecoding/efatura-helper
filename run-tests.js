@@ -31,6 +31,11 @@ var ARGS = {
   "test-nojs.js": [],
   "test-a11y-static.js": [],
   "test-legal-index.js": [],
+  // Mesa Fiscal: fixtures/nucleo/a11y correm em Node; o browser precisa de Chrome (auto-skip)
+  "test-demo-contract.js": [],
+  "test-demo-core.js": [],
+  "test-demo-a11y.js": [],
+  "test-demo-browser.js": [],
   "test-profile-states.js": [],
   "test-render.js": [],
   // no argument = lint every .html. Passing it the default "tool.js" made it find no <style>

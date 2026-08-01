@@ -68,6 +68,59 @@
 .priv-cols p { font-size: .92rem; color: var(--ink2); }
 .priv-cols .mono { text-transform: none; letter-spacing: .04em; font-size: .8rem; }
 
+/* ---------------------------------------------------------------- the nine-source ledger
+   Rendered by perfil.html's engine into #out (the .fnt-* markup). One instruction said once, one
+   quiet action per row, state as word + icon. The progress fill is set once per render with an
+   inline scaleX - it never animates, so a re-render cannot violate the motion rules. */
+.fnt-card { padding-bottom: 8px; }
+.fnt-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.fnt-title { font-weight: 700; font-size: 1.05rem; color: var(--pri-dark); }
+.fnt-count { margin: 2px 0 0; font-size: .88rem; color: var(--mute); }
+.fnt-track {
+  flex: 1 1 180px; max-width: 320px; height: 6px; border-radius: 99px;
+  background: var(--bg3); overflow: hidden; margin-bottom: 6px;
+}
+.fnt-fill {
+  display: block; height: 100%; width: 100%;
+  background: var(--pri); transform-origin: left; transform: scaleX(0);
+}
+.fnt-how {
+  margin: 10px 0 4px; padding: 10px 12px; font-size: .9rem; color: var(--ink2);
+  background: var(--bg2); border-radius: var(--control-radius); max-width: none;
+}
+.fnt-list { list-style: none; margin: 6px 0 0; padding: 0; max-width: none; }
+.fnt-row {
+  display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+  align-items: center; gap: 12px; padding: 11px 2px; max-width: none;
+  border-top: 1px solid var(--bg3);
+}
+.fnt-row:first-child { border-top: 0; }
+.fnt-n { font: 400 .74rem/1 'IBM Plex Mono', ui-monospace, monospace; color: var(--mute); }
+.fnt-ic { width: 19px; height: 19px; color: var(--mute); flex: none; vertical-align: -4px; }
+.fnt-ic-ok { color: var(--green); }
+.fnt-bd { display: flex; flex-direction: column; min-width: 0; }
+.fnt-name { font-weight: 600; font-size: .95rem; }
+.fnt-why { font-size: .85rem; color: var(--mute); }
+.fnt-state {
+  font: 600 .7rem/1 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .07em; text-transform: uppercase; color: var(--mute); white-space: nowrap;
+}
+.fnt-state-ok { color: var(--green); }
+.fnt-open {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 8px 12px;
+  border: 1px solid var(--rule); border-radius: var(--control-radius);
+  color: var(--pri); font-weight: 600; font-size: .88rem; text-decoration: none;
+  white-space: nowrap; background: var(--surface);
+}
+.fnt-open:hover { border-color: var(--pri); background: var(--pri-soft); color: var(--pri-dark); }
+.fnt-open svg { width: 14px; height: 14px; }
+.is-done .fnt-name { color: var(--ink2); }
+@media (max-width: 640px) {
+  .fnt-row { grid-template-columns: auto auto minmax(0, 1fr); row-gap: 6px; }
+  .fnt-state { grid-column: 2; justify-self: start; }
+  .fnt-open { grid-column: 3; justify-self: end; grid-row: 2; }
+}
+
 /* destructive action: stated, not iconic */
 .data-actions { margin-top: 18px; }
 .danger-row {
