@@ -28,6 +28,7 @@ These are not style. Changing any of them silently is the worst failure mode thi
 | `DRAFT = true` — the tool reads, never submits | `test-draft.js` |
 | Deduction ceilings agree across `tool.js`, `deducoes.html`, `year_snapshots.json` | `test-deducoes-sync.js` |
 | The pre-selected sector is the truthful column, not the one that pays most | `test-columns.js`, `test-r1.js` |
+| `/auditoria` never quietly disagrees with the code it claims to audit | `test-audit-sync.js` |
 | `tool.js` is pure ASCII | `.github/workflows/encoding-guard.yml` |
 
 Rule: **to change one of these, make its test go red on purpose first, then decide.** If you cannot
@@ -59,12 +60,15 @@ The three that matter most, so they are never not loaded:
 
 ## 5. Working rules
 
-- Run `npm test` before saying anything is done. 15 tests; all must pass.
+- Run `npm test` before saying anything is done. 18 checks; all must pass. `test-network.js` needs a
+  browser — it reports SKIP without one, and a SKIP is not a pass. Set `CHROME_PATH` and get 18/18.
 - `npm run dev` → http://localhost:4173.
 - The browser pane does not composite frames here. To actually *see* a page, render it with
   `playwright-core` and the local Chrome, and look at the PNG. Do not claim a visual result you
   have not looked at.
-- Any `tool.js` change: bump `FB_VERSION` **and** run `node make-versions.mjs`.
+- Any `tool.js` change: bump `FB_VERSION` **and** run `node make-versions.mjs` **and**
+  `node make-audit.mjs` (the `/auditoria` matrix is generated from `tool.js`; `test-audit-sync.js`
+  goes red if you forget).
 - Scope: changed lines must serve the request. Found something unrelated and real? Write it down,
   do not fix it silently.
 - Verification is not optional and "should work" is not verification.

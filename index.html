@@ -1151,7 +1151,8 @@
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <meta name="license" content="PolyForm Noncommercial 1.0.0; (c) 2026 Diogo Andrade; origem faturas.diogoandrade.com; ref fb-lic-e1ec0c96c9">
     <!-- analytics: Umami self-hosted, sem cookies e sem dados pessoais -->
-    <script defer src="https://analytics.d1060.com/script.js" data-website-id="1e64e3e0-fe5f-44d0-895b-ac8bfadd3538" data-exclude-search="true" data-exclude-hash="true"></script>
+    <script defer src="https://analytics.d1060.com/script.js" data-website-id="1e64e3e0-fe5f-44d0-895b-ac8bfadd3538" data-domains="faturas.diogoandrade.com" data-exclude-search="true" data-exclude-hash="true"></script>
+    <script defer src="/metrics.js"></script>
 </head>
 <body>
 <!-- Marker filter for .mark-hl. feTurbulence + feDisplacementMap warps the highlight's edges so
@@ -1915,6 +1916,7 @@
         <h2>Confiar</h2>
         <ul>
           <li><a href="/verificar">Verificar o código</a></li>
+          <li><a href="/auditoria">Auditoria</a></li>
           <li><a id="gh2" href="#" target="_blank" rel="noopener">Código no GitHub</a></li>
           <li><a href="/sobre">Sobre</a></li>
         </ul>
@@ -2060,6 +2062,7 @@
         fbForm.reset();
         var c = document.getElementById("fb-count"); if (c) c.textContent = "0/4000";
         st.className = "form-status ok"; st.textContent = "Enviado. Obrigado, leio tudo.";
+        try { if (window.umami) umami.track("relato-enviou"); } catch (e) {}
       }
       else { st.className = "form-status err"; st.textContent = d.error || "Nao consegui enviar."; btn.disabled = false; }
       if (window.turnstile) { turnstile.reset(); fbToken = ""; }

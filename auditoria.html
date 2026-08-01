@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="/favicon.ico" sizes="48x48" type="image/x-icon">
+<link rel="icon" href="/icon.svg" sizes="any" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-icon.png" sizes="180x180" type="image/png">
+<title>Auditoria | Fatura Boa - cada número, a sua fonte legal</title>
+<meta name="description" content="Cada dedução que a ferramenta calcula, o valor que usa, onde no código, e a fonte legal oficial (DRE). Gerado automaticamente do código, não escrito à mão - para qualquer auditor confirmar.">
+<link rel="canonical" href="https://faturas.diogoandrade.com/auditoria">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{--pri:#034ad8;--pri-dark:#021c51;--ink:#2B363C;--ink2:#475164;--mute:#64718B;--bg:#FAF9F6;--bg2:#EFEEE9;--bg3:#E1E4EA;--rule:#CFCEC8;--red:#D12332;--green:#00724C;--focus:#ff7a00;--r:6px;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.65 'IBM Plex Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:0 24px}
+  /* prose measure, independent of the container - the 900px column this table needs would run
+     prose to ~112ch, well past the 70ch cap in .claude/design/04-layout-rules.md. */
+  p,ol li{max-width:68ch}
+  a{color:var(--pri);text-underline-offset:3px} a:hover{color:var(--pri-dark)}
+  a:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+  header{background:var(--pri-dark);color:#fff;padding:28px 0}
+  header h1{margin:0 0 8px;font-size:1.55rem} header p{margin:0;color:#cfd9ef;max-width:66ch}
+  main{padding:28px 0 60px}
+  h2{font-size:1.15rem;margin:26px 0 8px;color:var(--pri-dark)}
+  code{font-family:'IBM Plex Mono',monospace;font-size:.85em;background:var(--bg2);border:1px solid var(--rule);border-radius:3px;padding:1px 4px}
+  .box{border-radius:var(--r);padding:12px 14px;margin:14px 0;font-size:.95rem}
+  .box.ok{background:#e9f5ee;border:1px solid var(--green);color:var(--green)}
+  .box.bad{background:#fdeaed;border:1px solid var(--red);color:#7a0b1c}
+  .fok{color:var(--green);font-weight:600} .fbad{color:#7a0b1c;font-weight:700}
+  .badge{display:inline-block;background:var(--bg2);border:1px solid var(--rule);border-radius:2px;padding:3px 8px;font-size:.8rem;color:var(--ink2);margin:0 0 8px}
+  .tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:var(--r);margin:10px 0}
+  table{border-collapse:collapse;width:100%;font-size:.86rem;min-width:720px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+  th{background:var(--bg2);color:var(--pri-dark);font-weight:600;white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  ol{padding-left:20px} ol li{margin:4px 0}
+  .mono{font-family:'IBM Plex Mono',monospace;font-size:.8rem;color:var(--ink2)}
+  .mast{border-bottom:3px solid var(--pri);background:#fff}
+  .mast .wrap{display:flex;align-items:center;gap:12px;min-height:64px}
+  .mast .mark{width:40px;height:40px;flex:none} .mast .mark svg{width:100%;height:100%;display:block}
+  .mast .mark .plate,.mast .mark .cut{fill:var(--pri)}
+  .mast .nm{font-weight:600;color:var(--ink)} .mast a.home{margin-left:auto;color:var(--pri);font-weight:600;text-decoration:none}
+  footer{border-top:1px solid var(--rule);padding:22px 0;color:var(--mute);font-size:.85rem}
+</style>
+<meta name="license" content="PolyForm Noncommercial 1.0.0; (c) 2026 Diogo Andrade; origem faturas.diogoandrade.com; ref fb-lic-2d5ffcb188">
+    <!-- analytics: Umami self-hosted, sem cookies e sem dados pessoais -->
+    <script defer src="https://analytics.d1060.com/script.js" data-website-id="1e64e3e0-fe5f-44d0-895b-ac8bfadd3538" data-domains="faturas.diogoandrade.com" data-exclude-search="true" data-exclude-hash="true"></script>
+    <script defer src="/metrics.js"></script>
+</head>
+<body>
+<!-- Fatura Boa (c) 2026 Diogo Andrade. Licenca PolyForm Noncommercial 1.0.0
+     (https://polyformproject.org/licenses/noncommercial/1.0.0). Uso nao-comercial apenas.
+     Copia, redistribuicao ou uso comercial sem autorizacao viola a licenca e pode ser objecto
+     de accao legal. Origem oficial: faturas.diogoandrade.com | ref fb-lic-2d5ffcb188 -->
+<div hidden aria-hidden="true" data-fb-lic="PolyForm-Noncommercial-1.0.0" data-fb-ref="fb-lic-2d5ffcb188" data-fb-origem="faturas.diogoandrade.com">Codigo protegido por direitos de autor. Licenca PolyForm Noncommercial 1.0.0: uso comercial ou redistribuicao sem autorizacao proibidos.</div>
+<a href="/hp/registo-2d5ffcb188" hidden aria-hidden="true" rel="nofollow noindex" tabindex="-1">.</a>
+<div class="mast"><div class="wrap">
+  <a class="mark" href="/" aria-label="Fatura Boa, início">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><rect class="plate" width="32" height="32" rx="7"/>
+      <path fill="#fff" d="M6.75 6.5 H13.375 C18.875 6.5 22.75 10.3125 22.75 16 C22.75 21.6875 18.875 25.5 13.375 25.5 H6.75 Z M10 9.5 V22.5 H13.1875 C16.8125 22.5 19.5 20 19.5 16 C19.5 12 16.8125 9.5 13.1875 9.5 H10 Z"/>
+      <path fill="#fff" d="M18.25 25.5 L23.875 6.5 H26.375 L20.75 25.5 Z"/><path fill="#fff" d="M25.25 6.5 H27.75 L22.125 25.5 H19.625 Z"/>
+      <rect class="cut" x="20.875" y="16.375" width="4.875" height="2.25" rx="0.5"/><path class="cut" d="M15.75 24.5 L25.125 6.5 H27.375 L18 24.5 Z" opacity="0.18"/></svg>
+  </a>
+  <div class="nm">Fatura Boa</div><a class="home" href="/">Início</a>
+</div></div>
+<header><div class="wrap">
+  <h1>Auditoria</h1>
+  <p>Cada dedução que a ferramenta calcula, o valor que usa, onde no código, e a fonte legal oficial. Esta tabela é <b>gerada automaticamente do código e das fontes</b>, não escrita à mão - por isso não pode ser escolhida a dedo nem ficar por atualizar. Qualquer pessoa, sem nos pedir nada, pode confirmar cada linha na fonte primária (Diário da República), correr os testes, e verificar que o código que corre é o que está publicado.</p>
+</div></header>
+<main class="wrap">
+  <div id="drift" class="box">A carregar...</div>
+
+  <h2>Matriz de deduções</h2>
+  <p>Fonte: <code>audit-manifest.json</code> (versão do <code>tool.js</code> <span id="ver">-</span>), gerado por <code>make-audit.mjs</code> a partir de <code>deducoes.html</code>, <code>tool.js</code>, <code>year_snapshots.json</code> e <code>legal_sources.json</code>.</p>
+  <p><span class="badge" id="fresh-when">A confirmar as fontes na lei...</span></p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr>
+        <th>Cód.</th><th>Setor</th><th>Taxa</th><th>Teto</th><th>Onde no código</th><th>Artigo / fonte (DRE)</th><th>Fonte hoje</th><th>Verif.</th><th>Anos</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <p class="mono">Verif. = valor confirmado contra o diploma no DRE. "Fonte hoje" = um robô nosso foi à lei confirmar que o artigo, a taxa e o teto ainda lá estão (não só que a página abre). O teto do C07 (rendas) varia por ano; os setores marcados "% do IVA" partilham um teto conjunto de 250 EUR (art. 78.º-F). Os setores do art. 78.º-F com a taxa base de 15% foram confirmados no diploma em vigor em 2023-2025 (taxa e teto conjunto de 250 EUR), por isso mostram esses anos. Um traço ("-") em "Verif."/"Anos" não é um valor pintado de verde sem prova: são os três setores do 78.º-F com taxa especial (transportes e jornais a 100%, ginásios a 30%) cuja taxa específica ainda não tem verificação documental própria por ano - ficam "-" até a confirmarmos (ver o trabalho em curso). A coluna "Fonte hoje" cobre-os na mesma.</p>
+
+  <h2>Como saber que isto está certo (sem confiar em nós)</h2>
+  <p>Imagina uma máquina de fazer as contas do teu IRS. Quase todas te dão só um número e tens de acreditar. Esta mostra as contas todas à vista, como um trabalho de casa. Qualquer pessoa - sem conta, sem nos pedir nada, sem o teu perfil e sem o bookmarklet - pode confirmar três coisas:</p>
+  <ol>
+    <li><b>De onde vem cada número.</b> Cada linha em cima tem um link para a lei oficial. Carregas, e vês a mesma taxa e o mesmo limite escritos na lei. É como uma receita de bolo que diz de onde veio cada ingrediente: podes ir à loja confirmar.</li>
+    <li><b>Que a máquina é mesmo esta.</b> Em <a href="/verificar">/verificar</a>, o teu computador tira uma "impressão digital" ao programa e compara com a que publicámos. Se forem iguais, ninguém trocou o programa às escondidas. É como o selo de uma garrafa: se está intacto, ninguém lhe mexeu.</li>
+    <li><b>Que a máquina faz bem as contas.</b> Damos-lhe faturas de mentira, de que já se sabe o resultado, e ela tem de acertar. Corre <code>npm install &amp;&amp; npm test</code> e vês a máquina a dar a resposta certa. É como pôr uma balança à prova com um peso que já sabes quanto pesa: se marca certo, é de confiança. (São faturas de teste, não precisas de nenhuma conta real.)</li>
+  </ol>
+  <p>E porque as leis mudam, um robô nosso vai à lei de vez em quando confirmar que os números não ficaram velhos: é a coluna <b>"Fonte hoje"</b> na tabela. Se algo mudar, fica a vermelho.</p>
+  <p class="mono">Para o rigor técnico: clona a <i>tag</i> desta versão em github.com/nobodykr/efatura-helper, corre <code>node make-versions.mjs</code> (a impressão) e <code>node make-audit.mjs</code> (esta tabela) - têm de dar exatamente o mesmo.</p>
+  <p>Ver também: <a href="/deducoes">as deduções explicadas</a> · <a href="/verificar">verificação da integridade</a> · <a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">código-fonte</a>.</p>
+</main>
+<footer class="wrap"><a href="/">Fatura Boa</a> &middot; <a href="/privacidade">Privacidade</a> &middot; <a href="/termos">Termos</a> &middot; <a href="/verificar">Verificar</a></footer>
+<script>
+(function(){
+  function esc(s){ return String(s==null?"":s).replace(/[<>&]/g,function(c){return {"<":"&lt;",">":"&gt;","&":"&amp;"}[c];}); }
+  var LBL = { OK:"sim", MUDOU:"MUDOU", REVOGADO:"REVOGADO", INACESSIVEL:"?", SKIP:"-" };
+  Promise.all([
+    fetch("/audit-manifest.json",{cache:"no-store"}).then(function(x){return x.json();}),
+    fetch("/audit-freshness.json",{cache:"no-store"}).then(function(x){return x.json();}).catch(function(){return null;})
+  ]).then(function(a){
+    var m=a[0], f=a[1], fmap={};
+    document.getElementById("ver").textContent = m.tool_version || "?";
+    if(f && f.sources) f.sources.forEach(function(s){ fmap[s.id]=s.status; });
+    var fw=document.getElementById("fresh-when");
+    if(f && f._checked){ var chg=(f.sources||[]).filter(function(s){return s.status!=="OK"&&s.status!=="SKIP";}).length;
+      fw.textContent = "Fontes confirmadas na lei em "+f._checked+(chg?" - "+chg+" precisam de revisão":" - todas a bater."); }
+    else { fw.textContent="Frescura das fontes: ainda não confirmada."; }
+    var tb = document.getElementById("tbody");
+    (m.rows||[]).forEach(function(r){
+      var tr = document.createElement("tr");
+      function td(html){ var d=document.createElement("td"); d.innerHTML=html; tr.appendChild(d); }
+      td("<code>"+esc(r.code)+"</code>");
+      td(esc(r.sector));
+      td(esc(r.rate));
+      td(r.ceiling_eur!=null ? esc(r.ceiling_eur)+" &euro;" : "-");
+      td("<code>"+esc(r.code_location)+"</code>");
+      td(r.source_url ? '<a href="'+esc(r.source_url)+'" target="_blank" rel="noopener">'+esc(r.article||"fonte")+"</a>" : esc(r.article||"-"));
+      var st=fmap[r.source_id]; var cls = st==="OK"?"fok":((!st||st==="SKIP")?"":"fbad");
+      td('<span class="'+cls+'">'+esc(st?(LBL[st]||st):"-")+"</span>");
+      td(r.verified===true?"sim":(r.verified===false?"nao":"-"));
+      td(r.effective_years ? esc(r.effective_years.join(", ")) : "-");
+      tb.appendChild(tr);
+    });
+    var d = document.getElementById("drift");
+    if(m.drift && m.drift.length){
+      d.className="box bad";
+      d.innerHTML="<b>Inconsistências detetadas ("+m.drift.length+"):</b><ul>"+m.drift.map(function(x){return "<li>"+esc(x)+"</li>";}).join("")+"</ul>";
+    } else {
+      d.className="box ok";
+      d.textContent="Sem inconsistências: a página, o código, os valores verificados e as fontes legais concordam.";
+    }
+  }).catch(function(e){
+    document.getElementById("drift").className="box bad";
+    document.getElementById("drift").textContent="Não consegui carregar audit-manifest.json: "+(e&&e.message||e);
+  });
+})();
+</script>
+</body>
+</html>
