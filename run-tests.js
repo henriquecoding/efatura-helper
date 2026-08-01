@@ -30,6 +30,8 @@ var ARGS = {
   "test-mobile-nav.js": [],
   "test-nojs.js": [],
   "test-a11y-static.js": [],
+  "test-legal-index.js": [],
+  "test-profile-states.js": [],
   "test-render.js": [],
   // no argument = lint every .html. Passing it the default "tool.js" made it find no <style>
   // block, skip, and report PASS - a green test that checked nothing.

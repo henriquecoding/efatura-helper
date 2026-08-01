@@ -65,8 +65,8 @@ The three that matter most, so they are never not loaded:
 
 ## 5. Working rules
 
-- Run `npm test` before saying anything is done. 25 checks; all must pass. `test-network.js` needs a
-  browser — it reports SKIP without one, and a SKIP is not a pass. Set `CHROME_PATH` and get 25/25.
+- Run `npm test` before saying anything is done. 27 checks; all must pass. `test-network.js` needs a
+  browser — it reports SKIP without one, and a SKIP is not a pass. Set `CHROME_PATH` and get 27/27.
 - `npm run dev` → http://localhost:4173.
 - The browser pane does not composite frames here. To actually *see* a page, render it with
   `playwright-core` and the local Chrome, and look at the PNG. Do not claim a visual result you
