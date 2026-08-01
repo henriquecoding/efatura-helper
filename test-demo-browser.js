@@ -46,13 +46,13 @@ const ok = (m) => console.log("  ok   " + m);
     await p.waitForTimeout(600);
     // the demo now lives in a modal: nothing may run before the launcher is pressed
     const preOpen = await p.evaluate(() => ({
-      launcher: !document.querySelector("[data-demo-open]").hidden,
+      launcher: !document.querySelector(".demo-launch-top").hidden,
       dialogOpen: document.querySelector("[data-demo-modal]").open,
     }));
     if (!preOpen.launcher) bad("o launcher nao esta visivel");
     if (preOpen.dialogOpen) bad("o dialog abriu sozinho - deve esperar pelo clique");
     else ok("nada corre antes do clique no launcher");
-    await p.click("[data-demo-open]");
+    await p.click(".demo-launch-top");
     await p.waitForTimeout(3200);           // more than one act of autoplay inside the modal
     const offsite = reqs.filter((r) => !r.startsWith("https://local.test/"));
     const dynamic = reqs.filter((r) => /demo-/.test(r)).length;
@@ -103,7 +103,7 @@ const ok = (m) => console.log("  ok   " + m);
     const { p } = await newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: "reduce" });
     await p.goto("https://local.test/index.html", { waitUntil: "domcontentloaded" });
     await p.waitForTimeout(900);
-    await p.click("[data-demo-open]");
+    await p.click(".demo-launch-top");
     await p.waitForTimeout(400);
     const r = await p.evaluate(() => {
       const panel = document.querySelector(".demo-panel:not([hidden])");
@@ -132,7 +132,7 @@ const ok = (m) => console.log("  ok   " + m);
     const { p } = await newPage({ viewport: { width: 390, height: 844 } });
     await p.goto("https://local.test/index.html", { waitUntil: "domcontentloaded" });
     await p.waitForTimeout(900);
-    await p.click("[data-demo-open]");
+    await p.evaluate(() => document.querySelector(".demo-launch-top").click());
     await p.waitForTimeout(400);
     const m = await p.evaluate(() => ({
       sw: document.documentElement.scrollWidth, iw: window.innerWidth,

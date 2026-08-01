@@ -20,9 +20,11 @@
     if (!FIX || !CORE || !section) return;
     var rootShell = section.querySelector("[data-demo-root]");
     var summary = section.querySelector("[data-demo-summary]");
-    var launcher = section.querySelector("[data-demo-open]");
+    // Any number of triggers may open the demo (the main one sits beside the search, a second
+    // in the section itself); the dialog is one.
+    var launchers = Array.prototype.slice.call(document.querySelectorAll("[data-demo-open]"));
     var modal = section.querySelector("[data-demo-modal]");
-    if (!rootShell || !launcher || !modal) return;
+    if (!rootShell || !launchers.length || !modal) return;
 
     var reduced = false, fineHover = false;
     try {
@@ -408,9 +410,14 @@
       }
       var play = e.target.closest ? e.target.closest(".demo-play") : null;
       if (play) {
+        // Play is an explicit intent to RUN: it clears every user-side block, including a stale
+        // `focus` left by a tab click (which otherwise parked the clock until focus wandered off
+        // and the scene burst into motion unprompted - the bug this comment is pinned to).
         blocks.remove("manual");
         blocks.remove("completed");
         blocks.remove("explicit");
+        blocks.remove("focus");
+        blocks.remove("hover");
         completed = false;
         if (reduced) {           // manual step-through, no motion
           var nx = (act + 1) % FIX.journeys[active].acts.length;
@@ -424,6 +431,7 @@
     });
 
     pauseBtn.addEventListener("click", function () {
+      if (blocks.has("completed")) return;   // a finished run has nothing to pause; Repetir restarts
       if (blocks.has("explicit")) {
         blocks.remove("explicit");
         blocks.remove("manual");
@@ -472,12 +480,17 @@
     selectJourney(0, { auto: true });
     blocks.add("offscreen");
     rootShell.hidden = false;
-    launcher.hidden = false;
+    launchers.forEach(function (l) { l.hidden = false; });
     if (summary) summary.hidden = true;
 
     function openModal() {
       if (typeof modal.showModal === "function") modal.showModal();
       else modal.setAttribute("open", "");       // jsdom and old engines: non-modal fallback
+      // showModal focuses the first focusable element - in some engines that is a TAB, whose
+      // focusin would arm the `focus` block and kill the advertised autoplay at birth. Focus the
+      // transport (exempt) and clear any stale focus reason before deciding to play.
+      try { panels[active].querySelector(".demo-play").focus(); } catch (e) {}
+      blocks.remove("focus");
       blocks.remove("offscreen");
       if (!reduced && act === 0 && !completed) {
         // first open plays once from the top; a re-open resumes wherever it was left
@@ -491,7 +504,7 @@
       if (modal.open && typeof modal.close === "function") modal.close();
       else modal.removeAttribute("open");
     }
-    launcher.addEventListener("click", openModal);
+    launchers.forEach(function (l) { l.addEventListener("click", openModal); });
     closeBtn.addEventListener("click", closeModal);
     modal.addEventListener("close", function () { blocks.add("offscreen"); });
     modal.addEventListener("cancel", function () { blocks.add("offscreen"); });

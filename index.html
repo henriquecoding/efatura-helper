@@ -1317,6 +1317,26 @@
   </p>
   <p class="sb-status visually-hidden" id="sb-status" role="status"></p>
   <div id="sb-result" class="sb-result" hidden></div>
+
+  <!-- The demo launcher lives HERE, beside the actual tool (owner decision 01-08-2026: "onde
+       esta de fato a ferramenta, nao la embaixo"). The #demonstracao section further down keeps
+       the no-JS summary and a second trigger for whoever scrolled past. -->
+  <button type="button" class="demo-launch demo-launch-top" data-demo-open hidden>
+    <span class="demo-launch-device" aria-hidden="true">
+      <span class="dl-screen">
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-grafico"></use></svg>
+      </span>
+      <span class="dl-base"></span>
+    </span>
+    <span class="demo-launch-txt">
+      <b>Ver a demonstração guiada</b>
+      <span class="dl-sub">Sete jornadas encenadas, passo a passo — do NIF ao plano de faturas.</span>
+      <span class="dl-meta mono">Dados ilustrativos &middot; nada é submetido &middot; ~2 min</span>
+    </span>
+    <span class="demo-launch-go" aria-hidden="true">
+      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-seta"></use></svg>
+    </span>
+  </button>
 </div>
 
 <!-- The hero carries NO action. Every control lives in the search above it, which is the one place
@@ -1570,21 +1590,9 @@
        well-labelled launcher opens it in a modal, plays once, and closing it returns focus here.
        The launcher is hidden until the scripts mount, so without JavaScript only the honest
        summary above exists - a button that does nothing is worse than no button. -->
-  <button type="button" class="demo-launch" data-demo-open hidden>
-    <span class="demo-launch-device" aria-hidden="true">
-      <span class="dl-screen">
-        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-grafico"></use></svg>
-      </span>
-      <span class="dl-base"></span>
-    </span>
-    <span class="demo-launch-txt">
-      <b>Ver a demonstração guiada</b>
-      <span class="dl-sub">Sete jornadas encenadas, passo a passo — do NIF ao plano de faturas.</span>
-      <span class="dl-meta mono">Dados ilustrativos &middot; nada é submetido &middot; ~2 min</span>
-    </span>
-    <span class="demo-launch-go" aria-hidden="true">
-      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-seta"></use></svg>
-    </span>
+  <button type="button" class="btn btn-alt demo-launch-again" data-demo-open hidden>
+    <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-monitor"></use></svg>
+    Abrir a demonstração guiada
   </button>
 
   <dialog class="demo-modal" data-demo-modal aria-label="Mesa Fiscal — demonstração guiada com dados ilustrativos">

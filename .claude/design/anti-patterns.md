@@ -19,8 +19,10 @@ These are the things that make a page look like it was generated. They are banne
    rail only — requested explicitly as an Apple-inspired frame. The blur never enters the content
    panel, never carries meaning, has a solid fallback that precedes the `@supports` promotion, and
    is validated for contrast, `prefers-reduced-transparency` and `forced-colors` by
-   `test-design.js`. The exception does not generalise: a second glass surface anywhere else is
-   still this ban firing.*
+   `test-design.js`. A second, equally circumscribed exception (same date, same owner decision): the primary
+   navigation capsule wears the same material - solid fallback first, blur only via `@supports`,
+   `prefers-reduced-transparency` restores the solid surface, pinned by `test-design.js`. Any
+   OTHER glass surface is still this ban firing.*
 2. **Neumorphism.** Soft extruded plastic. Banned outright.
 3. **Purple/violet gradient anything.** The single strongest "an AI made this" signal in 2026.
 4. **Gradient text.** Especially on headings.

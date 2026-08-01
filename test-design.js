@@ -153,9 +153,21 @@ console.log("\nshell - composition");
    *    detached from the page, usually blurred) is the single most generic thing a site can wear,
    *    and it is banned by name in anti-patterns. Pinned by: no blur anywhere on it, and a radius
    *    that is a real corner rather than a pill. */
+  /* The capsule wears LIQUID GLASS by owner decision (01-08-2026, Instagram reference) - the
+   * second documented exception to the glassmorphism ban, after the Mesa Fiscal chrome. The ban
+   * check was inverted deliberately; what it pins now is the DISCIPLINE of the exception:
+   * the base rule stays a solid fallback, blur arrives only via @supports, and
+   * prefers-reduced-transparency restores the solid surface. */
   const navRule = (shellCss.match(/\.primary-nav \{[^}]*\}/) || [""])[0];
-  if (/backdrop-filter|blur\(/.test(navRule)) bad("the primary nav uses blur - capsule/glass nav is banned");
-  else ok("nav has no blur");
+  if (/backdrop-filter/.test(navRule))
+    bad("blur na regra BASE da navbar - o fallback solido tem de vir primeiro, blur so em @supports");
+  else ok("navbar: regra base e um fallback solido");
+  const navSupports = shellCss.match(/@supports[^{]*\{[\s\S]*?\.primary-nav[\s\S]*?backdrop-filter[\s\S]*?\}/);
+  if (!navSupports) bad("a navbar perdeu o vidro decidido a 01-08-2026 (ou ele saiu do @supports)");
+  else ok("navbar: vidro promovido por @supports (excecao documentada #2)");
+  const navRT = /prefers-reduced-transparency[\s\S]{0,400}\.primary-nav[\s\S]{0,200}backdrop-filter:\s*none/.test(shellCss);
+  if (!navRT) bad("navbar: sem override de prefers-reduced-transparency");
+  else ok("navbar: transparencia reduzida devolve a superficie solida");
   /* Capsule BY OWNER DECISION (01-08-2026, Instagram reference) - this check previously pinned
    * a rectangle and was inverted deliberately when the owner chose the pill after seeing both.
    * What still cannot change silently: the capsule is explicit (999px, not an accident of a

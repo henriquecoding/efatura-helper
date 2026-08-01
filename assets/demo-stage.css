@@ -217,10 +217,10 @@
 .demo-field-value {
   font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 1.05rem; min-height: 1.4em;
 }
-/* the caret only blinks while its act is actually running; it is decoration, not meaning */
-.demo-field-value::after { content: "▏"; color: var(--pri); opacity: 0; }
-.demo-item.is-on .demo-field-value:empty::after,
-.demo-item.is-on .demo-field-value::after { opacity: .7; }
+/* the caret belongs ONLY to the field being typed - on a static field it read as a stray bar */
+.demo-field-value::after { content: ""; }
+.demo-field-value[data-typed="1"]::after { content: "▏"; color: var(--pri); opacity: 0; }
+.demo-item.is-on .demo-field-value[data-typed="1"]::after { opacity: .7; }
 
 .demo-bar { max-width: 380px; }
 .demo-bar-head { display: flex; justify-content: space-between; gap: 12px; font-size: .88rem; }
@@ -390,4 +390,16 @@
 @media (forced-colors: active) {
   .demo-launch, .demo-launch-go { border: 1px solid ButtonText; }
   .demo-launch-device .dl-screen { background: Canvas; border-color: CanvasText; }
+}
+
+/* top placement, beside the search: centred, and clearly a door into a demonstration */
+.demo-launch-top { margin: 22px auto 0; }
+.demo-launch-again { margin-top: 16px; }
+.demo-launch-again svg { width: 19px; height: 19px; }
+
+/* narrow titlebar: the visual badge folds before the bar wraps; role=status keeps announcing */
+@media (max-width: 560px) {
+  .demo-live { display: none; }
+  .demo-titlebar { gap: 10px; }
+  .demo-pause { padding: 7px 10px; font-size: .8rem; }
 }
