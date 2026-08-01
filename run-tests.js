@@ -1,8 +1,5 @@
-/* Local test runner. The suite has no runner of its own: .github/workflows only gates the three
- * dependency-free checks (node --check, check-functions, test-deducoes-sync), and the other twelve
- * tests are meant to be invoked by hand with the file under test as argv[2]. Running `node test-*.js`
- * with no argument just throws ERR_INVALID_ARG_TYPE, which reads like a broken test rather than a
- * missing argument. This maps each test to the argument it actually wants and reports one line each.
+/* Local test runner. It maps each test to the argument it actually wants and reports one line each.
+ * The complete suite is also the CI gate; browser checks auto-detect the system Chrome.
  *
  *   node run-tests.js            # everything
  *   node run-tests.js network    # only tests whose name contains "network"
@@ -36,12 +33,17 @@ var ARGS = {
   "test-demo-core.js": [],
   "test-demo-a11y.js": [],
   "test-demo-browser.js": [],
+  "test-shell-browser.js": [],
+  "test-about-structure.js": [],
+  "test-profile-contract.js": [],
+  "test-profile-egress.js": [],
+  "test-versions-provenance.js": [],
   "test-profile-states.js": [],
   "test-render.js": [],
   // no argument = lint every .html. Passing it the default "tool.js" made it find no <style>
   // block, skip, and report PASS - a green test that checked nothing.
   "test-design.js": [],
-  // reads functions/api/feedback.js and index.html directly
+  // reads functions/api/feedback.js, sobre.html and assets/about.js directly
   "test-sanitize.js": []
 };
 
@@ -80,6 +82,11 @@ var pass = 0, fail = 0, skip = 0, failed = [];
 tests.forEach(function (f) {
   var needsChrome = fs.readFileSync(path.join(ROOT, f), "utf8").indexOf("playwright-core") !== -1;
   if (needsChrome && !chrome) {
+    if (process.env.CI) {
+      fail++; failed.push(f);
+      console.log(pad(f) + "FAIL  CI requires a real Chrome/Edge browser");
+      return;
+    }
     skip++;
     console.log(pad(f) + "SKIP  no Chrome/Edge found - set CHROME_PATH to run this one");
     return;

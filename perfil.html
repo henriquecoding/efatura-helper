@@ -60,14 +60,13 @@
     <!-- analytics: Umami self-hosted, sem cookies e sem dados pessoais -->
     <script defer src="https://analytics.d1060.com/script.js" data-website-id="1e64e3e0-fe5f-44d0-895b-ac8bfadd3538" data-domains="faturas.diogoandrade.com" data-exclude-search="true" data-exclude-hash="true"></script>
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/demo-stage.css">
 <link rel="stylesheet" href="/assets/pages/situacao.css">
+<script defer src="/assets/profile-contract.js"></script>
 <script defer src="/assets/site.js"></script>
 <script defer src="/assets/situacao.js"></script>
 <link rel="canonical" href="https://faturas.diogoandrade.com/perfil">
-<link rel="stylesheet" href="/assets/demo-stage.css">
-<script defer src="/assets/demo-fixtures.js"></script>
-<script defer src="/assets/demo-stage-core.js"></script>
-<script defer src="/assets/demo-stage.js"></script>
+<script defer src="/assets/demo-loader.js"></script>
 </head>
 <body data-home-mode="situacao">
 <!-- Fatura Boa (c) 2026 Diogo Andrade. Licenca PolyForm Noncommercial 1.0.0
@@ -102,15 +101,19 @@
   </a>
 
   <nav class="primary-nav" aria-label="Principal">
-    <a href="/" data-mode-link="empresa"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-empresa"></use></svg><span>Empresa</span></a>
-    <a href="/perfil" data-mode-link="situacao" aria-current="page"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-situacao"></use></svg><span class="nav-long">A minha situação</span><span class="nav-short" aria-hidden="true">Situação</span></a>
-    <a href="/deducoes" data-mode-link="deducoes"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-deducoes"></use></svg><span>Deduções</span></a>
-    <a href="/base-legal" data-mode-link="legal"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-legal"></use></svg><span class="nav-long">Base legal e fiscal</span><span class="nav-short" aria-hidden="true">Base legal</span></a>
-    <a class="nav-help" href="/sobre#ajuda"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-ajuda"></use></svg><span>Ajuda</span></a>
+    <a href="/" data-mode-link="empresa" aria-label="Empresa"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-empresa"></use></svg><span>Empresa</span></a>
+    <a href="/perfil" data-mode-link="situacao" aria-label="A minha situação" aria-current="page"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-situacao"></use></svg><span class="nav-long">A minha situação</span><span class="nav-short" aria-hidden="true">Situação</span></a>
+    <a href="/deducoes" data-mode-link="deducoes" aria-label="Deduções"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-deducoes"></use></svg><span>Deduções</span></a>
+    <a href="/base-legal" data-mode-link="legal" aria-label="Base legal e fiscal"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-legal"></use></svg><span class="nav-long">Base legal e fiscal</span><span class="nav-short" aria-hidden="true">Base legal</span></a>
+    <a class="nav-help" href="/sobre"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-ajuda"></use></svg><span>Sobre</span></a>
     <button class="nav-menu" type="button" aria-expanded="false" aria-controls="site-menu"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-menu"></use></svg><span>Menu</span></button>
   </nav>
 
-  <div class="site-menu" id="site-menu" hidden>
+  <dialog class="site-menu" id="site-menu" aria-labelledby="site-menu-title">
+    <div class="site-menu-head">
+      <h2 id="site-menu-title">Navegação completa</h2>
+      <button class="site-menu-close" type="button" data-menu-close><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-fechar"></use></svg><span>Fechar</span></button>
+    </div>
     <div class="menu-cols">
       <div>
         <h2>Usar</h2>
@@ -127,7 +130,7 @@
           <li><a href="/verificar">Verificar o código</a></li>
           <li><a href="/auditoria">Auditoria</a></li>
           <li><a href="/sobre">Sobre</a></li>
-          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
+          <li><a href="https://github.com/henriquecoding/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
         </ul>
       </div>
       <div>
@@ -139,14 +142,14 @@
         </ul>
       </div>
       <div>
-        <h2>Ajuda</h2>
+        <h2>Sobre e ajuda</h2>
         <ul>
           <li><a href="/sobre#ajuda">Como funciona</a></li>
-          <li><a href="/#relato">Reportar um erro</a></li>
+          <li><a href="/sobre#relato">Reportar um erro</a></li>
         </ul>
       </div>
     </div>
-  </div>
+  </dialog>
 </div>
 <!-- FB:SHELL:END -->
 <header class="page-hero situacao-hero"><div class="wrap hero-grid">
@@ -162,7 +165,7 @@
   </p>
 </div>
 <!-- FB:DEMO:START (gerado por make-shell.mjs - nao editar a mao) -->
-<button type="button" class="demo-launch demo-launch-top" data-demo-open data-demo-start="situacao" hidden>
+<button type="button" class="demo-launch demo-launch-compact" data-demo-open data-demo-start="situacao" hidden>
   <span class="demo-launch-device" aria-hidden="true">
     <span class="dl-screen">
       <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-grafico"></use></svg>
@@ -170,8 +173,8 @@
     <span class="dl-base"></span>
   </span>
   <span class="demo-launch-txt">
-    <b>Ver a demonstração guiada</b>
-    <span class="dl-sub">Sete jornadas encenadas, passo a passo — do NIF ao plano de faturas.</span>
+    <b>Ver como funciona: A minha situação</b>
+    <span class="dl-sub">Explicação encenada, passo a passo.</span>
     <span class="dl-meta mono">Dados ilustrativos &middot; nada é submetido</span>
   </span>
   <span class="demo-launch-go" aria-hidden="true">
@@ -343,7 +346,7 @@
           <li><a href="/verificar">Verificar o código</a></li>
           <li><a href="/auditoria">Auditoria</a></li>
           <li><a href="/sobre">Sobre</a></li>
-          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
+          <li><a href="https://github.com/henriquecoding/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
         </ul>
       </div>
       <div>
@@ -380,66 +383,9 @@
 <script>
 (function(){
   var PKEY = "fb-profile-v1";
-  var SHARE_KEY = "fb-profile-share";                 // remembers the opt-in choice
-  var API = "https://cae-db.diogoandrade.com";
-  function shareOn(){ try { return localStorage.getItem(SHARE_KEY) === "1"; } catch(e){ return false; } }
-
-  // OPT-IN, STRUCTURE-ONLY contribution. Sends the SHAPE skeletons of the AT/Seg-Social responses
-  // (field names + types, e.g. {aaData:[{...keys}], iTotalRecords:"number"}) so we can pin the schema
-  // of endpoints not yet parsed and build readers for them. By construction it carries NO values and
-  // NO name/NIF - only the skeleton the reader captured; the server further coerces every leaf to a
-  // type token. Fires only when the box is ticked. Fails silently: contributing is never a blocker.
-  function sendShare(store){
-    if (!shareOn()) return;
-    // Flatten to { endpointURL: skeleton } - the sink groups by endpoint (the URL is the schema key),
-    // NOT by partition. s.shape is already { endpointURL: skeleton }, so merge them across partitions.
-    var shapes = {};
-    PARTITIONS.forEach(function(p){
-      var s = store.partitions[p.id];
-      if (s && s.shape) Object.keys(s.shape).forEach(function(url){ shapes[url] = s.shape[url]; });
-    });
-    if (!Object.keys(shapes).length) return;
-    try {
-      fetch(API + "/shapes", { method:"POST", headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ consent:true, shapes:shapes }) }).catch(function(){});
-    } catch(e){}
-  }
-  // Anonymous recovered-euro counter: the hashed user id (from the e-Fatura reader, never the NIF) +
-  // the total STILL-RECOVERABLE amount (open correction windows only). Same opt-in as the shapes.
-  function sendCounter(store){
-    if (!shareOn()) return;
-    var ef = assemble(store).detalhes.efatura;
-    if (!ef || !ef.uid) return;
-    var total = 0;
-    (ef.reAudit||[]).forEach(function(x){
-      // Soma o ACONSELHADO (setor do CAE principal do emitente), NUNCA o maximo teorico: esse inclui
-      // setores secundarios e a propria pagina diz que "nao e uma recomendacao". Um contador publico
-      // alimentado pelo maximo teorico anunciaria dinheiro que nos proprios desaconselhamos.
-      var val = (x && x.recuperavelAconselhado != null) ? x.recuperavelAconselhado : 0;
-      if (val > 0){ var w = resubmissionWindows(x.ano); if (w.recover.open) total += val; }
-    });
-    if (!(total > 0)) return;
-    // O id (ja PBKDF2 do NIF, ver tool.js) segue CIFRADO para a chave publica do servidor: quem
-    // esteja no caminho (logs de WAF/proxy) ve so ciphertext, e como o padding OAEP e aleatorio,
-    // dois envios do MESMO utilizador nem sequer sao ligaveis entre si. A chave esta AFIXADA aqui
-    // - e nao pedida por fetch - para viajar com a mesma verificacao de repo/SRI que o resto da
-    // ferramenta; rodar a chave = novo par + nova constante + bump de versao.
-    encryptCounterId(ef.uid).then(function(idEnc){
-      if (!idEnc) return;
-      return fetch(API + "/counter", { method:"POST", headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ consent:true, idEnc: idEnc, recuperavel: Math.round(total*100)/100 }) });
-    }).catch(function(){});
-  }
-  var COUNTER_PUBKEY_B64 = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyxHHErlqx3sAmH8J2b2soAD39QOlp2RfiJZ9QZQMwITbK7/1OAzAfJ5SwUJCFknYRbUkvhh9mLuCJPPia3gqrHsaW4rXPAuJMV1czRUfbiHmf2Y3QMMe1wxSKQC2TS3c4vR+qLshG/H25cNoIBurcZ+7svBaOP4TxOt23HXme3CSAS+cca/4lTegovnR0QFmxvRE/r+aBR0okDAgnhgXZhNyB1Zv7b3Q98RoYhc/siSuFYiMKDYpHUZ7EX7NNYYzAbYox1jvAnFj7RdJ+kDTTSigJ4fFOJIH2AAChOuGzybI/wEpHuXbxSOBnN2eEq6a7PWTbz2+PtM72NLzUqlGpQIDAQAB";
-  function encryptCounterId(uid){
-    try {
-      var der = Uint8Array.from(atob(COUNTER_PUBKEY_B64), function(c){ return c.charCodeAt(0); });
-      return crypto.subtle.importKey("spki", der.buffer, { name:"RSA-OAEP", hash:"SHA-256" }, false, ["encrypt"])
-        .then(function(k){ return crypto.subtle.encrypt({ name:"RSA-OAEP" }, k, new TextEncoder().encode(uid)); })
-        .then(function(ct){ return btoa(String.fromCharCode.apply(null, new Uint8Array(ct))); })
-        .catch(function(){ return null; });
-    } catch(e){ return Promise.resolve(null); }
-  }
+  // Retira a preferência deixada pela contribuição opcional das versões anteriores. O perfil
+  // continua inteiramente local e não possui qualquer caminho de envio para um servidor externo.
+  try { localStorage.removeItem("fb-profile-share"); } catch(e){}
   // Mirrors the PARTITIONS list in tool.js (kept in sync by hand - two files, two origins, no
   // shared module). id + where to go to read each one.
   var PARTITIONS = [
@@ -926,9 +872,7 @@
         if (ra && (ra.recuperavel > 0.5 || ra.recuperavelAconselhado > 0.5)){
           // DUAS ABAS (pedido do Diogo): "Otimizado" e a que abre por omissao (o numero maximo), e
           // "Aconselhado" mostra so o que se defende. As duas ficam sempre no DOM; a barra de abas
-          // troca a visibilidade. O contador publico soma SEMPRE o aconselhado, mesmo com a aba
-          // Otimizado aberta - anunciar publicamente um valor que a propria pagina desaconselha seria
-          // desonesto.
+          // troca a visibilidade.
           var fmtSet = function(o){ return Object.keys(o||{}).map(function(k){ return esc(k)+' ('+o[k]+')'; }).join(', '); };
           var acon = ra.recuperavelAconselhado || 0, otim = ra.recuperavel || 0;
           var aberta = wnd.recover.open;
@@ -1030,13 +974,6 @@
       });
       h += '<div class="w" style="margin-top:10px;color:var(--amber)">Prazos <b>estimados</b> pelo calendário do IRS. Confirma a data da <b>tua</b> liquidação de cada ano (o prazo conta a partir dela). Base legal: CPPT art. 59.º e 70.º, LGT art. 78.º.</div></details>';
     }
-    // opt-in contribution
-    h += '<label style="display:block;background:var(--bg2);border:1px solid var(--rule);border-radius:var(--r);padding:10px 12px;margin-top:14px;font-size:.85rem;cursor:pointer">'+
-      '<input type="checkbox" id="share" '+(shareOn()?'checked':'')+' style="margin-right:6px">'+
-      'Ajudar a melhorar a ferramenta, de forma <b>anónima</b>. '+
-      'Envia a <b>estrutura</b> das respostas das Finanças (os nomes dos campos) e o <b>total que dá para recuperar</b> '+
-      'que a ferramenta te encontrou - identificado por um código sem retorno, <b>nunca o teu nome nem NIF</b>. '+
-      'Assim cobrimos mais situações e mostramos quanto já ajudámos a poupar. Podes desligar quando quiseres.</label>';
     h += '<div class="card">';
     // Debug: copy the response STRUCTURES (keys+types, values redacted) to validate the readers.
     // Only appears once at least one partition captured a shape. Safe to paste - carries no values.
@@ -1098,11 +1035,6 @@
     });
     var rs = document.getElementById("reset");
     if (rs) rs.onclick = function(ev){ ev.preventDefault(); try{ localStorage.removeItem(PKEY); }catch(e){} render(); };
-    var sh = document.getElementById("share");
-    if (sh) sh.onchange = function(){
-      try { localStorage.setItem(SHARE_KEY, sh.checked ? "1" : "0"); } catch(e){}
-      if (sh.checked) { sendShare(load()); sendCounter(load()); }   // contribute the moment they opt in
-    };
   }
 
   // Re-render when another tab writes the profile (the bookmarklet may land in a different tab)
@@ -1115,7 +1047,6 @@
 
   var added = ingestHash();
   render(added);
-  if (added) { sendShare(load()); sendCounter(load()); }   // a new partition arrived - contribute if opted in
 })();
 </script>
 </body>

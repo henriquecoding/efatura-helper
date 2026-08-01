@@ -66,9 +66,10 @@ else ok("'ainda nao lido' tem texto proprio, distinto de um zero");
 // The deductions lens reads the same store; it must treat an expired or absent profile as absent
 // and must NOT fall back to sample numbers in the personal panel.
 const ded = fs.readFileSync("assets/deducoes.js", "utf8");
-if (!/expiresAt/.test(ded))
-  bad("deducoes.js: le o perfil sem verificar a expiracao");
-else ok("deducoes.js trata um perfil expirado como ausente");
+const contract = fs.readFileSync("assets/profile-contract.js", "utf8");
+if (!/FBProfileContract/.test(ded) || !/isExpired|expiresAt/.test(contract))
+  bad("deducoes.js: nao delega a verificacao de expiracao ao contrato central");
+else ok("deducoes.js trata um perfil expirado como ausente atraves do contrato central");
 
 const dedPage = fs.readFileSync("deducoes.html", "utf8");
 if (!/personal-locked/.test(dedPage))

@@ -1148,19 +1148,16 @@
     section:nth-of-type(even){box-shadow:0 0 0 100vw var(--band);clip-path:inset(0 -100vw)}
   }
 </style>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <meta name="license" content="PolyForm Noncommercial 1.0.0; (c) 2026 Diogo Andrade; origem faturas.diogoandrade.com; ref fb-lic-e1ec0c96c9">
     <!-- analytics: Umami self-hosted, sem cookies e sem dados pessoais -->
     <script defer src="https://analytics.d1060.com/script.js" data-website-id="1e64e3e0-fe5f-44d0-895b-ac8bfadd3538" data-domains="faturas.diogoandrade.com" data-exclude-search="true" data-exclude-hash="true"></script>
     <script defer src="/metrics.js"></script>
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/demo-stage.css">
 <link rel="stylesheet" href="/assets/pages/empresa.css">
 <script defer src="/assets/site.js"></script>
 <script defer src="/assets/empresa.js"></script>
-<link rel="stylesheet" href="/assets/demo-stage.css">
-<script defer src="/assets/demo-fixtures.js"></script>
-<script defer src="/assets/demo-stage-core.js"></script>
-<script defer src="/assets/demo-stage.js"></script>
+<script defer src="/assets/demo-loader.js"></script>
 </head>
 <body data-home-mode="empresa">
 <!-- Marker filter for .mark-hl. feTurbulence + feDisplacementMap warps the highlight's edges so
@@ -1212,15 +1209,19 @@
   </a>
 
   <nav class="primary-nav" aria-label="Principal">
-    <a href="/" data-mode-link="empresa" aria-current="page"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-empresa"></use></svg><span>Empresa</span></a>
-    <a href="/perfil" data-mode-link="situacao"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-situacao"></use></svg><span class="nav-long">A minha situação</span><span class="nav-short" aria-hidden="true">Situação</span></a>
-    <a href="/deducoes" data-mode-link="deducoes"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-deducoes"></use></svg><span>Deduções</span></a>
-    <a href="/base-legal" data-mode-link="legal"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-legal"></use></svg><span class="nav-long">Base legal e fiscal</span><span class="nav-short" aria-hidden="true">Base legal</span></a>
-    <a class="nav-help" href="/sobre#ajuda"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-ajuda"></use></svg><span>Ajuda</span></a>
+    <a href="/" data-mode-link="empresa" aria-label="Empresa" aria-current="page"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-empresa"></use></svg><span>Empresa</span></a>
+    <a href="/perfil" data-mode-link="situacao" aria-label="A minha situação"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-situacao"></use></svg><span class="nav-long">A minha situação</span><span class="nav-short" aria-hidden="true">Situação</span></a>
+    <a href="/deducoes" data-mode-link="deducoes" aria-label="Deduções"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-deducoes"></use></svg><span>Deduções</span></a>
+    <a href="/base-legal" data-mode-link="legal" aria-label="Base legal e fiscal"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-legal"></use></svg><span class="nav-long">Base legal e fiscal</span><span class="nav-short" aria-hidden="true">Base legal</span></a>
+    <a class="nav-help" href="/sobre"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-ajuda"></use></svg><span>Sobre</span></a>
     <button class="nav-menu" type="button" aria-expanded="false" aria-controls="site-menu"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-menu"></use></svg><span>Menu</span></button>
   </nav>
 
-  <div class="site-menu" id="site-menu" hidden>
+  <dialog class="site-menu" id="site-menu" aria-labelledby="site-menu-title">
+    <div class="site-menu-head">
+      <h2 id="site-menu-title">Navegação completa</h2>
+      <button class="site-menu-close" type="button" data-menu-close><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-fechar"></use></svg><span>Fechar</span></button>
+    </div>
     <div class="menu-cols">
       <div>
         <h2>Usar</h2>
@@ -1237,7 +1238,7 @@
           <li><a href="/verificar">Verificar o código</a></li>
           <li><a href="/auditoria">Auditoria</a></li>
           <li><a href="/sobre">Sobre</a></li>
-          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
+          <li><a href="https://github.com/henriquecoding/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
         </ul>
       </div>
       <div>
@@ -1249,14 +1250,14 @@
         </ul>
       </div>
       <div>
-        <h2>Ajuda</h2>
+        <h2>Sobre e ajuda</h2>
         <ul>
           <li><a href="/sobre#ajuda">Como funciona</a></li>
-          <li><a href="/#relato">Reportar um erro</a></li>
+          <li><a href="/sobre#relato">Reportar um erro</a></li>
         </ul>
       </div>
     </div>
-  </div>
+  </dialog>
 </div>
 <!-- FB:SHELL:END -->
 
@@ -1330,7 +1331,7 @@
       <p class="lead">Nome, CAE, setor da dedução, morada e IVA — explicado sem linguagem técnica.</p>
     </div>
 <!-- FB:DEMO:START (gerado por make-shell.mjs - nao editar a mao) -->
-<button type="button" class="demo-launch demo-launch-top" data-demo-open data-demo-start="empresa" hidden>
+<button type="button" class="demo-launch demo-launch-compact" data-demo-open data-demo-start="empresa" hidden>
   <span class="demo-launch-device" aria-hidden="true">
     <span class="dl-screen">
       <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-grafico"></use></svg>
@@ -1338,8 +1339,8 @@
     <span class="dl-base"></span>
   </span>
   <span class="demo-launch-txt">
-    <b>Ver a demonstração guiada</b>
-    <span class="dl-sub">Sete jornadas encenadas, passo a passo — do NIF ao plano de faturas.</span>
+    <b>Ver como funciona: Empresa</b>
+    <span class="dl-sub">Explicação encenada, passo a passo.</span>
     <span class="dl-meta mono">Dados ilustrativos &middot; nada é submetido</span>
   </span>
   <span class="demo-launch-go" aria-hidden="true">
@@ -1539,546 +1540,15 @@
 </section>
 
 
-<div class="wrap">
-
-<div class="box draft">
-  <b>Só lê. Não submete nada.</b>
-  <p style="margin:6px 0 0">
-    A ferramenta lê o teu registo e mostra a tua situação, mas <b>não altera nada</b> nas Finanças.
-    Qualquer submissão ou classificação fá-la <b>tu</b>, com o plano à frente. Os números são
-    <b>indicadores para confirmares</b>, não aconselhamento fiscal. Se algo estiver errado,
-    <a id="ghissues2" href="#" target="_blank" rel="noopener">diz-me</a>.
-  </p>
-</div>
-
-<!-- Controlo e prova. This was three equal cards in a row until 30-07-2026 - which is
-     anti-patterns #27, the icon-bold-line-grey-line feature grid, written by the same hand that
-     banned it. It is now a specification list: term on the left, definition on the right, hairline
-     between rows. That is the form a statutory annex uses for exactly this content, it carries the
-     same information in less vertical space, and it cannot be mistaken for a SaaS landing page. -->
-<section id="prova">
-  <h2>Controlo e prova, primeiro</h2>
-  <dl class="spec">
-    <div class="spec-row reveal">
-      <dt><span class="k">sem passwords</span>Corre na tua sessão</dt>
-      <dd>O código corre no teu navegador, na sessão que já tens aberta. Não há credenciais tuas em
-        servidor nenhum, porque nunca chegam a ser pedidas.</dd>
-    </div>
-    <div class="spec-row reveal">
-      <dt><span class="k">código aberto</span>Verificável, não prometido</dt>
-      <dd>Cada versão publicada tem um hash público. Podes <a href="/verificar">confirmar</a> que o
-        que corre é exactamente o código que está no GitHub.</dd>
-    </div>
-    <div class="spec-row reveal">
-      <dt><span class="k">fica contigo</span>Os dados não saem</dt>
-      <dd>As faturas e o resto do registo ficam no navegador. Fechas o separador e desaparecem —
-        não há conta, não há histórico do teu lado nenhum.</dd>
-    </div>
-  </dl>
-</section>
-
-<!-- MESA FISCAL. A guided, FINITE demonstration of the seven journeys, staged inside a laptop
-     frame. Everything on the stage is an illustrative fixture: no network, no storage, no
-     personal data, no execution of the bookmarklet. The translucent material is confined to the
-     device CHROME (the documented exception in .claude/design/anti-patterns.md); the fiscal
-     content panel is opaque paper. Without JavaScript the summary list below carries the same
-     seven destinations, so no fact lives only in the animation. -->
-<section id="demonstracao" aria-labelledby="demo-title">
-  <span class="eyebrow">Demonstração guiada · dados ilustrativos</span>
-  <h2 id="demo-title">Vê o caminho antes de usar</h2>
-  <p class="lead">Escolhe uma funcionalidade e percorre cada passo. A encenação não usa os teus
-    dados, não abre as Finanças e não submete nada.</p>
-
-  <div class="demo-summary" data-demo-summary>
-    <p>JavaScript acrescenta a encenação. As funcionalidades continuam disponíveis:</p>
-    <ul>
-      <li><a href="/#empresa-form">Consultar empresa</a></li>
-      <li><a href="/perfil">A minha situação</a></li>
-      <li><a href="/perfil#instalar">Classificar faturas (instalar a ferramenta)</a></li>
-      <li><a href="/deducoes">Deduções</a></li>
-      <li><a href="/base-legal">Base legal</a></li>
-      <li><a href="/perfil#instalar">Instalar</a></li>
-      <li><a href="/verificar">Verificar</a></li>
-    </ul>
-  </div>
-
-  <!-- The demo does NOT run inline all the time (owner decision 01-08-2026): a deliberate,
-       well-labelled launcher opens it in a modal, plays once, and closing it returns focus here.
-       The launcher is hidden until the scripts mount, so without JavaScript only the honest
-       summary above exists - a button that does nothing is worse than no button. -->
-  <button type="button" class="btn btn-alt demo-launch-again" data-demo-open hidden>
-    <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-monitor"></use></svg>
-    Abrir a demonstração guiada
-  </button>
-
-</section>
-
-<section id="faz">
-  <h2>O que já faz por ti</h2>
-
-  <!-- The example output. It lived in the hero until 30-07-2026, as the second of two ruled tables
-       side by side - see the note on .hero-band. Here it is the only ruled thing in its chapter,
-       it runs the full main column instead of ~470px, and it sits where it belongs semantically:
-       this chapter is literally "what it already does", and this is what it produces.
-       Still example data, still disclosed three ways: the chip, the footer sentence, the
-       aria-label. Round generic figures only - never a plausible personal balance. -->
-  <figure class="ledger" role="group"
-          aria-label="Exemplo do resumo que a ferramenta mostra. Os valores são inventados para ilustrar o formato.">
-    <figcaption class="ledger-head">
-      <span class="lt">Resumo · exemplo</span>
-      <span class="chip-demo">valores inventados</span>
-    </figcaption>
-    <table>
-      <caption class="sr">Exemplo do resumo, com valores inventados</caption>
-      <tbody>
-        <tr class="s-warn">
-          <th scope="row">Faturas por classificar<span>e-Fatura · com setor sugerido para cada uma</span></th>
-          <td class="st">por classificar</td>
-          <td class="v">12</td>
-        </tr>
-        <tr class="s-due">
-          <th scope="row">Teto de saúde já usado<span>o que passar daqui deixa de contar</span></th>
-          <td class="st">quase no limite</td>
-          <td class="v">80%</td>
-        </tr>
-        <tr class="s-ok">
-          <th scope="row">Situação nas Finanças<span>dívidas, coimas e próximos prazos</span></th>
-          <td class="st">regular</td>
-          <td class="v">Sem dívidas</td>
-        </tr>
-      </tbody>
-    </table>
-    <p class="ledger-foot">6 de 6 fontes lidas · <b>não é a situação de ninguém</b>. O que vais ver
-      são os teus dados, lidos na tua sessão, sempre como indicadores para confirmares.</p>
-  </figure>
-
-  <p class="lead">Para muita gente já dá para montar uma visão útil, a partir do que o Estado já sabe.
-    Cada linha diz o que é lido e de onde vem.</p>
-
-  <!-- Rebuilt 30-07-2026. It was a two-column list of "<b>Nome</b> - descrição" preceded by a
-       coloured dot, with "O que ainda não" set as a <p class="lead"> pretending to be a heading.
-       Three things were wrong: the dot carried the validated/unvalidated state in COLOUR ALONE,
-       the bold-dash-description run is the feature-grid texture wearing a list, and a fake heading
-       breaks the document outline for anyone navigating by headings.
-       Now a ruled register: term, source, and a WORD for the state. Same form as the colophon and
-       the search results, so the page has one way of showing a list of facts. -->
-  <h3 class="reg-h">Validado<span>6 fontes</span></h3>
-  <dl class="reg">
-    <div><dt>Faturas do e-Fatura</dt>
-      <dd>o setor certo para cada fatura pendente e quanto já usaste de cada teto</dd>
-      <dd class="src">e-Fatura</dd></div>
-    <div><dt>Rendas</dt>
-      <dd>os teus contratos de arrendamento e recibos (categoria F)</dd>
-      <dd class="src">Finanças</dd></div>
-    <div><dt>Situação fiscal</dt>
-      <dd>dívidas, coimas e os próximos prazos da agenda fiscal</dd>
-      <dd class="src">Finanças</dd></div>
-    <div><dt>Património e IMI</dt>
-      <dd>os imóveis que tens e o respetivo VPT</dd>
-      <dd class="src">Finanças</dd></div>
-    <div><dt>Histórico de IRS</dt>
-      <dd>as liquidações e reembolsos de todos os anos</dd>
-      <dd class="src">Finanças</dd></div>
-    <div><dt>Consultar NIF</dt>
-      <dd>a atividade oficial de qualquer empresa</dd>
-      <dd class="src">SICAE · VIES</dd></div>
-  </dl>
-
-  <h3 class="reg-h dev">Em desenvolvimento<span>confirma sempre</span></h3>
-  <dl class="reg dev">
-    <div><dt>Atividade e recibos verdes</dt>
-      <dd>categoria B. Os números podem estar incompletos, por isso aparecem marcados</dd>
-      <dd class="src">Finanças</dd></div>
-    <div><dt>Regime de IVA</dt>
-      <dd>enquadramento e prazos. Ainda não validado com dados reais</dd>
-      <dd class="src">Finanças</dd></div>
-  </dl>
-</section>
-
-<section><div class="box give">
-  <h2>Apoia esta ferramenta <span class="note">(sem custo nenhum para ti)</span></h2>
-  <p>
-    Isto é gratuito e vai continuar a ser: sem contas, sem subscrições, sem anúncios, e as tuas
-    faturas nunca saem do teu navegador. Se te poupou tempo ou dinheiro e quiseres retribuir, abrir
-    uma conta Revolut pelo link abaixo dá-me uma pequena comissão.
-  </p>
-  <p>
-    <a class="bm" style="background:#0075eb;display:inline-flex;align-items:center;gap:10px"
-       href="https://revolut.com/referral/?referral-code=nobodykr!JUL2-26-AR-L1&amp;geo-redirect"
-       target="_blank" rel="noopener sponsored nofollow">
-      <span style="color:#fff;display:inline-flex"><svg role="img" aria-label="Revolut" style="height:22px;width:auto;fill:currentColor;vertical-align:middle" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 3621.526 800" enable-background="new 0 0 3621.526 800" xml:space="preserve">
-<g>
-	<path d="M3621.526,334.211V211.11h-147.019V50.611h-142.188v585.134c0,53.764,13.519,94.737,40.197,121.784
-		c26.662,27.07,68.208,40.793,123.493,40.793h125.516V675.221h-91.844c-19.981,0-34.316-4.391-42.613-13.065
-		c-7.622-7.936-12.563-27.987-12.563-51.074V334.211H3621.526z"/>
-	<polygon points="1651.305,211.094 1504.294,638.874 1357.284,211.094 1207.912,211.094 1420.136,793.287 1588.453,793.287 
-		1800.676,211.094 	"/>
-	<rect x="2470.098" width="142.188" height="793.28"/>
-	<path d="M3100.572,502.748c0,36.857-5.583,68.922-16.594,95.302c-10.931,26.239-26.584,46.353-46.533,59.77
-		c-19.95,13.417-44.479,20.224-72.882,20.224c-40.652,0-71.329-13.362-91.169-39.695c-20.044-26.615-30.207-66.954-30.207-119.886
-		V211.11h-142.188v323.068c0,50.305,6.289,92.973,18.711,126.802c12.421,33.932,29.485,61.535,50.721,82.026
-		c21.22,20.467,46,35.249,73.65,43.953c27.509,8.657,57.089,13.041,87.938,13.041c44.463,0,81.257-8.061,109.331-23.965
-		c25.612-14.547,47.067-31.555,63.88-50.627l12.735,67.871h124.795V211.11h-142.188V502.748z"/>
-	<path d="M2252.748,241.811c-44.808-24.843-98.015-37.429-158.123-37.429c-59.371,0-112.381,12.586-157.558,37.421
-		c-45.232,24.898-80.771,60.061-105.637,104.508c-24.827,44.408-37.413,97.043-37.413,156.437
-		c0,58.665,12.586,110.931,37.413,155.339c24.851,44.432,60.398,79.587,105.637,104.484c45.177,24.835,98.188,37.421,157.558,37.421
-		c60.107,0,113.314-12.586,158.123-37.429c44.855-24.882,80.206-60.037,105.065-104.477c24.835-44.432,37.429-96.698,37.429-155.339
-		c0-59.371-12.594-112.005-37.429-156.437C2332.939,301.856,2297.595,266.693,2252.748,241.811z M2177.631,657.788
-		c-22.906,14.915-50.831,22.483-82.998,22.483c-31.43,0-59.175-7.567-82.465-22.49c-23.329-14.939-41.625-36.025-54.391-62.68
-		c-12.821-26.678-19.33-57.747-19.33-92.353c0-35.32,6.501-66.569,19.33-92.886c12.759-26.294,31.069-47.388,54.422-62.703
-		c23.282-15.299,51.019-23.055,82.433-23.055c32.151,0,60.061,7.756,82.974,23.039c22.977,15.323,41.107,36.425,53.897,62.727
-		c12.813,26.38,19.314,57.63,19.314,92.879c0,34.528-6.501,65.605-19.314,92.353C2218.715,621.763,2200.592,642.85,2177.631,657.788
-		z"/>
-	<rect x="0" y="195.779" width="147.764" height="597.508"/>
-	<path d="M611.145,229.946c0-126.787-103.246-229.938-230.158-229.938H0V127.61h362.873c57.434,0,105.01,45.122,106.061,100.579
-		c0.525,27.768-9.896,53.975-29.344,73.792c-19.456,19.824-45.451,30.748-73.196,30.748H225.037c-5.019,0-9.104,4.078-9.104,9.097
-		v113.409c0,1.929,0.596,3.772,1.717,5.325l239.835,332.729h175.563L392.656,459.649
-		C513.718,453.571,611.145,351.855,611.145,229.946z"/>
-	<path d="M1065.507,238.423c-42.565-22.592-93.106-34.041-150.218-34.041c-57.183,0-108.311,12.594-151.967,37.445
-		c-43.726,24.874-78.128,60.045-102.242,104.516c-24.09,44.369-36.3,97.372-36.3,157.542c0,58.641,12.398,110.891,36.864,155.307
-		c24.521,44.518,59.888,79.493,105.104,103.951C811.878,787.602,866.011,800,927.632,800c48.886,0,92.785-9.159,130.48-27.235
-		c37.703-18.122,68.483-42.801,91.491-73.352c21.855-29.038,36.598-61.88,43.812-97.607l0.776-3.811h-141.396l-0.667,2.29
-		c-7.787,26.647-22.89,47.702-44.91,62.594c-23.635,16.013-52.666,24.137-86.299,24.137c-28.505,0-54.25-6.109-76.513-18.154
-		c-22.153-11.974-39.476-29.101-51.474-50.917c-12.045-21.894-18.899-48.235-20.365-78.136v-4.674h427.105l0.478-2.611
-		c1.49-8.195,2.447-16.64,2.862-25.133c0.353-8.273,0.557-16.538,0.557-24.882c-0.761-56.406-13.37-106.022-37.468-147.481
-		C1141.91,293.52,1108.064,261.015,1065.507,238.423z M1013.696,348.06c24.294,20.444,39.405,49.498,44.949,86.409H777.476
-		c3.215-23.949,11.167-44.691,23.659-61.707c13.104-17.848,29.893-31.869,49.905-41.679c20.036-9.841,42.032-14.837,65.37-14.837
-		C955.862,316.245,988.594,326.949,1013.696,348.06z"/>
-</g>
-</svg></span>
-      <span>Abrir conta</span>
-    </a>
-      <a class="bm" id="bmc" style="background:#ffdd00;color:#000;display:inline-flex;align-items:center;gap:8px;margin-left:8px"
-         href="https://buymeacoffee.com/diogoandrade" target="_blank" rel="noopener sponsored nofollow">
-        <span aria-hidden="true" style="font-size:1.1em">&#9749;</span>
-        <span>Buy me a coffee</span>
-      </a>
-  </p>
-  <p class="note">
-    <b>Link de referência.</b> Não sou afiliado nem parceiro da Revolut, e não partilho nada teu com
-    eles - o link é só um link. Não precisas de clicar para usar a ferramenta, que funciona
-    exatamente igual de qualquer maneira.
-  </p>
-</div></section>
-
-<section>
-  <h2>Como classificar as faturas pendentes do e-Fatura</h2>
-  <div class="steps">
-    <div class="step"><div class="n" aria-hidden="true">01</div><div>Faz <b>login normal</b> no <a href="https://faturas.portaldasfinancas.gov.pt" target="_blank" rel="noopener">e-Fatura</a>, como sempre fazes.</div></div>
-    <div class="step"><div class="n" aria-hidden="true">02</div><div>Clica no favorito <b>Fatura Boa</b> (instalado abaixo). Ele lê as tuas faturas pendentes e sugere o setor de cada uma <b>com base no teu histórico e na atividade oficial de cada comerciante</b>, já a saltar os setores cujo teto anual esteja cheio.</div></div>
-    <div class="step"><div class="n" aria-hidden="true">03</div><div><b>Revês</b> a tabela. Cada fatura traz duas sugestões: <b>Provável</b> (o que a compra
-      provavelmente foi) e <b>Otimizada</b> (o que dá mais dedução e ainda cabe no teto). Vem
-      selecionada a Provável; clicas na outra se a compra foi mesmo dessa natureza. Depois <b>copias o plano</b> (ou envias para o teu email) e aplicas no e-Fatura. <b>A ferramenta não submete nada.</b></div></div>
+<section class="chapter about-handoff" id="sobre-ajuda" aria-labelledby="sobre-ajuda-h">
+  <div class="wrap">
+    <span class="eyebrow">06 &middot; Sobre, segurança e instruções</span>
+    <h2 id="sobre-ajuda-h"><span class="chapter-no">06</span>Como funciona, do princípio ao fim</h2>
+    <p class="lead">A explicação completa, a instalação, todos os pedidos de rede, a Mesa Fiscal,
+      as fontes e o formulário de erro vivem agora numa página própria, com índice e âncoras estáveis.</p>
+    <p><a class="btn" href="/sobre#ajuda">Abrir Sobre e instruções</a></p>
   </div>
 </section>
-
-<section>
-  <h2>O que acontece quando clicas <span class="note">(todos os pedidos de rede, por ordem)</span></h2>
-  <p class="note">Para quem quiser confirmar antes de correr: isto é a lista completa. Abre o
-    separador Rede do navegador e compara.</p>
-  <ol class="steps" style="padding-left:0;list-style:none">
-    <li class="step"><div class="n" aria-hidden="true">0</div><div>
-      <b>Nada acontece até concordares.</b> Ao abrir, a ferramenta mostra primeiro um aviso e só lê
-      as tuas faturas depois de clicares. Antes disso <b>não há um único pedido de rede</b> - nem
-      sequer o mapa público. Há um teste automático que falha se isto deixar de ser verdade.</div></li>
-    <li class="step"><div class="n" aria-hidden="true">1</div><div>
-      <b>GET <code>cae-db.diogoandrade.com/bucket/&lt;3 dígitos&gt;</code></b> - um pedido por cada
-      grupo em que os teus comerciantes caem (tipicamente algumas dezenas, ~7 KB cada).
-      <b>Não leva nada teu.</b> Repara no detalhe: um grupo são os <b>últimos 3 dígitos</b> do NIF e
-      traz cerca de 300 empresas de uma vez. O servidor fica a saber que tens <b>algum</b>
-      comerciante nesse grupo de 300, <b>nunca qual</b>. É por isso que a ferramenta não pergunta
-      "qual é o setor deste NIF?" - essa pergunta diria ao servidor exactamente onde compras.
-      Antes descarregava o mapa inteiro pela mesma razão; agora faz o mesmo com uma fracção dos
-      dados. Vê o teu IP, como qualquer servidor vê, e mais nada.</div></li>
-    <li class="step"><div class="n" aria-hidden="true">1b</div><div>
-      <b>GET <code>faturas.diogoandrade.com/offers.json</code></b> - o texto e os links da tira de
-      apoio no fundo do Resumo. <b>Não leva nada teu</b> e é <b>dados inertes</b>: a versão fixada
-      valida que cada link é https e escapa cada texto, por isso o feed nunca pode injetar código.
-      Se falhar, aparece a versão que já vem no código. Só é pedido <b>depois</b> de concordares.
-      </div></li>
-    <li class="step"><div class="n" aria-hidden="true">2</div><div>
-      <b>GET <code>obterDocumentosAdquirente</code></b>, no próprio e-Fatura, com a sessão que já
-      tinhas aberta. É o mesmo pedido que a página faz sozinha. As faturas ficam no teu navegador:
-      não passam por nenhum servidor meu.</div></li>
-    <li class="step"><div class="n" aria-hidden="true">3</div><div>
-      <b>Mais nada, a não ser que peças.</b> A partir daqui só há pedidos se <b>ativares</b> algo:
-      a partilha de agregado (opcional, envia seis números); a partilha para <b>melhorar as
-      sugestões</b> (opcional, desligada por omissão - se a ligares, ao aplicares envia por fatura
-      <b>só o NIF do comerciante e o setor</b>, para corrigir o mapa de atividades, <b>nunca valores,
-      datas nem o teu NIF</b>); ou o botão "Enviar anónimo" (quatro números). Se não ativares nada,
-      nada sai.</div></li>
-  </ol>
-  <p class="warn">Nesta versão <b>não existe nenhum pedido de escrita para a AT</b>. O código que
-    submeteria está no repositório, desligado, e há um teste automático que falha se alguma vez
-    passar a submeter.</p>
-  <p class="note"><b>E esta página, em que estás agora?</b> A lista acima é o que a ferramenta faz
-    dentro do e-Fatura. <b>Esta</b> página, por si só, carrega duas coisas de fora: os tipos de letra
-    do <b>Google Fonts</b> e o <b>Cloudflare Turnstile</b> (a verificação anti-spam do formulário de
-    sugestões, mais abaixo). Ambos veem o teu IP e o teu navegador quando abres a página, como em
-    qualquer site que use estes serviços. Nenhum deles é carregado pela ferramenta, por isso nenhum
-    deles chega à página do e-Fatura onde ela corre.</p>
-</section>
-
-<section>
-  <h2>Porque é seguro <span class="note">(e porque devias desconfiar de qualquer site que te peça a password das Finanças)</span></h2>
-  <ul class="safe">
-    <li>A ferramenta <b>corre dentro do teu navegador</b>, na página do e-Fatura onde <b>já estás autenticado</b>. Usa a sessão que já tens.</li>
-    <li><b>Nunca escreves a password</b> em nada nosso. Não há campo de password. Não a vemos, não a guardamos, não existe.</li>
-    <li><b>As tuas faturas nunca saem do teu navegador.</b> Os valores, as datas, o que compraste - nada disso é recebido, guardado ou enviado para lado nenhum nosso. A ferramenta lê apenas as fatias do mapa público onde os teus comerciantes caem, identificadas pelos últimos 3 dígitos do NIF, e não envia nada teu para as obter. <b>Uma exceção, opcional e desligada por omissão:</b> se ligares a partilha para melhorar as sugestões, ao aplicares enviamos por fatura <b>apenas o NIF do comerciante e o setor escolhido</b> (para corrigir esse mapa quando erra), <b>nunca valores, datas nem o teu NIF</b>. Se não a ligares, não sai nada.</li>
-    <li><b>Partilha de agregado, opcional e desligada por omissão.</b> <b>Só faz sentido se entregarem o IRS em conjunto.</b> Quem entrega em separado tem tetos próprios (cada pessoa tem o seu limite de 250 € em despesas gerais, por exemplo) e <b>não deve ativar isto</b>: os números desta página já estão certos para ti. Se entregam em conjunto, a partilha junta os totais das duas contas: enviamos <b>apenas seis números</b> (quanto já usaste de cada teto), nunca faturas, comerciantes, datas ou valores. A chave é <b>gerada ao acaso no teu navegador</b> (256 bits): não é calculada a partir do teu NIF nem do teu email, que aqui nem sequer são lidos. Deixa a caixa vazia para criar um agregado, ou cola uma chave para te juntares a um. <b>A chave é a senha</b>: quem a tiver consegue ler e alterar esses números, por isso partilha-a só com o teu agregado. Se não ativares, nada é enviado.</li>
-    <li><b>Código 100% visível e auditável.</b> Podes ler exatamente o que faz, <a id="gh" href="#" target="_blank" rel="noopener">no GitHub</a>, ou pedir a alguém que perceba para confirmar.</li>
-    <li><b>Nada é submetido, de todo.</b> Nesta versão a ferramenta só lê e analisa. Qualquer alteração à tua declaração é feita por ti, no e-Fatura.</li>
-  </ul>
-  <p class="warn"><b>Atenção:</b> nunca introduzas o teu NIF e password das Finanças numa página cujo endereço não termine em <code>.gov.pt</code>. Esta ferramenta nunca to pede, e é essa a diferença.</p>
-</section>
-
-<section>
-  <h2>Instalar <span class="note">(só funciona no computador)</span></h2>
-  <p class="warn"><b>Isto é para computador, não para telemóvel.</b> A ferramenta é um favorito que
-    corre dentro da página do e-Fatura, e os navegadores de telemóvel não deixam fazer isso. Não é
-    uma limitação que eu possa contornar: as alternativas seriam pedir-te a password, que nunca vou
-    fazer, ou ser uma aplicação oficial da AT, que isto não é nem tem como ser. Se andas no
-    telemóvel, guarda para quando estiveres ao computador.</p>
-  <p><b>Opção 1, a mais rápida:</b> arrasta este botão para a tua barra de favoritos.</p>
-  <p><a class="bm" id="bookmarklet" href="#"> Fatura Boa</a></p>
-
-  <p><b>Opção 2, se arrastar não der:</b> copia o código e cola-o num favorito novo.</p>
-  <p>
-    <button type="button" class="bm" id="copybm" style="border:0">Copiar o código</button>
-    <span id="copymsg" class="note" role="status" aria-live="polite"></span>
-  </p>
-  <details id="howto">
-    <summary>Como colar num favorito novo, por navegador</summary>
-    <div class="howto-body">
-      <p><b>Chrome / Edge / Brave:</b> Ctrl+Shift+O abre o gestor de favoritos. Botão direito na
-        barra, <i>Adicionar página</i>, dá-lhe o nome <i>Fatura Boa</i> e cola o código no campo URL.</p>
-      <p><b>Firefox:</b> Ctrl+Shift+O, depois <i>Organizar</i>, <i>Adicionar marcador</i>, e cola o
-        código no campo <i>Endereço</i>.</p>
-      <p><b>Safari:</b> adiciona qualquer página aos favoritos, depois <i>Editar favoritos</i>,
-        muda o nome e cola o código no endereço.</p>
-      <p class="note">Em todos: o código começa por <code>javascript:</code>. Se ao colares essa
-        parte desaparecer, estás a colar na barra de endereço em vez de no favorito. O navegador
-        remove-a de propósito, e num favorito isso não acontece.</p>
-    </div>
-  </details>
-  <p class="note" style="margin-top:14px">Depois abre o e-Fatura, faz login, e clica no favorito.</p>
-  <p class="note"><b>Porque não há um botão que instale isto sozinho:</b> os navegadores deixaram
-    de permitir que uma página crie favoritos. A razão é exatamente a que devia deixar-te
-    descansado: se um site pudesse instalar um favorito <code>javascript:</code> sem tu veres,
-    era assim que se faria um ataque. Tem de passar pelas tuas mãos, e ainda bem.</p>
-</section>
-
-<section>
-  <h2>Que setor escolher para cada fatura <span class="note">(ano de rendimentos 2026)</span></h2>
-  <!-- REFERENCE, not reading. This is a lookup table: nobody reads it top to bottom, they come
-       back to it when they have a specific fatura in hand. Left open it contributed ~900px of
-       scroll to a page that was already 13.000px and pushed everything after it out of reach.
-       Collapsed by default, still in the DOM, still indexable, still one click away. -->
-  <details class="ref">
-    <summary>Ver a tabela de setores, taxas e tetos <span class="note">(6 linhas)</span></summary>
-  <div class="tscroll"><table>
-    <caption class="note" style="text-align:left;padding-bottom:6px">Resumo dos setores de dedução e respetivos limites</caption>
-    <tr><th scope="col">Setor</th><th scope="col">O que inclui</th><th scope="col">Benefício</th></tr>
-    <tr><td>Saúde</td><td>Consultas, farmácia, dentista, óculos, fisio, psicologia/terapia. IVA 23% só conta com receita médica associada.</td><td>15%, máx €1.000</td></tr>
-    <tr><td>Educação</td><td>Propinas, creche, colégio, explicações, manuais, formação certificada.</td><td>30%, máx €800</td></tr>
-    <tr><td>Habitação</td><td>Rendas de habitação própria, ou juros de crédito à habitação (contratos até 2011).</td><td>15%, máx €900 <span class="note">(800 € em 2025, 1000 € a partir de 2027)</span></td></tr>
-    <tr><td>Lares</td><td>Lares e apoio domiciliário (próprio ou ascendentes).</td><td>25%, máx €403,75</td></tr>
-    <tr><td>Restauração, cabeleireiro, ginásio, veterinário, oficina, transportes, jornais, livros...</td><td>Cada fatura no setor correto do <i>comerciante</i>. Ex: ginásio->Ginásios, restaurante->Restauração.</td><td>15% do IVA, pool partilhada máx €250</td></tr>
-    <tr><td>Despesas Gerais Familiares</td><td>Tudo o resto com NIF (supermercado, roupa, combustível, telecom...).</td><td>35%, máx €250</td></tr>
-  </table></div>
-  </details>
-  <!-- This paragraph stays OUTSIDE the <details>. It is the consequence line - classifying is a
-       declaration to the AT, and being accepted is not being right - and hiding it behind a
-       disclosure would be exactly the "uncertainty in a tooltip" that 01-design-philosophy bans. -->
-  <p class="warn">A ferramenta só te propõe setores para os quais o comerciante <b>está mesmo
-    registado</b>. Por isso o e-Fatura aceita-os todos, e é aí que está a confusão: <b>ser aceite
-    não quer dizer que esteja certo</b>. Um hipermercado tem CAE de farmácia, mas se compraste
-    comida, a compra foi despesas gerais e não saúde. Por isso há duas colunas: a
-    <b>Provável</b>, que é a atividade principal do comerciante ou o que tu já usaste antes, e a
-    <b>Otimizada</b>, que é o setor que dá mais dedução e ainda tem espaço. Vem pré-selecionada a
-    Provável. A Otimizada só é tua para usar se a compra <b>foi mesmo</b> dessa natureza. Quem
-    declara és tu.</p>
-</section>
-
-<section>
-  <h2>Ver a atividade de um comerciante <span class="note">(sem instalar nada)</span></h2>
-  <p>Se só queres perceber <b>o que é</b> um NIF que te apareceu numa fatura, ou em que setores as
-     compras nesse comerciante podem entrar, há uma página à parte:
-     <a href="/consulta"><b>Consultar NIF</b></a>.</p>
-  <p>Procura por NIF ou por nome e mostra o nome oficial, a morada, e as atividades registadas no
-     SICAE &mdash; <b>a principal e as secundárias</b>. As secundárias são a parte que quase nenhum
-     site mostra, e são precisamente as que decidem em que setores as faturas desse comerciante
-     podem entrar. É também onde se percebe porque é que um hipermercado aparece com CAE de
-     farmácia.</p>
-  <p class="note">Funciona no telemóvel, ao contrário do bookmarklet. Não precisa de login em lado
-     nenhum e não toca na tua conta das Finanças &mdash; só lê registos públicos de empresas.
-     Ao contrário do bookmarklet, faz um pedido por consulta, por isso o servidor vê o NIF que
-     pesquisaste; a página diz isso lá.</p>
-  <!-- NOT .bm: that class is cursor:grab because it is the drag-to-bookmarks-bar bookmarklet.
-       Using it on an ordinary link invites people to drag a page they should just click. -->
-  <p><a class="btn" href="/consulta">Consultar um NIF</a></p>
-</section>
-
-<section>
-  <h2>Porque é que a Fatura Boa existe</h2>
-  <p class="lead">
-    Sempre tive problemas com isto. Todos os anos a mesma coisa: dezenas de faturas pendentes à espera
-    de serem classificadas, uma a uma, num menu que não ajuda nada. Deixava andar, esquecia-me, e
-    chegava a Fevereiro a perder deduções que eram minhas por direito, só porque não tive paciência
-    para clicar 200 vezes.
-  </p>
-  <p>
-    Mas não era só falta de paciência, e demorei a perceber isso. O que torna isto difícil não é a
-    complexidade: é a frequência. Quem trabalha em contabilidade faz isto todos os dias, e por isso
-    é rotina. Tu fazes uma vez por ano, num sítio onde nunca ganhas prática, com regras que mudam
-    de ano para ano. Ninguém fica bom numa coisa que faz de doze em doze meses. É aí que se perdem
-    deduções, e não por distração.
-  </p>
-  <!-- The section was six paragraphs of identical weight - a wall with no way in. The argument has
-       a shape: a complaint, a diagnosis, the one-line answer, the thing that made it possible, what
-       was built, and the terms. Giving the answer its own displayed line is the whole restructure;
-       the rest is a lead and a closing note. No quote marks and no pull-quote styling: this is a
-       statement, not a testimonial. -->
-  <p class="statement">É como teres alguém ao teu lado a passar as faturas contigo.</p>
-  <p>
-    Alguém que faz isto todos os dias, que já sabe onde estão as armadilhas, e
-    que faz num par de segundos o que te levaria uma tarde. A diferença é que não decide nada por ti.
-    Mostra-te o que sabe, explica-te porquê, e a escolha continua a ser tua. É basicamente o que eu
-    faria se estivesse aí sentado, só que muito mais rápido e sem me chateares outra vez para o ano.
-  </p>
-  <p>
-    O que me irritava mais não era o trabalho. Era perceber que a informação toda já existe. As Finanças
-    sabem qual é a atividade de cada comerciante, e essa atividade determina o setor. Uma farmácia é
-    saúde. Um restaurante é restauração. Isso está registado no SICAE, o registo oficial do Estado, e
-    é público. Mesmo assim, cabe a ti adivinhar, fatura a fatura.
-  </p>
-  <p>
-    Então construí isto. Lê as tuas faturas pendentes, vai buscar a atividade real de cada comerciante,
-    e sugere o setor certo. Onde um comerciante tem várias atividades (um hipermercado com farmácia,
-    livraria e restaurante dentro, o que é mais comum do que parece), escolhe a que te dá mais dedução
-    e que ainda tem espaço no teto anual. Tu revês e aprovas. Nada é submetido sem o teu clique.
-  </p>
-  <!-- the terms, set apart from the story: a ruled closing note, the same form the sources list and
-       the colophon use for "this is the deal" -->
-  <p class="terms">
-    É de graça e vai continuar a ser. Não vendo nada, não há conta para criar, não recolho nada teu.
-    Se te poupar uma tarde e algum dinheiro no IRS, já valeu a pena.
-  </p>
-</section>
-
-<section>
-  <h2>Obrigado, e diz-me o que está mal</h2>
-  <p>
-    Obrigado a quem já testou, reportou erros e partilhou chaves de API para construir o mapa de
-    atividades que esta ferramenta usa. Isso é o que a tornou possível.
-  </p>
-  <p>
-    <b>Se encontrares uma classificação errada, quero saber.</b> É a forma mais útil de ajudar: cada
-    correção fica no mapa partilhado e passa a beneficiar toda a gente que usar a ferramenta a seguir.
-    O mesmo para sugestões, dúvidas, ou se simplesmente não perceberes alguma coisa - se não se percebe,
-    é problema meu, não teu.
-  </p>
-  <!-- Rebuilt 30-07-2026. The fields were three unlabelled-looking boxes stacked at full width with
-       the privacy note buried under the email input and the Turnstile widget floating loose above a
-       bare button. It is now one ruled block on the page's own grid: numbered field indices like the
-       colophon, the two optional fields side by side, the counter and the security note on the
-       textarea's own footer, and the actions closed off by a rule. -->
-  <form id="fb" class="form" method="post" action="/api/feedback" novalidate>
-    <div class="fb-field">
-      <label for="fb-msg"><span class="fi">01</span>O que correu mal, ou o que sugeres</label>
-      <textarea id="fb-msg" name="message" rows="5" maxlength="4000" required
-        placeholder="Ex: o Continente foi classificado como Saúde e não devia."></textarea>
-      <p class="field-foot">
-        <span class="sec">Sem código nem HTML, por segurança.</span>
-        <span class="cnt" id="fb-count">0/4000</span>
-      </p>
-    </div>
-
-    <div class="field-pair">
-      <div class="fb-field">
-        <label for="fb-ctx"><span class="fi">02</span>Comerciante ou setor
-          <span class="opt">opcional</span></label>
-        <input id="fb-ctx" name="context" type="text" maxlength="300" autocomplete="off"
-               placeholder="Ex: Continente, ou C05">
-      </div>
-      <div class="fb-field">
-        <label for="fb-mail"><span class="fi">03</span>O teu email
-          <span class="opt">se quiseres resposta</span></label>
-        <input id="fb-mail" name="email" type="email" maxlength="200" autocomplete="email"
-               placeholder="nome@exemplo.pt">
-      </div>
-    </div>
-
-    <p class="field-note">O email serve <b>só</b> para te responder. Não fica guardado em base de
-      dados nenhuma: vai dentro da mensagem que me é enviada e fica na minha caixa de correio até
-      eu a apagar.</p>
-
-    <div class="hp" aria-hidden="true">
-      <label for="fb-web">Nao preencher</label>
-      <input id="fb-web" name="website" type="text" tabindex="-1" autocomplete="off">
-    </div>
-
-    <div class="form-actions">
-      <div class="cf-turnstile" data-sitekey="0x4AAAAAAD4tEJIzRGNSghRB" data-callback="fbToken"
-           data-theme="light" data-size="flexible"></div>
-      <button type="submit" class="bm cta-main" id="fb-send">Enviar</button>
-    </div>
-    <p id="fb-status" role="status" aria-live="polite" class="form-status"></p>
-  </form>
-  <p id="fb-fallback" class="box" hidden>
-    O formulário está a ser preparado. Entretanto, o caminho mais rápido é o GitHub ou o email.
-  </p>
-  <p class="note">
-    Preferes o GitHub? Abre um <a id="ghissues" href="#" target="_blank" rel="noopener">issue</a>,
-    ou fala comigo em <a href="https://diogoandrade.com" target="_blank" rel="noopener">diogoandrade.com</a>.
-  </p>
-</section>
-
-<section>
-  <h2>Quem fez isto</h2>
-  <p>
-    Sou o <b>Diogo Andrade</b>. Trabalho com automação, dados e infraestrutura, normalmente a resolver
-    exatamente este tipo de chatice: coisas que deviam ser automáticas e não são, e coisas que só são
-    difíceis porque as fazes uma vez por ano.
-  </p>
-  <p>
-    Se quiseres ver outros projetos, ou falar sobre algum trabalho,
-    <a href="https://diogoandrade.com" target="_blank" rel="noopener"><b>diogoandrade.com</b></a>.
-  </p>
-</section>
-
-<section>
-  <h2>Fontes</h2>
-  <p class="note">
-    Isto mexe com uma declaração fiscal, por isso as regras usadas aqui vêm de fontes oficiais e ficam
-    à vista para poderes confirmar. Se achares que interpretei alguma coisa mal, diz.
-  </p>
-  <!-- Provenance, kept complete and kept in the DOM, but collapsed: it is a citation list. The
-       sentence above it is the load-bearing part and stays open. -->
-  <details class="ref">
-    <summary>Ver todas as fontes e diplomas <span class="note">(links oficiais)</span></summary>
-  <ul class="safe">
-    <li><b>Atividades dos comerciantes (NIF para CAE):</b>
-      <a href="http://www.sicae.pt/Consulta.aspx" target="_blank" rel="noopener">SICAE</a>,
-      o registo oficial do Estado. Inclui as atividades secundárias, que é o que permite escolher o
-      melhor setor em vez de mandar tudo para despesas gerais.</li>
-    <li><b>CAE para setor de dedução:</b> Código do IRS, artigos
-      <a href="https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/cirs_rep/Pages/irs78c.aspx" target="_blank" rel="noopener">78.º-C</a> (saúde),
-      78.º-D (educação), 78.º-E (imóveis),
-      <a href="https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/cirs_rep/Pages/irs78f.aspx" target="_blank" rel="noopener">78.º-F</a> (exigência de fatura)
-      e 84.º (lares).</li>
-    <li><b>Lista de códigos CAE:</b> CAE Rev.3 (INE / Decreto-Lei n.º 381/2007). Nota: o Estado está a
-      migrar para a CAE Rev.4 (Decreto-Lei n.º 9/2025) - a ferramenta reconhece as duas e revalida os
-      comerciantes periodicamente.</li>
-    <li><b>Tetos e percentagens:</b> ano de rendimentos 2026. O teto das rendas para 2026 é €900,
-      fixado pela norma transitória do <b>Decreto-Lei n.º 97/2026, de 20 de maio</b> (art. 15.º
-      n.º 1), que eleva o limite da alínea a) do n.º 1 do art. 78.º-E do CIRS; os €1.000 do n.º 10
-      só se aplicam a partir de 2027.</li>
-  </ul>
-  </details>
-</section>
-
-</div>
 
 <!-- Rebuilt 30-07-2026. It was three stacked paragraphs, the middle one a run of seven links
      separated by pipe characters that wrapped mid-list - "Código / no GitHub" on two lines. A pipe
@@ -2106,7 +1576,7 @@
           <li><a href="/verificar">Verificar o código</a></li>
           <li><a href="/auditoria">Auditoria</a></li>
           <li><a href="/sobre">Sobre</a></li>
-          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
+          <li><a href="https://github.com/henriquecoding/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
         </ul>
       </div>
       <div>
@@ -2139,249 +1609,7 @@
   </div>
 </footer>
 <!-- FB:FOOTER:END -->
-
-<!-- Back to top. Ships `hidden`; only the script at the bottom of this file can reveal it, so a
-     no-JS visitor never gets a parked control that does nothing. A word plus an arrow rather than
-     a bare icon - 01-design-philosophy substitutes a word for an icon wherever one will do. -->
-<button type="button" id="to-top" class="to-top" hidden>
-  <svg aria-hidden="true" focusable="false" viewBox="0 0 16 16">
-    <path d="M8 13.5V3M8 3 3.5 7.5M8 3l4.5 4.5" fill="none" stroke="currentColor"
-          stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-  Topo
-</button>
-
 <script>
-  // Set these two constants at deploy time.
-  var GH  = "https://github.com/nobodykr/efatura-helper";
-  var HOST = location.origin;              // where tool.js is served (this site)
-  // Null-safe since the shell rebuild: the masthead and the hand-written footer that used to carry
-  // #gh / #gh2 are now generated by make-shell.mjs with the URL already in the markup. The ids that
-  // remain in the page body still get theirs here; a missing one is no longer a page-breaking throw.
-  (function (map) {
-    Object.keys(map).forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el) el.href = map[id];
-    });
-  })({ gh: GH, gh2: GH, ghissues: GH + "/issues", ghissues2: GH + "/issues" });
-  // Copy the bookmarklet source. No browser lets a page create a bookmark - the APIs that used to
-  // (window.sidebar.addPanel, window.external.AddFavorite) were removed precisely because silently
-  // installing a javascript: bookmark is an attack. So the best we can do is remove the typing.
-  document.getElementById("copybm").addEventListener("click", function () {
-    var msg = document.getElementById("copymsg");
-    var code = document.getElementById("bookmarklet").getAttribute("href");
-    var done = function () {
-      msg.className = "note ok"; msg.textContent = "Copiado. Agora cola num favorito novo.";
-      document.getElementById("howto").open = true;
-    };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(code).then(done, function () { fallback(code, msg, done); });
-    } else { fallback(code, msg, done); }
-  });
-  function fallback(code, msg, done) {
-    var ta = document.createElement("textarea");
-    ta.value = code; ta.style.position = "fixed"; ta.style.opacity = "0";
-    document.body.appendChild(ta); ta.select();
-    try { document.execCommand("copy"); done(); }
-    catch (e) { msg.className = "note err"; msg.textContent = "Nao consegui copiar. Clica com o botao direito no botao acima e copia o endereco."; }
-    document.body.removeChild(ta);
-  }
-
-  // Feedback form. Turnstile fills the token; the server re-verifies it, so this is only plumbing.
-  // Flip to true once FORMS_TURNSTILE_SECRET, RESEND_API_KEY and FEEDBACK_TO are set on the
-  // Pages project. Until then the form would render, accept input and always fail, so it stays
-  // hidden and the GitHub route below it does the job.
-  var FEEDBACK_ENABLED = true;
-  if (!FEEDBACK_ENABLED) {
-    document.getElementById("fb").hidden = true;
-    document.getElementById("fb-fallback").hidden = false;
-  }
-  var fbToken = "";
-  window.fbToken = function (t) { fbToken = t; };
-  var fbLoadedAt = Date.now();
-  var fbForm = document.getElementById("fb");
-
-  /* ---- input safety, ported from recibo-certo/src/lib/feedback-sanitize.ts --------------------
-   * These two are a COURTESY COPY. The authoritative versions run in functions/api/feedback.js,
-   * because anything here can be bypassed by posting straight to the endpoint. The point of having
-   * them client-side is that someone who pastes a snippet is told immediately instead of after a
-   * round trip. If one copy changes, change both - they are deliberately identical.
-   *
-   * The first alternative needs `<` followed by a letter, `!` or `/` - a real tag - so writing
-   * "dedução < 250 > 0" in a message is not mistaken for code. */
-  var FB_DANGEROUS =
-    /<\/?[a-z!][^>]*>|<\s*script|javascript:|vbscript:|on[a-z]+\s*=|data:text\/html|srcdoc\s*=|\{\{[\s\S]*\}\}|<%[\s\S]*%>/i;
-  function fbHasCode(s) { return FB_DANGEROUS.test(s); }
-  function fbSanitise(s) {
-    var out = "", src = String(s).replace(/<\/?[a-z!][^>]*>/gi, "");
-    for (var i = 0; i < src.length; i++) {
-      var c = src.charCodeAt(i);
-      if (c < 0x20 && c !== 0x09 && c !== 0x0a && c !== 0x0d) continue;
-      if (c === 0x7f) continue;
-      if (c === 0x200b || c === 0x200c || c === 0x200d || c === 0x2060 || c === 0xfeff) continue;
-      out += src.charAt(i);
-    }
-    return out.trim();
-  }
-
-  /* live counter. Counts the RAW length, which is what the server caps - counting the sanitised
-   * string would let 4.000 zero-width characters read as "0/4000". */
-  (function () {
-    var ta = document.getElementById("fb-msg"), out = document.getElementById("fb-count");
-    if (!ta || !out) return;
-    var MAXLEN = 4000;
-    function tick() {
-      var n = ta.value.length;
-      out.textContent = n + "/" + MAXLEN;
-      out.className = "cnt" + (n > MAXLEN ? " over" : n > MAXLEN * 0.9 ? " near" : "");
-    }
-    ta.addEventListener("input", tick);
-    tick();
-  })();
-
-  fbForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    var st = document.getElementById("fb-status");
-    var btn = document.getElementById("fb-send");
-    var rawMsg = document.getElementById("fb-msg").value;
-    var rawCtx = document.getElementById("fb-ctx").value;
-    var msg = fbSanitise(rawMsg);
-    if (!msg) { st.className = "form-status err"; st.textContent = "Escreve a mensagem primeiro."; return; }
-    if (fbHasCode(rawMsg) || fbHasCode(rawCtx)) {
-      st.className = "form-status err";
-      st.textContent = "A mensagem parece conter codigo ou HTML. Tira-o e tenta outra vez.";
-      return;
-    }
-    if (!fbToken) { st.className = "form-status err"; st.textContent = "Aguarda um segundo pela verificacao e tenta outra vez."; return; }
-    btn.disabled = true; st.className = "form-status"; st.textContent = "A enviar...";
-    fetch("/api/feedback", {
-      method: "POST", headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        message: msg,
-        context: fbSanitise(rawCtx),
-        email: fbSanitise(document.getElementById("fb-mail").value),
-        website: document.getElementById("fb-web").value,
-        token: fbToken, elapsed: Date.now() - fbLoadedAt
-      })
-    }).then(function (r) { return r.json(); }).then(function (d) {
-      if (d.ok) {
-        fbForm.reset();
-        var c = document.getElementById("fb-count"); if (c) c.textContent = "0/4000";
-        st.className = "form-status ok"; st.textContent = "Enviado. Obrigado, leio tudo.";
-        try { if (window.umami) umami.track("relato-enviou"); } catch (e) {}
-      }
-      else { st.className = "form-status err"; st.textContent = d.error || "Nao consegui enviar."; btn.disabled = false; }
-      if (window.turnstile) { turnstile.reset(); fbToken = ""; }
-    }).catch(function () {
-      st.className = "form-status err";
-      st.textContent = "Falhou o envio. Tenta o GitHub, ou outra vez daqui a pouco.";
-      btn.disabled = false;
-    });
-  });
-
-  // Loader bookmarklet: injects the open-source tool.js from this site into the e-Fatura page.
-  // Profile is public now: the loader allows all Financas + Seguranca Social hosts and sets the
-  // __FB_PROFILE flag that unlocks the profile flow. (The e-Fatura classifier still runs on the
-  // faturas page.) The SRI-pinned "verified" variant lives on /verificar.
-  var loader = "javascript:(function(){if(!/(portaldasfinancas\\.gov\\.pt|seg-social\\.pt)$/.test(location.host)){alert('Abre uma pagina das Financas ou da Seguranca Social e faz login primeiro.');return;}window.__FB_PROFILE=1;var s=document.createElement('script');s.charset='utf-8';s.src='" + HOST + "/tool.js?v='+Date.now();document.body.appendChild(s);})();";
-  document.getElementById("bookmarklet").setAttribute("href", loader);
-
-  /* Scroll reveal, no library.
-   *
-   * ARMING ORDER IS THE WHOLE TRICK, and it is not a style preference. .js-reveal on <html> is
-   * what makes .reveal elements transparent; without it they are plain visible content. So the
-   * class is added INSIDE the observer's first callback, never before it. Consequence: if the
-   * observer never delivers, nothing is ever hidden.
-   *
-   * That is not hypothetical. Rendering it in a non-compositing browser pane on 30-07-2026, the
-   * lifecycle was frozen - requestAnimationFrame ran zero times and even a bare observer on
-   * <body> never fired - and the earlier version of this code, which armed first and observed
-   * after, left the dossier and the whole proof section permanently invisible. Any environment
-   * that throttles the rendering lifecycle reproduces it. Content that only appears if an
-   * animation callback runs is content you can lose.
-   *
-   * IntersectionObserver always delivers an initial callback per observed element once the
-   * lifecycle runs, so arming in the first callback costs one frame and nothing else. The
-   * setTimeout is the second belt: no delivery within a second and we simply stay visible.
-   * Reduced-motion is handled in CSS, so nothing here depends on a transition having run. */
-  (function () {
-    var els = [].slice.call(document.querySelectorAll(".reveal"));
-    if (!els.length || !("IntersectionObserver" in window)) return;   // leave them visible
-    /* Where the browser has scroll-driven animations the stylesheet already does this on the
-     * compositor, so the observer stands down entirely - otherwise both would drive the same
-     * elements and .js-reveal would hold at opacity 0 underneath a CSS animation. */
-    if (window.CSS && CSS.supports && CSS.supports("animation-timeline", "view()")) return;
-    var armed = false, alive = false;
-    function arm() { if (!armed) { armed = true; document.documentElement.className += " js-reveal"; } }
-    var io = new IntersectionObserver(function (entries) {
-      alive = true;
-      arm();
-      entries.forEach(function (e) {
-        if (!e.isIntersecting) return;
-        e.target.className += " in";
-        io.unobserve(e.target);
-      });
-    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.1 });
-    els.forEach(function (el) { io.observe(el); });
-    setTimeout(function () { if (!alive) { io.disconnect(); } }, 1000);
-  })();
-
-
-  /* Running heads + contents.
-   *
-   * The rail label is DERIVED from each chapter's own <h2>, not hand-maintained: a list of twelve
-   * hardcoded labels is a list that goes stale the first time a heading is reworded. The .note
-   * parenthetical is stripped, and the result is trimmed at a word boundary so the rail never
-   * shows half a word.
-   *
-   * The contents block is an enhancement and is built here rather than written into the markup for
-   * the same reason. Nothing depends on it: every chapter is reachable by scrolling, the rail still
-   * shows its number from the CSS counter with no JS, and the page is complete without either. */
-  (function () {
-    var secs = [].slice.call(document.querySelectorAll(".wrap > section"));
-    if (!secs.length) return;
-
-    function shorten(s, max) {
-      s = s.replace(/\s+/g, " ").trim();
-      if (s.length <= max) return s;
-      var cut = s.slice(0, max);
-      var sp = cut.lastIndexOf(" ");
-      return (sp > max * 0.5 ? cut.slice(0, sp) : cut).replace(/[,;:.—-]+$/, "");
-    }
-
-    var items = [];
-    secs.forEach(function (sec, i) {
-      var h = sec.querySelector("h2");
-      if (!h) return;
-      var clone = h.cloneNode(true);
-      [].slice.call(clone.querySelectorAll(".note")).forEach(function (n) { n.remove(); });
-      var full = clone.textContent.replace(/\s+/g, " ").trim();
-      sec.setAttribute("data-ch", shorten(full, 22));
-      if (!sec.id) sec.id = "cap-" + (i + 1);
-      items.push({ id: sec.id, n: String(i + 1).padStart(2, "0"), title: full });
-    });
-    if (items.length < 4) return;
-
-    var nav = document.createElement("nav");
-    nav.className = "toc";
-    nav.setAttribute("aria-label", "Índice da página");
-    nav.innerHTML =
-      '<p class="toc-h">Nesta página</p><ol>' +
-      items.map(function (it) {
-        return '<li><a href="#' + it.id + '"><span class="n">' + it.n + '</span>' +
-               esc(it.title) + "</a></li>";
-      }).join("") + "</ol>";
-
-    var first = document.querySelector(".wrap > section");
-    if (first) first.parentNode.insertBefore(nav, first);
-
-    function esc(s) {
-      return s.replace(/[&<>"]/g, function (c) {
-        return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
-      });
-    }
-  })();
-
   /* Header search.
    *
    * Two references, both ported as BEHAVIOUR, not code - they are React/Tailwind and this project
@@ -2684,60 +1912,6 @@
 
     applyMode();
     setOpen(false);
-  })();
-  /* --mast-h: the sticky masthead's real height, so everything that has to sit below it uses one
-   * measured number instead of a hardcoded guess. The chapter running heads and the contents rail
-   * both stick to `calc(var(--mast-h) + 22px)`; with the old fixed 28px they slid underneath the
-   * masthead the moment it became sticky and the chapter numbers vanished.
-   * A ResizeObserver rather than a one-off read: the masthead changes height when the search
-   * promotes to a sheet, when the nav wraps, and across every breakpoint. */
-  (function () {
-    var mast = document.querySelector(".mast");
-    if (!mast) return;
-    function set() {
-      document.documentElement.style.setProperty("--mast-h",
-        Math.round(mast.getBoundingClientRect().height) + "px");
-    }
-    set();
-    if ("ResizeObserver" in window) new ResizeObserver(set).observe(mast);
-    else window.addEventListener("resize", set);
-  })();
-
-  /* Back to top.
-   *
-   * Shown once the hero has left the viewport, hidden again when it returns - an IntersectionObserver
-   * on <header> rather than a scroll listener, so nothing runs on every frame of a 12.000px page.
-   *
-   * The button ships in the markup with `hidden`, and only JS can remove it. No JS means no button,
-   * which is the correct outcome: it is a scroll affordance, not content, and a permanently parked
-   * control that does nothing would be worse than its absence.
-   *
-   * The jump is `behavior:"instant"` on purpose. html{scroll-behavior:smooth} is set globally, so
-   * a plain scrollTo would animate ~12.000px and take several seconds - the opposite of what a
-   * back-to-top is for. Focus moves to the masthead home link afterwards, otherwise a keyboard user
-   * jumps the viewport and leaves their focus stranded at the bottom of the document. */
-  (function () {
-    var btn = document.getElementById("to-top");
-    var hero = document.querySelector("header");
-    if (!btn || !hero) return;
-
-    btn.hidden = false;
-    btn.classList.remove("in");          // starts out, revealed only past the hero
-
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (entries) {
-        btn.classList.toggle("in", !entries[0].isIntersecting);
-      }, { rootMargin: "-40px 0px 0px 0px" }).observe(hero);
-    } else {
-      btn.classList.add("in");           // no observer: just leave it available
-    }
-
-    btn.addEventListener("click", function () {
-      try { window.scrollTo({ top: 0, behavior: "instant" }); }
-      catch (e) { window.scrollTo(0, 0); }   // older engines reject the options object
-      var home = document.querySelector(".mast .mark");
-      if (home) home.focus({ preventScroll: true });
-    });
   })();
 </script>
 </body>

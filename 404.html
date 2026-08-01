@@ -71,15 +71,19 @@
   </a>
 
   <nav class="primary-nav" aria-label="Principal">
-    <a href="/" data-mode-link="empresa"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-empresa"></use></svg><span>Empresa</span></a>
-    <a href="/perfil" data-mode-link="situacao"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-situacao"></use></svg><span class="nav-long">A minha situação</span><span class="nav-short" aria-hidden="true">Situação</span></a>
-    <a href="/deducoes" data-mode-link="deducoes"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-deducoes"></use></svg><span>Deduções</span></a>
-    <a href="/base-legal" data-mode-link="legal"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-legal"></use></svg><span class="nav-long">Base legal e fiscal</span><span class="nav-short" aria-hidden="true">Base legal</span></a>
-    <a class="nav-help" href="/sobre#ajuda"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-ajuda"></use></svg><span>Ajuda</span></a>
+    <a href="/" data-mode-link="empresa" aria-label="Empresa"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-empresa"></use></svg><span>Empresa</span></a>
+    <a href="/perfil" data-mode-link="situacao" aria-label="A minha situação"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-situacao"></use></svg><span class="nav-long">A minha situação</span><span class="nav-short" aria-hidden="true">Situação</span></a>
+    <a href="/deducoes" data-mode-link="deducoes" aria-label="Deduções"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-deducoes"></use></svg><span>Deduções</span></a>
+    <a href="/base-legal" data-mode-link="legal" aria-label="Base legal e fiscal"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-legal"></use></svg><span class="nav-long">Base legal e fiscal</span><span class="nav-short" aria-hidden="true">Base legal</span></a>
+    <a class="nav-help" href="/sobre"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-ajuda"></use></svg><span>Sobre</span></a>
     <button class="nav-menu" type="button" aria-expanded="false" aria-controls="site-menu"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-menu"></use></svg><span>Menu</span></button>
   </nav>
 
-  <div class="site-menu" id="site-menu" hidden>
+  <dialog class="site-menu" id="site-menu" aria-labelledby="site-menu-title">
+    <div class="site-menu-head">
+      <h2 id="site-menu-title">Navegação completa</h2>
+      <button class="site-menu-close" type="button" data-menu-close><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-fechar"></use></svg><span>Fechar</span></button>
+    </div>
     <div class="menu-cols">
       <div>
         <h2>Usar</h2>
@@ -96,7 +100,7 @@
           <li><a href="/verificar">Verificar o código</a></li>
           <li><a href="/auditoria">Auditoria</a></li>
           <li><a href="/sobre">Sobre</a></li>
-          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
+          <li><a href="https://github.com/henriquecoding/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
         </ul>
       </div>
       <div>
@@ -108,14 +112,14 @@
         </ul>
       </div>
       <div>
-        <h2>Ajuda</h2>
+        <h2>Sobre e ajuda</h2>
         <ul>
           <li><a href="/sobre#ajuda">Como funciona</a></li>
-          <li><a href="/#relato">Reportar um erro</a></li>
+          <li><a href="/sobre#relato">Reportar um erro</a></li>
         </ul>
       </div>
     </div>
-  </div>
+  </dialog>
 </div>
 <!-- FB:SHELL:END -->
 <header class="page-hero"><div class="wrap">
@@ -161,7 +165,7 @@
           <li><a href="/verificar">Verificar o código</a></li>
           <li><a href="/auditoria">Auditoria</a></li>
           <li><a href="/sobre">Sobre</a></li>
-          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
+          <li><a href="https://github.com/henriquecoding/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
         </ul>
       </div>
       <div>

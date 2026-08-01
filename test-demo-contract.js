@@ -101,20 +101,28 @@ try {
   FIX.journeys.pop();
 } catch (e) { ok("fixtures congeladas (Object.freeze)"); }
 
-// --- 6. index.html carries the no-JS summary and the section sits between prova and faz -----
-const idx = fs.readFileSync("index.html", "utf8");
-const iProva = idx.indexOf('<section id="prova">');
-const iDemo = idx.indexOf('<section id="demonstracao"');
-const iFaz = idx.indexOf('<section id="faz">');
+// --- 6. Sobre carries the no-JS summary and the chapter sits between prova and faz ----------
+const about = fs.readFileSync("sobre.html", "utf8");
+const iProva = about.indexOf('<section id="prova">');
+const iDemo = about.indexOf('<section id="demonstracao"');
+const iFaz = about.indexOf('<section id="faz">');
 if (!(iProva < iDemo && iDemo < iFaz)) bad("#demonstracao nao esta entre #prova e #faz");
 else ok("#demonstracao entre #prova e #faz");
-const summary = idx.slice(idx.indexOf("data-demo-summary"), idx.indexOf("</div>", idx.indexOf("</ul>", idx.indexOf("data-demo-summary"))));
+const summary = about.slice(about.indexOf("data-demo-summary"), about.indexOf("</div>", about.indexOf("</ul>", about.indexOf("data-demo-summary"))));
 let links = 0;
 for (const href of ["/#empresa-form", "/perfil", "/deducoes", "/base-legal", "/verificar"])
   if (summary.indexOf('href="' + href) !== -1) links++;
 if (links < 5) bad(`resumo sem JS so tem ${links}/5 destinos`);
 else ok("resumo sem JS cobre os destinos reais");
-if (!/data-demo-root[^>]*hidden/.test(idx)) bad("a shell nao arranca escondida (progressive enhancement)");
+if (!/data-demo-root[^>]*hidden/.test(about)) bad("a shell nao arranca escondida (progressive enhancement)");
+
+// Operational routes keep the launcher, but defer the four heavier demo assets until intent.
+const home = fs.readFileSync("index.html", "utf8");
+if (!/demo-launch-compact/.test(home)) bad("a homepage perdeu o launcher compacto");
+if (!/src="\/assets\/demo-loader\.js"/.test(home)) bad("a homepage nao usa o carregador sob pedido");
+for (const eager of ["demo-fixtures.js", "demo-stage-core.js", "demo-stage.js"])
+  if (new RegExp('src="/assets/' + eager.replace('.', '\\.') + '"').test(home))
+    bad(`a homepage voltou a carregar ${eager} antes do clique`);
 
 console.log(fails ? `\n  ${fails} FALHA(S) no contrato da demo` : "\n  contrato da Mesa Fiscal integro");
 process.exit(fails ? 1 : 0);

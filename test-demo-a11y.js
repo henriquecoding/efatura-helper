@@ -8,19 +8,12 @@ let fails = 0;
 const bad = (m) => { console.log("  FAIL " + m); fails++; };
 const ok = (m) => console.log("  ok   " + m);
 
-/* Mount the hero (which now carries the launcher and the dialog) together with the
-   #demonstracao section (which carries the no-JS summary) - the controller looks these up
-   document-wide since the launcher moved into each route's hero. */
-const idx = fs.readFileSync("index.html", "utf8");
-const heroStart = idx.indexOf('<header class="page-hero">');
-// NOT indexOf("</header>"): the dialog inside the hero contains its own <header class="demo-
-// titlebar">, so the first closing tag truncated the slice mid-dialog and nothing mounted.
-const heroEnd = idx.indexOf("<!-- FB:DEMO:END -->", heroStart) + "<!-- FB:DEMO:END -->".length;
-const secStart = idx.indexOf('<section id="demonstracao"');
-const secEnd = idx.indexOf("</section>", secStart) + "</section>".length;
-
+/* Sobre owns the expanded explanation, its no-JS summary, launcher and dialog in one chapter. */
+const about = fs.readFileSync("sobre.html", "utf8");
+const secStart = about.indexOf('<section id="demonstracao"');
+const secEnd = about.indexOf("</section>", secStart) + "</section>".length;
 const page = "<!doctype html><html lang='pt'><body>" +
-  idx.slice(heroStart, heroEnd) + idx.slice(secStart, secEnd) + "</body></html>";
+  about.slice(secStart, secEnd) + "</body></html>";
 const dom = new JSDOM(page, { runScripts: "dangerously", pretendToBeVisual: true });
 const w = dom.window, doc = w.document;
 

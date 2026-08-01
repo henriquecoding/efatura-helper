@@ -4,15 +4,18 @@
   "version": "0.0.0",
   "description": "Dev-only manifest. tool.js itself has ZERO dependencies and is never bundled - these packages exist solely to run the test suite, the same way .github/workflows does. Auditable: `npm install && npm test` reproduces the correctness checks. The real release version is FB_VERSION in tool.js / versions.json, not this field.",
   "homepage": "https://faturas.diogoandrade.com",
-  "repository": "github:nobodykr/efatura-helper",
+  "repository": "github:henriquecoding/efatura-helper",
+  "engines": {
+    "node": "^20.19.0 || ^22.13.0 || >=24.0.0"
+  },
   "scripts": {
     "dev": "npx --yes serve -l 4173 .",
-    "ci": "node --check tool.js && node check-functions.js tool.js && node test-deducoes-sync.js && node test-audit-sync.js",
+    "ci": "npm test",
     "test": "node run-tests.js",
     "audit": "node make-audit.mjs"
   },
   "devDependencies": {
-    "jsdom": "^30.0.1",
+    "jsdom": "^29.1.1",
     "playwright-core": "^1.62.0"
   }
 }

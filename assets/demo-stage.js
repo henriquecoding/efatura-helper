@@ -17,7 +17,7 @@
     var FIX = window.FB_DEMO_FIXTURES;
     var CORE = window.FBDemoCore;
     if (!FIX || !CORE) return;
-    /* The launcher now lives in each route's HERO, so #demonstracao (homepage only) can no
+    /* The launcher lives in each route's HERO; the expanded explanation belongs to Sobre and can no
        longer be the anchor - everything is looked up document-wide. Any number of triggers may
        open the demo; there is exactly one dialog. */
     var rootShell = document.querySelector("[data-demo-root]");
@@ -77,7 +77,13 @@
     var tablist = el("div", "demo-tablist");
     tablist.setAttribute("role", "tablist");
     tablist.setAttribute("aria-label", "Demonstrações das funcionalidades");
-    tablist.setAttribute("aria-orientation", "vertical");
+    var tabOrientation = window.matchMedia ? window.matchMedia("(max-width: 1024px)") : null;
+    function syncTabOrientation() {
+      tablist.setAttribute("aria-orientation", tabOrientation && tabOrientation.matches ? "horizontal" : "vertical");
+    }
+    syncTabOrientation();
+    if (tabOrientation && tabOrientation.addEventListener)
+      tabOrientation.addEventListener("change", syncTabOrientation);
     var groups = { ferramentas: "Ferramentas", confianca: "Confiança" };
     var tabEls = [];
     Object.keys(groups).forEach(function (g) {
@@ -103,7 +109,7 @@
     tabsNav.appendChild(tablist);
     // a real utility link, outside the tablist and outside the arrow-key order
     var report = el("a", "demo-report", "Reportar erro");
-    report.href = "/#relato";
+    report.href = "/sobre#relato";
     tabsNav.appendChild(report);
 
     /* ------------------------------------------------------------------ build: panels */
@@ -265,7 +271,9 @@
       liveBadge.textContent = mode === "run" ? "Demo em direto"
         : mode === "done" ? "Demonstração concluída" : "Demo em pausa";
       liveBadge.className = "demo-live" + (mode === "run" ? " is-run" : mode === "done" ? " is-done" : "");
-      pauseBtn.textContent = mode === "run" ? "Pausar demonstração" : "Retomar demonstração";
+      pauseBtn.disabled = mode === "done";
+      pauseBtn.textContent = mode === "run" ? "Pausar demonstração"
+        : mode === "done" ? "Demonstração concluída" : "Retomar demonstração";
     }
 
     function announce(ji, ai, extra) {
