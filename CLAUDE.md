@@ -24,7 +24,7 @@ These are not style. Changing any of them silently is the worst failure mode thi
 | What | Pinned by |
 |---|---|
 | Consent gate: zero network requests before the user agrees | `test-network.js` phase 1 |
-| The published request list on the homepage matches reality | `test-network.js` phase 2 |
+| The published request list (now `/sobre#pedidos-rede`) matches reality | `test-network.js` phase 2 |
 | `DRAFT = true` — the tool reads, never submits | `test-draft.js` |
 | Deduction ceilings agree across `tool.js`, `deducoes.html`, `year_snapshots.json` | `test-deducoes-sync.js` |
 | The pre-selected sector is the truthful column, not the one that pays most | `test-columns.js`, `test-r1.js` |
@@ -34,6 +34,11 @@ These are not style. Changing any of them silently is the worst failure mode thi
 | The shell is identical across all 12 routes | `test-shell-sync.js` |
 | The mobile bar is 5 destinations, each icon **and** text | `test-mobile-nav.js` |
 | Client and server agree on feedback limits and sanitisation | `test-feedback-parity.js` |
+| `/sobre` owns all 14 long-form chapters; the homepage never duplicates them | `test-about-structure.js` |
+| `versions.json` points at an immutable commit whose `tool.js` hashes to `integrity` | `test-versions-provenance.js` |
+| The fiscal profile has no egress path at all | `test-profile-egress.js` |
+| The profile's partition contract is one source, not a hand-copied list | `test-profile-contract.js` |
+| The Mesa Fiscal plays on open and each route opens on its own journey | `test-demo-browser.js` §1b |
 | `tool.js` is pure ASCII | `.github/workflows/encoding-guard.yml` |
 
 Rule: **to change one of these, make its test go red on purpose first, then decide.** If you cannot
@@ -65,8 +70,9 @@ The three that matter most, so they are never not loaded:
 
 ## 5. Working rules
 
-- Run `npm test` before saying anything is done. 31 checks; all must pass. `test-network.js` needs a
-  browser — it reports SKIP without one, and a SKIP is not a pass. Set `CHROME_PATH` and get 31/31.
+- Run `npm test` before saying anything is done. 36 checks; all must pass. The browser checks report
+  SKIP without one, and a SKIP is not a pass. Set `CHROME_PATH` and get 36/36. CI sets `CI=true`,
+  which turns a missing browser into a failure rather than a skip.
 - `npm run dev` → http://localhost:4173.
 - The browser pane does not composite frames here. To actually *see* a page, render it with
   `playwright-core` and the local Chrome, and look at the PNG. Do not claim a visual result you

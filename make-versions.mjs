@@ -15,7 +15,10 @@ const buf = readFileSync("tool.js");
 const integrity = "sha384-" + createHash("sha384").update(buf).digest("base64");
 const version = (buf.toString().match(/FB_VERSION\s*=\s*"([^"]+)"/) || [])[1] || "unknown";
 const repo = "https://github.com/henriquecoding/efatura-helper";
-const dirty = execFileSync("git", ["diff", "--name-only", "--", "tool.js"], { encoding: "utf8" }).trim();
+// Against HEAD, not the index: a plain `git diff` only sees UNSTAGED edits, so `git add tool.js`
+// followed by a release silently attached the new bytes' hash to the previous commit - precisely
+// the failure this guard is here to prevent.
+const dirty = execFileSync("git", ["diff", "--name-only", "HEAD", "--", "tool.js"], { encoding: "utf8" }).trim();
 if (dirty) throw new Error("tool.js tem alteracoes por commitar; cria primeiro o commit de release");
 const sourceCommit = execFileSync("git", ["log", "-1", "--format=%H", "--", "tool.js"],
   { encoding: "utf8" }).trim();
