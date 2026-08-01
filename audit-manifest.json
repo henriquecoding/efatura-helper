@@ -1,0 +1,380 @@
+{
+  "_generated": "make-audit.mjs a partir de deducoes.html + tool.js + year_snapshots.json + legal_sources.json (versão do tool.js 2026.08.01a)",
+  "_disclaimer": "GERADO automaticamente do código e das fontes, não curado. Cada linha é verificável: siga a fonte legal (DRE) e confirme o valor. Correr test-audit-sync.js garante que este ficheiro não desviou do código.",
+  "tool_version": "2026.08.01a",
+  "rows": [
+    {
+      "code": "C01",
+      "sector": "Reparação automóveis",
+      "rate": "15%",
+      "base": "% do IVA",
+      "ceiling_eur": 250,
+      "ceiling_note": "teto CONJUNTO de 250 EUR (art. 78.º-F) partilhado por C01-C04, C09-C15",
+      "code_location": "tool.js: CEIL.C01 (pot iva78F) + POT_CAP",
+      "article": "78.º-F",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-1000777569",
+      "source_id": "cirs-78f",
+      "source_expect": [
+        "78.º-F",
+        "15 %",
+        "250"
+      ],
+      "verified": true,
+      "effective_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "source_law": "portaldasfinancas (AT codigo repo) - redacao-law provenance + historical ra pages; DRE = source of record"
+    },
+    {
+      "code": "C02",
+      "sector": "Reparação motociclos",
+      "rate": "15%",
+      "base": "% do IVA",
+      "ceiling_eur": 250,
+      "ceiling_note": "teto CONJUNTO de 250 EUR (art. 78.º-F) partilhado por C01-C04, C09-C15",
+      "code_location": "tool.js: CEIL.C02 (pot iva78F) + POT_CAP",
+      "article": "78.º-F",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-1000777569",
+      "source_id": "cirs-78f",
+      "source_expect": [
+        "78.º-F",
+        "15 %",
+        "250"
+      ],
+      "verified": true,
+      "effective_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "source_law": "portaldasfinancas (AT codigo repo) - redacao-law provenance + historical ra pages; DRE = source of record"
+    },
+    {
+      "code": "C03",
+      "sector": "Alojamento / restauração",
+      "rate": "15%",
+      "base": "% do IVA",
+      "ceiling_eur": 250,
+      "ceiling_note": "teto CONJUNTO de 250 EUR (art. 78.º-F) partilhado por C01-C04, C09-C15",
+      "code_location": "tool.js: CEIL.C03 (pot iva78F) + POT_CAP",
+      "article": "78.º-F",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-1000777569",
+      "source_id": "cirs-78f",
+      "source_expect": [
+        "78.º-F",
+        "15 %",
+        "250"
+      ],
+      "verified": true,
+      "effective_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "source_law": "portaldasfinancas (AT codigo repo) - redacao-law provenance + historical ra pages; DRE = source of record"
+    },
+    {
+      "code": "C04",
+      "sector": "Cabeleireiros / beleza",
+      "rate": "15%",
+      "base": "% do IVA",
+      "ceiling_eur": 250,
+      "ceiling_note": "teto CONJUNTO de 250 EUR (art. 78.º-F) partilhado por C01-C04, C09-C15",
+      "code_location": "tool.js: CEIL.C04 (pot iva78F) + POT_CAP",
+      "article": "78.º-F",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-1000777569",
+      "source_id": "cirs-78f",
+      "source_expect": [
+        "78.º-F",
+        "15 %",
+        "250"
+      ],
+      "verified": true,
+      "effective_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "source_law": "portaldasfinancas (AT codigo repo) - redacao-law provenance + historical ra pages; DRE = source of record"
+    },
+    {
+      "code": "C05",
+      "sector": "Saúde",
+      "rate": "15%",
+      "base": "% do valor",
+      "ceiling_eur": 1000,
+      "ceiling_note": "1000 EUR",
+      "code_location": "tool.js: CEIL.C05",
+      "article": "78.º-C",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-912821426",
+      "source_id": "cirs-78c",
+      "source_expect": [
+        "78.º-C",
+        "15 %",
+        "1 000"
+      ],
+      "verified": true,
+      "effective_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "source_law": "portaldasfinancas (AT codigo repo) - redacao-law provenance + historical ra pages; DRE = source of record"
+    },
+    {
+      "code": "C06",
+      "sector": "Educação",
+      "rate": "30%",
+      "base": "% do valor",
+      "ceiling_eur": 800,
+      "ceiling_note": "800 EUR",
+      "code_location": "tool.js: CEIL.C06",
+      "article": "78.º-D",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-185585815",
+      "source_id": "cirs-78d",
+      "source_expect": [
+        "78.º-D",
+        "30 %",
+        "800"
+      ],
+      "verified": true,
+      "effective_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "source_law": "portaldasfinancas (AT codigo repo) - redacao-law provenance + historical ra pages; DRE = source of record"
+    },
+    {
+      "code": "C07",
+      "sector": "Imóveis / habitação",
+      "rate": "15%",
+      "base": "% do valor",
+      "ceiling_eur": 900,
+      "ceiling_note": "por ano de rendimento (2026 = 900); ver year_snapshots",
+      "code_location": "tool.js: CEIL.C07 + RENDAS_CAP_ANO",
+      "article": "78.º-E",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-1124882175",
+      "source_id": "cirs-78e",
+      "source_expect": [
+        "78.º-E",
+        "15 %",
+        "800"
+      ],
+      "verified": true,
+      "effective_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "source_law": "portaldasfinancas (AT codigo repo) - redacao-law provenance + historical ra pages; DRE = source of record"
+    },
+    {
+      "code": "C08",
+      "sector": "Lares",
+      "rate": "25%",
+      "base": "% do valor",
+      "ceiling_eur": 403.75,
+      "ceiling_note": "403.75 EUR",
+      "code_location": "tool.js: CEIL.C08",
+      "article": "84.º",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-912821428",
+      "source_id": "cirs-84",
+      "source_expect": [
+        "84.º",
+        "25 %",
+        "403"
+      ],
+      "verified": true,
+      "effective_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "source_law": "portaldasfinancas (AT codigo repo) - redacao-law provenance + historical ra pages; DRE = source of record"
+    },
+    {
+      "code": "C09",
+      "sector": "Veterinárias",
+      "rate": "15%",
+      "base": "% do IVA",
+      "ceiling_eur": 250,
+      "ceiling_note": "teto CONJUNTO de 250 EUR (art. 78.º-F) partilhado por C01-C04, C09-C15",
+      "code_location": "tool.js: CEIL.C09 (pot iva78F) + POT_CAP",
+      "article": "78.º-F",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-1000777569",
+      "source_id": "cirs-78f",
+      "source_expect": [
+        "78.º-F",
+        "15 %",
+        "250"
+      ],
+      "verified": true,
+      "effective_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "source_law": "portaldasfinancas (AT codigo repo) - redacao-law provenance + historical ra pages; DRE = source of record"
+    },
+    {
+      "code": "C10",
+      "sector": "Transportes públicos",
+      "rate": "100%",
+      "base": "% do IVA",
+      "ceiling_eur": 250,
+      "ceiling_note": "teto CONJUNTO de 250 EUR (art. 78.º-F) partilhado por C01-C04, C09-C15",
+      "code_location": "tool.js: CEIL.C10 (pot iva78F) + POT_CAP",
+      "article": "78.º-F",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-1000777569",
+      "source_id": "cirs-78f",
+      "source_expect": [
+        "78.º-F",
+        "15 %",
+        "250"
+      ],
+      "verified": null,
+      "effective_years": null,
+      "source_law": null
+    },
+    {
+      "code": "C11",
+      "sector": "Ginásios",
+      "rate": "30%",
+      "base": "% do IVA",
+      "ceiling_eur": 250,
+      "ceiling_note": "teto CONJUNTO de 250 EUR (art. 78.º-F) partilhado por C01-C04, C09-C15",
+      "code_location": "tool.js: CEIL.C11 (pot iva78F) + POT_CAP",
+      "article": "78.º-F",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-1000777569",
+      "source_id": "cirs-78f",
+      "source_expect": [
+        "78.º-F",
+        "15 %",
+        "250"
+      ],
+      "verified": null,
+      "effective_years": null,
+      "source_law": null
+    },
+    {
+      "code": "C12",
+      "sector": "Jornais / revistas",
+      "rate": "100%",
+      "base": "% do IVA",
+      "ceiling_eur": 250,
+      "ceiling_note": "teto CONJUNTO de 250 EUR (art. 78.º-F) partilhado por C01-C04, C09-C15",
+      "code_location": "tool.js: CEIL.C12 (pot iva78F) + POT_CAP",
+      "article": "78.º-F",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-1000777569",
+      "source_id": "cirs-78f",
+      "source_expect": [
+        "78.º-F",
+        "15 %",
+        "250"
+      ],
+      "verified": null,
+      "effective_years": null,
+      "source_law": null
+    },
+    {
+      "code": "C13",
+      "sector": "Livros",
+      "rate": "15%",
+      "base": "% do IVA",
+      "ceiling_eur": 250,
+      "ceiling_note": "teto CONJUNTO de 250 EUR (art. 78.º-F) partilhado por C01-C04, C09-C15",
+      "code_location": "tool.js: CEIL.C13 (pot iva78F) + POT_CAP",
+      "article": "78.º-F",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-1000777569",
+      "source_id": "cirs-78f",
+      "source_expect": [
+        "78.º-F",
+        "15 %",
+        "250"
+      ],
+      "verified": true,
+      "effective_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "source_law": "portaldasfinancas (AT codigo repo) - redacao-law provenance + historical ra pages; DRE = source of record"
+    },
+    {
+      "code": "C14",
+      "sector": "Artísticas",
+      "rate": "15%",
+      "base": "% do IVA",
+      "ceiling_eur": 250,
+      "ceiling_note": "teto CONJUNTO de 250 EUR (art. 78.º-F) partilhado por C01-C04, C09-C15",
+      "code_location": "tool.js: CEIL.C14 (pot iva78F) + POT_CAP",
+      "article": "78.º-F",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-1000777569",
+      "source_id": "cirs-78f",
+      "source_expect": [
+        "78.º-F",
+        "15 %",
+        "250"
+      ],
+      "verified": true,
+      "effective_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "source_law": "portaldasfinancas (AT codigo repo) - redacao-law provenance + historical ra pages; DRE = source of record"
+    },
+    {
+      "code": "C15",
+      "sector": "Museus / monumentos",
+      "rate": "15%",
+      "base": "% do IVA",
+      "ceiling_eur": 250,
+      "ceiling_note": "teto CONJUNTO de 250 EUR (art. 78.º-F) partilhado por C01-C04, C09-C15",
+      "code_location": "tool.js: CEIL.C15 (pot iva78F) + POT_CAP",
+      "article": "78.º-F",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-1000777569",
+      "source_id": "cirs-78f",
+      "source_expect": [
+        "78.º-F",
+        "15 %",
+        "250"
+      ],
+      "verified": true,
+      "effective_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "source_law": "portaldasfinancas (AT codigo repo) - redacao-law provenance + historical ra pages; DRE = source of record"
+    },
+    {
+      "code": "C99",
+      "sector": "Outros",
+      "rate": "35%",
+      "base": "% do valor",
+      "ceiling_eur": 250,
+      "ceiling_note": "250 EUR por sujeito passivo",
+      "code_location": "tool.js: CEIL.C99",
+      "article": "78.º-B",
+      "source_url": "https://diariodarepublica.pt/dr/legislacao-consolidada/lei/2014-70048167-912821425",
+      "source_id": "cirs-78b",
+      "source_expect": [
+        "78.º-B",
+        "35 %",
+        "250"
+      ],
+      "verified": true,
+      "effective_years": [
+        "2023",
+        "2024",
+        "2025"
+      ],
+      "source_law": "portaldasfinancas (AT codigo repo) - redacao-law provenance + historical ra pages; DRE = source of record"
+    }
+  ],
+  "drift": []
+}
