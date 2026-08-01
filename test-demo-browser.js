@@ -102,6 +102,49 @@ const ok = (m) => console.log("  ok   " + m);
     await p.close();
   }
 
+  /* --- 1b. THE ADVERTISED AUTOPLAY, opened with a REAL POINTER on a non-default journey ------
+   * The dialog opens centred, so it frequently appears directly under the pointer that just
+   * pressed the launcher. That fired a mouseenter nobody performed, armed the `hover` block, and
+   * the demo opened frozen on an empty stage. It shipped that way because every existing check
+   * either used index.html (whose launcher already names the default journey) or a synthetic
+   * .click(), which moves no pointer. Both halves are pinned here: it must PLAY on open, and a
+   * deliberate hover afterwards must still pause. */
+  {
+    const { p } = await newPage({ viewport: { width: 1440, height: 1000 } });
+    await p.goto("https://local.test/perfil.html", { waitUntil: "domcontentloaded" });
+    await p.waitForTimeout(900);
+    await p.click(".demo-launch-compact");           // real pointer, lands over the modal
+    await p.waitForTimeout(1400);
+    const opened = await p.evaluate(() => ({
+      live: (document.querySelector(".demo-live") || {}).textContent,
+      tab: (document.querySelector('[role="tab"][aria-selected="true"]') || {}).textContent,
+      fill: (document.querySelector('.demo-panel:not([hidden]) [aria-current="step"] .demo-act-fill')
+             || { style: {} }).style.transform,
+    }));
+    if (!/Demo em direto/.test(opened.live || ""))
+      bad(`a demo abriu em "${opened.live}" - o arranque automatico anunciado nao aconteceu`);
+    else ok("abre a tocar com um ponteiro real (o modal sob o cursor nao se pausa a si proprio)");
+    if (!/scaleX\(0?\.[1-9]/.test(opened.fill || ""))
+      bad(`o primeiro ato nao progrediu (transform ${opened.fill})`);
+    if (!/Situa/.test(opened.tab || ""))
+      bad(`/perfil abriu na jornada "${opened.tab}", esperada Situacao`);
+    else ok("cada rota abre na sua propria jornada");
+
+    // the hover pause must survive the fix: leave the scene, then come back deliberately
+    await p.mouse.move(12, 12);
+    await p.waitForTimeout(200);
+    const box = await p.evaluate(() => {
+      const s = document.querySelector(".demo-panel:not([hidden]) .demo-scene").getBoundingClientRect();
+      return { x: s.x + s.width / 2, y: s.y + s.height / 2 };
+    });
+    await p.mouse.move(box.x, box.y);
+    await p.waitForTimeout(450);
+    const hovered = await p.evaluate(() => (document.querySelector(".demo-live") || {}).textContent);
+    if (!/pausa/i.test(hovered || "")) bad("passar o rato sobre a cena deixou de pausar");
+    else ok("uma passagem deliberada do rato continua a pausar");
+    await p.close();
+  }
+
   // --- 2. reduced motion: final state, no cursor, manual step-through -----------------------
   {
     const { p } = await newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: "reduce" });

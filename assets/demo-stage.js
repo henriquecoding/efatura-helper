@@ -481,12 +481,23 @@
       if (!e.relatedTarget || !rootShell.contains(e.relatedTarget)) blocks.remove("focus");
     });
 
-    // Hover pauses the SCENE, not the whole stage - the play button and the CTA live outside the
-    // animated region, so pointing at them must not be what blocks them from working.
+    /* Hover pauses the SCENE, not the whole stage - the play button and the CTA live outside the
+     * animated region, so pointing at them must not be what blocks them from working.
+     *
+     * hoverLocked exists because the dialog opens CENTRED, i.e. very often directly underneath the
+     * pointer that just pressed the launcher. That synthesises a `mouseenter` the user never
+     * performed, which armed the `hover` block and the demo opened frozen on an empty stage - the
+     * advertised autoplay never happened. Reproduced on /perfil, /deducoes, /base-legal and /sobre
+     * with a real pointer; a synthetic .click() (no pointer) played correctly, which is exactly why
+     * no test caught it. So the block is deaf until the user actually moves the mouse; from then on
+     * a deliberate hover pauses as before. */
+    var hoverLocked = false;
+    function unlockHover() { hoverLocked = false; }
     if (fineHover) {
       panels.forEach(function (p) {
         var scene = p.querySelector(".demo-scene");
         scene.addEventListener("mouseenter", function () {
+          if (hoverLocked) return;
           blocks.add("hover");
           if (cursor) cursor.style.opacity = "0";   // a real cursor displaces the fake one
         });
@@ -523,6 +534,11 @@
       var wi = wanted ? journeyIndex(wanted) : -1;
       var activeBefore = active;
       if (wi >= 0 && wi !== active) selectJourney(wi);
+      // Deafen the hover block before the dialog appears under the pointer (see hoverLocked); the
+      // first real mousemove hands hover back its job.
+      hoverLocked = true;
+      blocks.remove("hover");
+      document.addEventListener("mousemove", unlockHover, { once: true });
       if (typeof modal.showModal === "function") modal.showModal();
       else modal.setAttribute("open", "");       // jsdom and old engines: non-modal fallback
       // showModal focuses the first focusable element - in some engines that is a TAB, whose

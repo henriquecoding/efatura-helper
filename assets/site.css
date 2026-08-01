@@ -172,16 +172,28 @@ summary:focus-visible, [tabindex]:focus-visible {
   border: 1px solid var(--rule);
   border-radius: 999px;
   padding: 6px;
-  /* Desktop stays in normal flow. A sticky capsule crossed chapter boundaries and obscured
-     headings/forms on long pages; only the deliberate mobile bottom bar is fixed. */
-  position: relative; z-index: 60;
+  /* Sticky so the glass is REAL: content has to pass underneath it, otherwise the material is a
+     picture of glass over a flat background. This was flattened to position:relative at some point
+     because a sticky capsule hid headings that anchor links jumped to - a genuine problem, but the
+     cure is --nav-offset on scroll-margin-top below, not deleting the behaviour that the capsule
+     exists for. */
+  position: sticky; top: 10px; z-index: 60;
 }
+/* Sticky only works within its containing block, and the shell wrap ends right below the nav - so
+   the capsule never actually sticks and the glass never happens. display:contents dissolves that
+   wrap on desktop, making <body> the sticky context. Brand and menu centre themselves, so the
+   wrap's box was only ever scaffolding here. */
 @media (min-width: 761px) {
+  .security-rule + .wrap { display: contents; }
   .primary-nav { max-width: min(100%, calc(100vw - 32px)); }
   .site-menu {
     position: fixed; inset: 0; z-index: 90;
     width: min(var(--wrap), calc(100vw - 32px)); margin: auto;
   }
+  /* Anything an in-page anchor can land on clears the pinned capsule instead of hiding under it.
+     :target alone is not enough - the TOC on /sobre jumps to sections whose heading sits at the
+     very top of the box. */
+  :target, [id] > h2, [id] > h3, section[id], .toc + * { scroll-margin-top: var(--nav-offset, 86px); }
 }
 /* Liquid glass on the capsule - the SECOND documented exception to the glassmorphism ban
    (owner decision 01-08-2026, Instagram reference; the first is the Mesa Fiscal chrome).
