@@ -160,21 +160,23 @@ summary:focus-visible, [tabindex]:focus-visible {
 .site-brand .brand-name { font-size: 1.85rem; font-weight: 700; letter-spacing: -.02em; }
 
 /* ============================================================ NAV-003..006 primary nav
-   A rectangle with a hairline, radius 14 - deliberately NOT a floating pill/capsule (anti-pattern:
-   the generic SaaS nav). No blur, no shadow on desktop. The hamburger is the last item INSIDE the
-   rectangle, separated by a vertical hairline. */
+   A CAPSULE, by owner decision (01-08-2026, Instagram reference, after seeing the rectangle
+   shipped): fully rounded bar, content-width and centred on desktop, floating inset pill on
+   mobile, with the active destination in a rounded bubble. The earlier rectangle rule and its
+   test were changed deliberately - not silently - and the capsule still refuses blur; the shape
+   changed, the material did not. */
 .primary-nav {
-  display: flex; align-items: stretch; gap: 2px;
-  max-width: var(--wrap); margin: 0 auto;
+  display: flex; align-items: center; gap: 4px;
+  width: fit-content; max-width: 100%; margin: 0 auto;
   background: var(--surface);
   border: 1px solid var(--rule);
-  border-radius: var(--card-radius);
-  padding: 8px;
+  border-radius: 999px;
+  padding: 6px;
 }
 .primary-nav > :is(a, button) {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-  flex: 1 1 auto; min-height: 48px; padding: 8px 14px;
-  border: 0; border-radius: 10px; background: transparent;
+  flex: 0 0 auto; min-height: 48px; padding: 10px 20px;
+  border: 0; border-radius: 999px; background: transparent;
   color: var(--ink2); text-decoration: none;
   font: 400 .95rem/1.25 inherit; cursor: pointer;
   position: relative;
@@ -186,6 +188,16 @@ summary:focus-visible, [tabindex]:focus-visible {
    viewport - .nav-short is hidden from assistive tech and .nav-long stays readable. */
 .primary-nav .nav-short { display: none; }
 
+/* Between the mobile pill and the full-width desktop there is a band (761-1080px) where the
+   capsule's long labels no longer fit a fit-content bar. The SHORT labels (already in the DOM
+   for the bottom bar) take over and the items may compress - the capsule bends before it
+   overflows. Found by the viewport matrix at 768px. */
+@media (max-width: 1080px) and (min-width: 761px) {
+  .primary-nav > :is(a, button) { flex: 0 1 auto; min-width: 0; padding: 10px 14px; font-size: .9rem; }
+  .primary-nav .nav-short { display: block; }
+  .primary-nav .nav-long { display: none; }
+}
+
 /* NAV-005 active state: wash + colour + a 3px underline. Three signals, so it never depends on
    colour alone (A11Y-010). aria-current is what the CSS keys off - not a class - so the DOM
    carries the state for assistive tech and the paint follows it. */
@@ -193,12 +205,12 @@ summary:focus-visible, [tabindex]:focus-visible {
   background: var(--pri-soft);
   color: var(--pri);
   font-weight: 600;
-  box-shadow: inset 0 -3px 0 var(--pri);
+  box-shadow: inset 0 0 0 1.5px var(--pri);   /* a ring, not an underline - the bubble reads IG */
 }
 .primary-nav .nav-help { flex: 0 0 auto; }
 .primary-nav .nav-menu {
-  flex: 0 0 auto; margin-left: 6px; padding-left: 18px;
-  border-left: 1px solid var(--rule); border-radius: 0 10px 10px 0;
+  flex: 0 0 auto; margin-left: 6px; padding-left: 20px;
+  border-left: 1px solid var(--rule); border-radius: 0 999px 999px 0;
 }
 
 /* ============================================================ site menu (supplementary)
@@ -432,30 +444,41 @@ summary:focus-visible, [tabindex]:focus-visible {
    full-width bar - not a floating capsule - with exactly five destinations, each icon + text.
    Ajuda folds into Menu so the count stays five (MOB-001, TEST-NEW-07). */
 @media (max-width: 760px) {
-  body { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); }
+  body { padding-bottom: calc(var(--nav-h) + 10px + env(safe-area-inset-bottom)); }
 
   .site-brand { margin: 20px auto 16px; gap: 11px; }
   .site-brand .brand-mark { width: 40px; height: 40px; }
   .site-brand .brand-name { font-size: 1.5rem; }
 
+  /* The Instagram bar: a dark floating pill, inset from the edges, active destination in a
+     light rounded bubble. Labels stay - icon-only navigation fails exactly the people this
+     product serves - but they are small and the bubble carries the state. */
   .primary-nav {
-    position: fixed; z-index: 80; inset: auto 0 0;
-    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0; max-width: none; min-height: 68px;
-    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
-    border: 0; border-top: 1px solid var(--hair-strong); border-radius: 0;
-    background: var(--surface);
+    position: fixed; z-index: 80;
+    left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom));
+    width: auto; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 2px; max-width: none; min-height: 64px;
+    padding: 6px;
+    border: 1px solid color-mix(in srgb, white 14%, transparent);
+    border-radius: 999px;
+    background: var(--pri-dark);
+    box-shadow: 0 10px 28px color-mix(in srgb, var(--ink) 28%, transparent);
   }
   .primary-nav > :is(a, button) {
-    min-width: 0; min-height: 56px;
-    display: grid; place-items: center; align-content: center; gap: 3px;
-    padding: 5px 2px; border: 0; border-radius: 9px; background: transparent;
-    font-size: .72rem; line-height: 1.15; text-align: center;
+    min-width: 0; min-height: 52px;
+    display: grid; place-items: center; align-content: center; gap: 2px;
+    padding: 5px 2px; border: 0; border-radius: 999px; background: transparent;
+    color: #C9D6F2;
+    font-size: .66rem; line-height: 1.15; text-align: center;
   }
+  .primary-nav > :is(a, button):hover { background: color-mix(in srgb, white 14%, transparent); color: #fff; }
   .primary-nav > :is(a, button) span {
     max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
-  .primary-nav [aria-current="page"] { box-shadow: inset 0 3px 0 var(--pri); }
+  .primary-nav [aria-current="page"] {
+    background: var(--surface); color: var(--pri-dark);
+    box-shadow: inset 0 0 0 1.5px var(--pri-light);
+  }
   .primary-nav .nav-menu { margin-left: 0; padding-left: 2px; border-left: 0; border-radius: 9px; }
   /* Ajuda moves into Menu; exactly 5 destinations remain.
      MUST be scoped under .primary-nav: a bare `.nav-help` (0,1,0) loses to

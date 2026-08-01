@@ -20,7 +20,9 @@
     if (!FIX || !CORE || !section) return;
     var rootShell = section.querySelector("[data-demo-root]");
     var summary = section.querySelector("[data-demo-summary]");
-    if (!rootShell) return;
+    var launcher = section.querySelector("[data-demo-open]");
+    var modal = section.querySelector("[data-demo-modal]");
+    if (!rootShell || !launcher || !modal) return;
 
     var reduced = false, fineHover = false;
     try {
@@ -61,6 +63,11 @@
     var pauseBtn = el("button", "demo-pause", "Pausar demonstração");
     pauseBtn.type = "button";
     titlebar.appendChild(pauseBtn);
+    var closeBtn = el("button", "demo-close", "");
+    closeBtn.type = "button";
+    closeBtn.setAttribute("aria-label", "Fechar a demonstração");
+    closeBtn.appendChild(icon("fb-fechar"));
+    titlebar.appendChild(closeBtn);
 
     /* ------------------------------------------------------------------ build: tabs */
     var tabsNav = rootShell.querySelector(".demo-tabs");
@@ -457,30 +464,39 @@
       else blocks.remove("document-hidden");
     });
 
-    /* ------------------------------------------------------------------ mount */
+    /* ------------------------------------------------------------------ mount
+     * The demo lives in a modal (owner decision 01-08-2026): nothing runs on the page itself.
+     * Mounting reveals the LAUNCHER; the stage stays parked behind the `offscreen` block until
+     * the dialog opens, and goes back to parked when it closes. No IntersectionObserver - the
+     * dialog IS the visibility signal. */
     selectJourney(0, { auto: true });
-    blocks.add("offscreen");                     // until the observer says otherwise
+    blocks.add("offscreen");
     rootShell.hidden = false;
+    launcher.hidden = false;
     if (summary) summary.hidden = true;
 
-    if ("IntersectionObserver" in window && !reduced) {
-      var seen = false;
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (en) {
-          if (en.intersectionRatio >= 0.6) {
-            blocks.remove("offscreen");
-            if (!seen) { seen = true; }          // first journey plays once
-          } else {
-            blocks.add("offscreen");
-          }
-        });
-      }, { threshold: [0, 0.6] });
-      io.observe(rootShell);
-    } else {
-      // no observer (or reduced motion): visible and parked; "Reproduzir" is the way in
+    function openModal() {
+      if (typeof modal.showModal === "function") modal.showModal();
+      else modal.setAttribute("open", "");       // jsdom and old engines: non-modal fallback
       blocks.remove("offscreen");
-      blocks.add("manual");
+      if (!reduced && act === 0 && !completed) {
+        // first open plays once from the top; a re-open resumes wherever it was left
+        blocks.remove("manual");
+        enterAct(active, 0, true);
+        announce(active, 0);
+      }
     }
+    function closeModal() {
+      blocks.add("offscreen");                   // parks the clock, keeps the progress
+      if (modal.open && typeof modal.close === "function") modal.close();
+      else modal.removeAttribute("open");
+    }
+    launcher.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+    modal.addEventListener("close", function () { blocks.add("offscreen"); });
+    modal.addEventListener("cancel", function () { blocks.add("offscreen"); });
+    // click on the backdrop closes (the dialog itself is the only direct target there)
+    modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

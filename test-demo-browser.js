@@ -44,8 +44,16 @@ const ok = (m) => console.log("  ok   " + m);
     p.on("pageerror", (e) => errs.push(String(e.message)));
     await p.goto("https://local.test/index.html", { waitUntil: "domcontentloaded" });
     await p.waitForTimeout(600);
-    await p.evaluate(() => document.getElementById("demonstracao").scrollIntoView({ block: "center" }));
-    await p.waitForTimeout(3200);           // more than one act of autoplay
+    // the demo now lives in a modal: nothing may run before the launcher is pressed
+    const preOpen = await p.evaluate(() => ({
+      launcher: !document.querySelector("[data-demo-open]").hidden,
+      dialogOpen: document.querySelector("[data-demo-modal]").open,
+    }));
+    if (!preOpen.launcher) bad("o launcher nao esta visivel");
+    if (preOpen.dialogOpen) bad("o dialog abriu sozinho - deve esperar pelo clique");
+    else ok("nada corre antes do clique no launcher");
+    await p.click("[data-demo-open]");
+    await p.waitForTimeout(3200);           // more than one act of autoplay inside the modal
     const offsite = reqs.filter((r) => !r.startsWith("https://local.test/"));
     const dynamic = reqs.filter((r) => /demo-/.test(r)).length;
     if (offsite.filter((r) => !/analytics|fonts|challenges/.test(r)).length)
@@ -55,11 +63,13 @@ const ok = (m) => console.log("  ok   " + m);
     if (errs.length) bad("erros de consola: " + errs[0]);
     else ok("zero erros de pagina com a demo a correr");
 
-    // shell visible, summary folded, page not widened
+    // modal open, shell visible, page not widened
     const m = await p.evaluate(() => ({
       shell: !document.querySelector("[data-demo-root]").hidden,
+      open: document.querySelector("[data-demo-modal]").open,
       sw: document.documentElement.scrollWidth, iw: window.innerWidth,
     }));
+    if (!m.open) bad("o dialog nao esta aberto");
     if (!m.shell) bad("a shell nao ficou visivel");
     if (m.sw > m.iw + 1) bad(`overflow horizontal com a demo (${m.sw}>${m.iw})`);
     else ok("sem overflow horizontal a 1440");
@@ -78,6 +88,13 @@ const ok = (m) => console.log("  ok   " + m);
     else ok("pausar congela a barra do ato" + (before !== frozen1 ? "" : " (progresso conservado)"));
     const label = await p.evaluate(() => document.querySelector(".demo-pause").textContent);
     if (!/Retomar/.test(label)) bad("o botao de pausa nao passou a Retomar");
+
+    // Fechar para o relogio e devolve a pagina
+    await p.click(".demo-close");
+    await p.waitForTimeout(300);
+    const closed = await p.evaluate(() => !document.querySelector("[data-demo-modal]").open);
+    if (!closed) bad("o botao Fechar nao fechou o dialog");
+    else ok("Fechar fecha o dialog e estaciona o relogio");
     await p.close();
   }
 
@@ -86,6 +103,8 @@ const ok = (m) => console.log("  ok   " + m);
     const { p } = await newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: "reduce" });
     await p.goto("https://local.test/index.html", { waitUntil: "domcontentloaded" });
     await p.waitForTimeout(900);
+    await p.click("[data-demo-open]");
+    await p.waitForTimeout(400);
     const r = await p.evaluate(() => {
       const panel = document.querySelector(".demo-panel:not([hidden])");
       const acts = panel.querySelectorAll(".demo-act");
@@ -113,6 +132,8 @@ const ok = (m) => console.log("  ok   " + m);
     const { p } = await newPage({ viewport: { width: 390, height: 844 } });
     await p.goto("https://local.test/index.html", { waitUntil: "domcontentloaded" });
     await p.waitForTimeout(900);
+    await p.click("[data-demo-open]");
+    await p.waitForTimeout(400);
     const m = await p.evaluate(() => ({
       sw: document.documentElement.scrollWidth, iw: window.innerWidth,
       tabsScroll: (function () {

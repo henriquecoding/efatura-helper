@@ -27,12 +27,27 @@ for (const f of ["assets/demo-fixtures.js", "assets/demo-stage-core.js", "assets
 }
 
 setTimeout(() => {
-  // --- mount happened; summary hidden, shell shown -------------------------------------------
+  // --- mount happened; the LAUNCHER is the visible artefact, the shell waits in the dialog ----
+  const launcher = doc.querySelector("[data-demo-open]");
+  if (!launcher || launcher.hidden) bad("o launcher nao ficou visivel no mount");
+  else ok("launcher visivel apos o mount (a demo nao corre inline)");
+  if (!launcher || !launcher.textContent.trim()) bad("launcher sem nome acessivel");
+  const modal = doc.querySelector("dialog[data-demo-modal]");
+  if (!modal) bad("sem <dialog> para a demo");
+  else if (!modal.getAttribute("aria-label")) bad("dialog sem nome acessivel");
   const shell = doc.querySelector("[data-demo-root]");
   if (!shell || shell.hidden) bad("a shell nao montou");
   else ok("shell montada por progressive enhancement");
   const summary = doc.querySelector("[data-demo-summary]");
   if (summary && !summary.hidden) bad("o resumo estatico ficou visivel em duplicado");
+
+  // opening: the launcher opens the dialog (showModal or the open-attribute fallback)
+  launcher.click();
+  if (!(modal.open || modal.hasAttribute("open"))) bad("o launcher nao abriu o dialog");
+  else ok("o launcher abre o dialog");
+  const closeBtn = doc.querySelector(".demo-close");
+  if (!closeBtn || !closeBtn.getAttribute("aria-label")) bad("sem botao Fechar nomeado no chrome");
+  else ok("botao Fechar nomeado no chrome");
 
   // --- tablist per APG -----------------------------------------------------------------------
   const tablist = doc.querySelector('[role="tablist"]');

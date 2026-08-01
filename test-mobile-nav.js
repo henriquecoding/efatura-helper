@@ -18,15 +18,21 @@ const css = fs.readFileSync("assets/site.css", "utf8");
 const mq = (css.match(/@media \(max-width: 760px\) \{[\s\S]*?\n\}/g) || []).join("\n");
 if (!mq) { bad("assets/site.css: bloco @media (max-width: 760px) em falta"); }
 
-// 1. the bar is fixed to the bottom, full width, and is NOT a floating capsule
+// 1. the bar is a FLOATING PILL fixed to the bottom - the capsule contract, decided by the
+//    owner on 01-08-2026 (Instagram reference) after seeing the solid bar shipped. This test
+//    used to pin the opposite; it was inverted deliberately, not relaxed.
 if (!/\.primary-nav\s*\{[^}]*position:\s*fixed/.test(mq))
   bad("a navbar mobile nao e fixa ao fundo");
 else ok("navbar fixa ao fundo");
-if (!/\.primary-nav\s*\{[^}]*inset:\s*auto 0 0/.test(mq))
-  bad("a navbar mobile nao ocupa a largura toda (deve ser barra solida, nao capsula)");
-else ok("barra solida de largura total, nao capsula flutuante");
-if (!/\.primary-nav\s*\{[^}]*border-radius:\s*0/.test(mq))
-  bad("a navbar mobile mantem cantos arredondados - vira capsula");
+if (!/\.primary-nav\s*\{[^}]*left:\s*10px;\s*right:\s*10px;\s*bottom:/.test(mq))
+  bad("a pill nao flutua com margem das bordas (decisao de 01-08-2026)");
+else ok("pill flutuante com margem das bordas");
+if (!/\.primary-nav\s*\{[^}]*border-radius:\s*999px/.test(mq))
+  bad("a navbar mobile nao e uma capsula (border-radius 999px)");
+else ok("capsula: border-radius 999px");
+if (!/\[aria-current="page"\]\s*\{[^}]*background:\s*var\(--surface\)/.test(mq))
+  bad("o destino ativo nao tem a bolha clara (o sinal do estado na pill escura)");
+else ok("ativo em bolha clara sobre a pill escura");
 
 // 2. exactly five columns, and Ajuda hidden so the count is really five
 if (!/grid-template-columns:\s*repeat\(5,/.test(mq))

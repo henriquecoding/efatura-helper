@@ -156,10 +156,12 @@ console.log("\nshell - composition");
   const navRule = (shellCss.match(/\.primary-nav \{[^}]*\}/) || [""])[0];
   if (/backdrop-filter|blur\(/.test(navRule)) bad("the primary nav uses blur - capsule/glass nav is banned");
   else ok("nav has no blur");
-  const navRadius = (navRule.match(/border-radius:\s*(?:var\(--card-radius\)|(\d+)px)/) || [])[0];
-  if (!navRadius) bad("the primary nav has no explicit border-radius");
-  else if (/999|9999|50%/.test(navRadius)) bad("the primary nav is a pill - it must read as a rectangle");
-  else ok("nav is a rectangle, not a pill");
+  /* Capsule BY OWNER DECISION (01-08-2026, Instagram reference) - this check previously pinned
+   * a rectangle and was inverted deliberately when the owner chose the pill after seeing both.
+   * What still cannot change silently: the capsule is explicit (999px, not an accident of a
+   * token) and it wears no blur (checked above). */
+  if (!/border-radius:\s*999px/.test(navRule)) bad("the primary nav lost the capsule decided on 01-08-2026");
+  else ok("nav is the decided capsule (999px, still no blur)");
 
   /* 2. The security rule is TEXT on every page, and is never demoted into a tooltip or an image.
    *    It is the only claim on this site whose failure mode is someone losing money. */

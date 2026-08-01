@@ -29,6 +29,9 @@ These are the things that make a page look like it was generated. They are banne
 7. **Floating particles, animated dots, constellation canvases.**
 8. **`shadow-xl` and friends** — big soft drop shadows doing the work a 1px line should do.
 9. **`rounded-full` on non-circular things.** Pills for buttons that are not tags or status.
+   *Owner-decided exception (01-08-2026): the primary navigation is a capsule (Instagram
+   reference), desktop and mobile, chosen explicitly after seeing the rectangular bar. Pinned by
+   `test-design.js` and `test-mobile-nav.js`; it does not license pills anywhere else.*
 10. **Icons inside coloured circles**, three across, above three short paragraphs.
 11. **Emoji as UI iconography.** (Emoji inside user-facing *prose* is a separate question; as an
     icon system it is banned.)
