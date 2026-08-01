@@ -1158,7 +1158,7 @@
 <script defer src="/assets/site.js"></script>
 <script defer src="/assets/empresa.js"></script>
 </head>
-<body>
+<body data-home-mode="empresa">
 <!-- Marker filter for .mark-hl. feTurbulence + feDisplacementMap warps the highlight's edges so
      the mark reads as drawn by hand rather than as a rectangle behind a word. Inline SVG, so it
      costs no request and needs no CSP exception. baseFrequency is horizontal-only (0 0.15) - a
@@ -1273,7 +1273,7 @@
     <h2 id="searchbar-title" class="visually-hidden">Consultar uma empresa</h2>
 
     <div class="sb-mode">
-      <span class="field-label" id="sb-mode-label">Procurar por</span>
+      <span class="fb-field-label" id="sb-mode-label">Procurar por</span>
       <div class="segmented" role="radiogroup" aria-labelledby="sb-mode-label">
         <input type="radio" name="tipo" id="sb-nif" value="nif" checked>
         <label for="sb-nif">
@@ -1286,7 +1286,7 @@
       </div>
     </div>
 
-    <div class="sb-term field">
+    <div class="sb-term fb-field">
       <label class="label" for="sb-input" id="sb-input-label">NIF da empresa</label>
       <input type="text" id="sb-input" name="q" autocomplete="off" spellcheck="false"
              inputmode="numeric" placeholder="Ex.: 500 960 046"
@@ -1388,7 +1388,7 @@
       </table>
     </div>
 
-    <p class="note">
+    <p class="fb-note">
       <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-info"></use></svg>
       <span>O CAE mostra o que a empresa <b>pode</b> exercer. O que compraste continua a decidir o
         setor correto. Os dados acima são um exemplo de formato, não um resultado.</span>
@@ -1402,7 +1402,7 @@
     <span class="eyebrow">03 &middot; Do NIF à decisão</span>
     <h2 id="cae-h"><span class="chapter-no">03</span>Porque é que o CAE principal nem sempre chega</h2>
 
-    <ol class="steps">
+    <ol class="fb-steps">
       <li>
         <span class="n">01</span>
         <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-lupa"></use></svg>
@@ -1427,7 +1427,7 @@
     <p class="quiet-example">Exemplo: um hipermercado pode ter também atividade de farmácia,
       livraria ou restauração.</p>
 
-    <p class="note note-warn">
+    <p class="fb-note fb-note-warn">
       <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-aviso"></use></svg>
       <span>Ser aceite pelo e-Fatura não significa que a classificação esteja certa.
         Quem declara és tu.</span>
@@ -1908,7 +1908,7 @@
        colophon, the two optional fields side by side, the counter and the security note on the
        textarea's own footer, and the actions closed off by a rule. -->
   <form id="fb" class="form" method="post" action="/api/feedback" novalidate>
-    <div class="field">
+    <div class="fb-field">
       <label for="fb-msg"><span class="fi">01</span>O que correu mal, ou o que sugeres</label>
       <textarea id="fb-msg" name="message" rows="5" maxlength="4000" required
         placeholder="Ex: o Continente foi classificado como Saúde e não devia."></textarea>
@@ -1919,13 +1919,13 @@
     </div>
 
     <div class="field-pair">
-      <div class="field">
+      <div class="fb-field">
         <label for="fb-ctx"><span class="fi">02</span>Comerciante ou setor
           <span class="opt">opcional</span></label>
         <input id="fb-ctx" name="context" type="text" maxlength="300" autocomplete="off"
                placeholder="Ex: Continente, ou C05">
       </div>
-      <div class="field">
+      <div class="fb-field">
         <label for="fb-mail"><span class="fi">03</span>O teu email
           <span class="opt">se quiseres resposta</span></label>
         <input id="fb-mail" name="email" type="email" maxlength="200" autocomplete="email"

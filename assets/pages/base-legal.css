@@ -14,13 +14,13 @@
 .legalbar select { min-height: 48px; }
 
 .lb-aside { display: flex; gap: 26px; flex-wrap: wrap; margin: 14px 0 0; max-width: none; }
-.lb-aside a { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; font-weight: 500; }
+.lb-aside a { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; font-weight: 600; }
 .ico-inline { width: 16px; height: 16px; }
 
 /* three assurances under the hero */
 .assure {
   list-style: none; margin: 0; padding: 0; max-width: none;
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
   border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
 }
 .assure li { display: flex; gap: 13px; padding: 20px 22px; max-width: none; align-items: flex-start; }
@@ -38,7 +38,7 @@
 }
 .topics li {
   display: grid; align-items: center; gap: 6px 16px; padding: 16px 20px; max-width: none;
-  grid-template-columns: auto minmax(150px, 1fr) minmax(0, 1.4fr) minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(min(150px, 100%), 1fr) minmax(0, 1.4fr) minmax(0, 1fr) auto;
 }
 .topics li + li { border-top: 1px solid var(--rule); }
 .topics > li > svg { width: 24px; height: 24px; color: var(--pri); }
@@ -62,7 +62,7 @@
 .lr-item .lr-gov { color: var(--ink2); font-size: .93rem; margin: 0; }
 
 /* rule card */
-.two-col { display: grid; gap: 30px 40px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.two-col { display: grid; gap: 30px 40px; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); }
 .rule-card h3 { font-size: 1.1rem; color: var(--pri-dark); margin-top: 12px; }
 .rule-dl { margin: 14px 0 0; display: grid; grid-template-columns: minmax(130px, .8fr) 1.2fr; gap: 0; }
 .rule-dl dt, .rule-dl dd {
@@ -86,7 +86,7 @@
 .changes .c-date { color: var(--mute); white-space: nowrap; }
 .changes .c-what { font-size: .95rem; }
 
-.cert-cols { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin-top: 16px; }
+.cert-cols { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr)); margin-top: 16px; }
 .cert-cols .panel { padding: 16px 18px; }
 .cert-cols h3 { font-size: .95rem; margin-bottom: 8px; }
 .cert-cols p { font-size: .91rem; color: var(--ink2); }

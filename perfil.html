@@ -64,6 +64,7 @@
 <link rel="stylesheet" href="/assets/pages/situacao.css">
 <script defer src="/assets/site.js"></script>
 <script defer src="/assets/situacao.js"></script>
+<link rel="canonical" href="https://faturas.diogoandrade.com/perfil">
 </head>
 <body data-home-mode="situacao">
 <!-- Fatura Boa (c) 2026 Diogo Andrade. Licenca PolyForm Noncommercial 1.0.0
@@ -145,26 +146,145 @@
   </div>
 </div>
 <!-- FB:SHELL:END -->
-<header class="page-hero"><div class="wrap">
-  <h1>A minha situação fiscal</h1>
-  <p>Carrega, página a página, o que as Finanças já sabem sobre ti. Nada de contas nem registos. Cada página é lida no teu
-     navegador, na tua sessão. <b>Fica tudo só neste navegador</b> - só é enviado alguma coisa se
-     escolheres contribuir (em baixo), e mesmo aí sem o teu nome nem NIF.</p>
+<header class="page-hero situacao-hero"><div class="wrap">
+  <span class="eyebrow">Leitura privada &middot; no teu navegador</span>
+  <h1>Vê a tua situação fiscal completa</h1>
+  <p class="lead">Lê o que as Finanças e a Segurança Social já sabem sobre ti — sem pedir a tua
+    password e sem criar uma conta.</p>
+  <p class="hero-links">
+    <a href="#instalar"><svg class="ico-inline" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-marcador"></use></svg>
+      Ver como instalar</a>
+    <a href="#progresso">Já comecei &middot; continuar</a>
+  </p>
 </div></header>
+
 <main class="wrap" id="conteudo">
-  <!-- The PROFILING bookmarklet (private). Different from the public one on the home page: this
-       allows ALL portaldasfinancas.gov.pt partitions and sets __FB_PROFILE to unlock the profile
-       flow. Drag it to the bookmarks bar once; use it on every Financas page. -->
-  <div class="card" style="background:#f4f6f9">
-    <div style="font-weight:700;margin-bottom:6px">1. Instala o favorito (uma vez)</div>
-    <p class="w" style="margin:0 0 10px">Arrasta este botao para a tua barra de favoritos. Depois,
-       em <b>qualquer pagina das Financas ou da Seguranca Social</b>, clica nele - ele le a pagina e traz-te de volta aqui.</p>
-    <a class="btn" style="font-size:1rem;padding:10px 18px" onclick="try{if(window.umami)umami.track('bookmarklet-lancou')}catch(e){}" href="javascript:(function(){if(!/(portaldasfinancas\.gov\.pt|seg-social\.pt)$/.test(location.host)){alert('Abre uma pagina das Financas ou da Seguranca Social e faz login.');return;}window.__FB_PROFILE=1;var s=document.createElement('script');s.charset='utf-8';s.src='https://faturas.diogoandrade.com/tool.js?v='+Date.now();document.body.appendChild(s);})();">Fatura Boa - Situação</a>
-    <p class="w" style="margin:10px 0 0">Nao e o mesmo favorito da pagina inicial (esse so funciona no e-Fatura). Este funciona nas Financas e na Seguranca Social.</p>
-  </div>
-  <div class="card" style="padding-top:12px"><div style="font-weight:700;margin-bottom:2px">2. Carrega a tua informação</div></div>
-  <div id="banner"></div>
-  <div id="out"></div>
+
+  <p class="fb-note">
+    <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-escudo"></use></svg>
+    <span>Abre sempre primeiro a página oficial. A ferramenta corre na sessão que já tens aberta —
+      nunca te pedimos a password.</span>
+  </p>
+
+  <!-- Step 1: installing the RIGHT bookmarklet. This is the profile one: it authorises every
+       portaldasfinancas.gov.pt and seg-social.pt partition and sets __FB_PROFILE. The public
+       bookmarklet on the homepage only works inside e-Fatura, and confusing the two is the most
+       common way this flow fails - so the difference is stated in text, next to the button. -->
+  <section class="step-card" id="instalar" aria-labelledby="instalar-h">
+    <div class="step-head">
+      <h2 id="instalar-h"><span class="chapter-no">01</span>Instala o favorito — uma vez</h2>
+      <p class="only-desktop">
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-monitor"></use></svg>
+        Só funciona no computador</p>
+    </div>
+
+    <p>Arrasta o botão para a barra de favoritos. Depois, numa página oficial das Finanças ou da
+      Segurança Social onde já tenhas iniciado sessão, clica nele para ler essa fonte.</p>
+
+    <div class="install-row">
+      <a class="btn bm-drag" id="fb-bm"
+         onclick="try{if(window.umami)umami.track('bookmarklet-lancou')}catch(e){}"
+         href="javascript:(function(){if(!/(portaldasfinancas\.gov\.pt|seg-social\.pt)$/.test(location.host)){alert('Abre uma pagina das Financas ou da Seguranca Social e faz login.');return;}window.__FB_PROFILE=1;var s=document.createElement('script');s.charset='utf-8';s.src='https://faturas.diogoandrade.com/tool.js?v='+Date.now();document.body.appendChild(s);})();">
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-marcador"></use></svg>
+        Fatura Boa — Situação</a>
+
+      <button class="btn btn-alt" type="button" data-copy-target="fb-bm" data-copy-status="bm-copy-status">
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-copiar"></use></svg>
+        Copiar o código</button>
+    </div>
+    <p class="copy-status" id="bm-copy-status" role="status"></p>
+
+    <details class="browser-help">
+      <summary>Não consegues arrastar? Ver instruções para Chrome, Edge, Firefox e Safari</summary>
+      <dl class="bh-list">
+        <dt>Chrome e Edge</dt>
+        <dd>Ctrl+Shift+B mostra a barra de favoritos. Clica com o botão direito na barra &rarr;
+          <b>Adicionar página</b> &rarr; cola o código copiado no campo do endereço.</dd>
+        <dt>Firefox</dt>
+        <dd>Ctrl+Shift+B mostra a barra. Botão direito &rarr; <b>Adicionar marcador</b> &rarr; cola
+          o código no campo <b>Endereço</b>.</dd>
+        <dt>Safari</dt>
+        <dd>Ver &rarr; Mostrar barra de favoritos. Adiciona qualquer página aos favoritos, depois
+          edita-a e substitui o endereço pelo código copiado.</dd>
+      </dl>
+    </details>
+
+    <p class="fb-note fb-note-warn">
+      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-aviso"></use></svg>
+      <span>Nunca coles este código na barra de endereço. Guarda-o como favorito.
+        Este favorito é diferente do usado apenas no e-Fatura.</span>
+    </p>
+  </section>
+
+  <!-- MOB: the honest limit. The bookmarklet is not reliably supported on mobile browsers, and a
+       profile loaded on a desktop does not travel to a phone - there is no sync. Saying otherwise
+       would be the kind of promise this product exists not to make. -->
+  <p class="fb-note fb-note-warn only-mobile">
+    <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-monitor"></use></svg>
+    <span><b>Para carregar as fontes, usa um computador.</b> Os navegadores móveis não executam
+      este favorito de forma fiável, e o que carregares no computador não aparece aqui — os dados
+      ficam no navegador onde foram lidos.</span>
+  </p>
+
+  <section class="step-card" id="progresso" aria-labelledby="progresso-h">
+    <h2 id="progresso-h"><span class="chapter-no">02</span>O teu progresso</h2>
+    <!-- #banner and #out are owned by this page's existing engine: it renders the 0/9 counter,
+         the nine-source table and the summary from the local store. Not restructured here - only
+         the frame around it changed. -->
+    <div id="banner"></div>
+    <ol class="flow">
+      <li><span class="n">01</span>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-marcador"></use></svg>
+        <span>Favorito instalado <em>uma vez</em></span></li>
+      <li><span class="n">02</span>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-externo"></use></svg>
+        <span>Abrir a página oficial</span></li>
+      <li><span class="n">03</span>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-documento"></use></svg>
+        <span>Ler a informação</span></li>
+      <li><span class="n">04</span>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-check"></use></svg>
+        <span>Ver o resumo</span></li>
+    </ol>
+    <p class="hint">Cada fonte abre num separador oficial. Quando a leitura termina, regressas aqui
+      automaticamente.</p>
+  </section>
+
+  <section class="step-card" aria-labelledby="fontes-h">
+    <h2 id="fontes-h"><span class="chapter-no">03</span>Fontes a carregar</h2>
+    <div id="out"></div>
+  </section>
+
+  <section class="step-card" aria-labelledby="privacidade-h">
+    <h2 id="privacidade-h"><span class="chapter-no">04</span>Privacidade verificável</h2>
+    <div class="priv-cols">
+      <div>
+        <h3><svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-escudo"></use></svg>
+          Nunca pedimos</h3>
+        <p class="mono">password &middot; credenciais &middot; conta</p>
+      </div>
+      <div>
+        <h3><svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-cadeado"></use></svg>
+          Fica no navegador</h3>
+        <p class="mono">faturas &middot; rendimentos &middot; património &middot; IRS</p>
+      </div>
+      <div>
+        <h3><svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-lixo"></use></svg>
+          Apagado ao fim do dia</h3>
+        <p>Os teus dados são apagados automaticamente no fim do dia neste navegador, e podes
+          apagá-los a qualquer momento.</p>
+      </div>
+    </div>
+    <p class="fb-note fb-note-warn">
+      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-aviso"></use></svg>
+      <span>São indicadores para confirmares, não aconselhamento fiscal.
+        A ferramenta lê; tu decides e submetes.</span>
+    </p>
+
+    <!-- Filled by assets/situacao.js. Without JavaScript this stays empty and the engine's own
+         "apagar agora" link inside #out still works, so the capability never disappears. -->
+    <div id="data-actions" class="data-actions"></div>
+  </section>
 </main>
 <!-- FB:FOOTER:START (gerado por make-shell.mjs - nao editar a mao) -->
 <footer class="site-footer">

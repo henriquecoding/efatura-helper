@@ -134,98 +134,72 @@ for (const page of PAGES) {
   }
 }
 
-/* ---- homepage hero: the concept-C acceptance criteria ------------------------------------------
- * These are static-source proxies for the five numbers that were measured on the 30-07-2026 hero
- * rebuild. The real values need a render (see 09-acceptance-tests.md); what can be pinned here is
- * the STRUCTURE that produced them, because that is what a later edit would quietly undo.
+/* ---- the shell composition: acceptance criteria for the 01-08-2026 rebuild --------------------
+ * REPLACES the concept-C hero checks. Those pinned a composition that no longer exists: a masthead
+ * with an inline search, a .hero-band that had to be display:block, a .frontmatter strip inside the
+ * hero. The site now has ONE shell across twelve routes - security rule, centred brand, rectangular
+ * navbar - and the hero is a plain eyebrow/h1/lead with no controls in it.
  *
- * The one that matters most: ONE ruled label/value texture above the fold. The hero had two -
- * a 5-row front matter and a 3-row ledger, side by side, same weight, same rhythm - and that,
- * not spacing, is what made it unreadable. */
-if (PAGES.includes("index.html")) {
-  const src = fs.readFileSync("index.html", "utf8");
-  // strip HTML comments too, for the same reason the CSS ones are stripped above: the note
-  // explaining WHY the duplicate CTA was removed was itself counted as a duplicate CTA
-  const header = (src.match(/<header>[\s\S]*?<\/header>/) || [""])[0]
-    .replace(/<!--[\s\S]*?-->/g, "");
-  console.log("\nindex.html - hero");
+ * The old checks were left passing by accident after the rebuild, because the CSS they matched on
+ * (.hero-band, .frontmatter) survived as dead rules further down index.html's inline <style> while
+ * the markup they described was gone. A check that cannot fail is worse than no check, so they are
+ * replaced here rather than deleted quietly. */
+const SHELL_PAGES = ["index.html", "perfil.html", "deducoes.html", "base-legal.html"];
+console.log("\nshell - composition");
+{
+  const shellCss = fs.readFileSync("assets/site.css", "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
 
-  const ruled = ["ledger", "spec", "signals"].filter(c => new RegExp('class="[^"]*\\b' + c + '\\b').test(header));
-  if (ruled.length) bad(`hero contains a second ruled texture: .${ruled.join(", .")} - only .frontmatter may be ruled above the fold`);
-  else ok("one ruled texture in the hero (.frontmatter only)");
+  /* 1. The navbar is a rectangle with a hairline, NOT a floating capsule. The capsule (a pill
+   *    detached from the page, usually blurred) is the single most generic thing a site can wear,
+   *    and it is banned by name in anti-patterns. Pinned by: no blur anywhere on it, and a radius
+   *    that is a real corner rather than a pill. */
+  const navRule = (shellCss.match(/\.primary-nav \{[^}]*\}/) || [""])[0];
+  if (/backdrop-filter|blur\(/.test(navRule)) bad("the primary nav uses blur - capsule/glass nav is banned");
+  else ok("nav has no blur");
+  const navRadius = (navRule.match(/border-radius:\s*(?:var\(--card-radius\)|(\d+)px)/) || [])[0];
+  if (!navRadius) bad("the primary nav has no explicit border-radius");
+  else if (/999|9999|50%/.test(navRadius)) bad("the primary nav is a pill - it must read as a rectangle");
+  else ok("nav is a rectangle, not a pill");
 
-  /* These two replace the concept-C column checks (baseline alignment + the [rail] grid). That
-   * composition was retired on 30-07-2026 for a single centred column, so the old checks described
-   * a hero that no longer exists and failed on a deliberate change. Kept as a note because the
-   * reasoning still applies if the side-by-side ever returns: two columns need a shared alignment
-   * line, and the hero needs to sit on the same rail as the chapters.
-   *
-   * What guards the CENTRED hero instead:
-   *   1. it stays one column - the side-by-side was rejected because the h1 and the prose competed
-   *      for the first read and the prose wrapped to six lines;
-   *   2. every centred block caps its own measure, or the ragged edges go asymmetric and the whole
-   *      composition reads as accidental rather than set. */
-  if (!/\.hero-band\{display:block/.test(src))
-    bad("hero is no longer a single column - the side-by-side split was rejected");
-  else ok("hero is one centred column");
+  /* 2. The security rule is TEXT on every page, and is never demoted into a tooltip or an image.
+   *    It is the only claim on this site whose failure mode is someone losing money. */
+  for (const p of SHELL_PAGES) {
+    const src = fs.readFileSync(p, "utf8");
+    const sr = (src.match(/<div class="security-rule"[\s\S]*?<\/div>\s*<\/div>/) || [""])[0];
+    if (!sr) { bad(p + ": no security rule"); continue; }
+    if (/<img|background-image/.test(sr)) bad(p + ": the security rule is carried by an image");
+    if (!/\.gov\.pt/.test(sr)) bad(p + ": the security rule does not name .gov.pt");
+    if (/title="/.test(sr)) bad(p + ": part of the security rule is in a tooltip");
+  }
+  ok("security rule is real text naming .gov.pt on all four modes");
 
-  var measured = ["\\.hero-band h1\\{[^}]*max-width:\\d+ch",
-                  "\\.hero-aside\\{[^}]*max-width:\\d+ch",
-                  "header \\.sub\\{[^}]*max-width:\\d+ch"]
-    .filter(function (re) { return new RegExp(re).test(src); }).length;
-  if (measured < 3)
-    bad("only " + measured + "/3 centred hero blocks cap their measure - centred text with an " +
-        "uneven measure looks accidental");
-  else ok("every centred hero block caps its measure");
+  /* 3. No action controls in the hero. Every mode owns its action in the search bar above; a CTA
+   *    stack 300px below the same button is what made the previous centred hero generic. */
+  for (const p of SHELL_PAGES) {
+    const src = fs.readFileSync(p, "utf8");
+    const hero = (src.match(/<header class="page-hero[^"]*">[\s\S]*?<\/header>/) || [""])[0]
+      .replace(/<!--[\s\S]*?-->/g, "");
+    if (!hero) { bad(p + ": no .page-hero"); continue; }
+    const acts = (hero.match(/<button|class="[^"]*\bbtn\b/g) || []).length;
+    if (acts) bad(p + ": " + acts + " action control(s) in the hero - the search bar owns actions");
+  }
+  ok("no action controls in any hero");
 
-  /* Nothing in the masthead may be repeated in the hero. Four labels were - "Consultar NIF",
-   * "A minha situação", "Consultar", "Deduções" - because the header search and the hero lens had
-   * grown into the same control twice over, 700px apart. This compares the two regions' link and
-   * control text directly, which is how those four were found. */
-  /* Slice from the masthead's opening tag to the hero's, NOT by matching balanced </div>s: the
-   * masthead contains the search form with several nested divs, so a non-greedy [\s\S]*? stopped
-   * at the first </div></div> inside the form and never reached the nav. The check silently passed
-   * on a duplicate deliberately reintroduced to test it. */
-  const mastStart = src.indexOf('<div class="mast">');
-  const mastEnd = src.indexOf("<header>", mastStart);
-  const mast = (mastStart >= 0 && mastEnd > mastStart ? src.slice(mastStart, mastEnd) : "")
-    .replace(/<!--[\s\S]*?-->/g, "");
-  const words = s => (s.match(/>([^<>]{4,40})</g) || [])
-    .map(x => x.slice(1, -1).replace(/\s+/g, " ").trim().toLowerCase())
-    .filter(x => /^[a-zà-ú][a-zà-ú º.-]+$/i.test(x));
-  const inMast = new Set(words(mast));
-  const repeated = [...new Set(words(header).filter(w => inMast.has(w)))];
-  if (repeated.length) bad(`label(s) repeated in masthead and hero: "${repeated.join('", "')}"`);
-  else ok("no label repeated between masthead and hero");
+  /* 4. Every hero caps its own measure. Centred or ranged left, text with an uneven measure reads
+   *    as accidental rather than set. */
+  const flat = shellCss.replace(/\s+/g, " ");
+  const capped = [/\.page-hero h1 \{[^}]*max-width: ?\d+ch/,
+                  /\.page-hero \.lead \{[^}]*max-width: ?\d+ch/]
+    .filter(re => re.test(flat)).length;
+  if (capped < 2) bad("only " + capped + "/2 hero blocks cap their measure");
+  else ok("hero h1 and lead both cap their measure");
 
-  /* KNOWN BLIND SPOT, stated rather than papered over: the masthead tagline "A tua situação fiscal,
-   * das fontes oficiais" is word for word the <h1>, and this check does NOT catch it. The h1 is
-   * split by <span class="eyebrow">, <br> and <span class="mark-hl">, so it extracts as fragments
-   * ("a tua situação fiscal," is dropped on the trailing comma, "das" on the 4-char floor) and
-   * never matches the tagline's single string. The duplication is real, visible on desktop, and
-   * kept at the owner's explicit request after seeing it both ways - it is not a passing grade.
-   * Comparing normalised full-element text instead of tag-delimited runs would catch it; that is
-   * the fix if this ever needs to be enforced. */
-
-  /* The hero is CENTRED again as of 30-07-2026, chosen after seeing both. Centring was never the
-   * real fault - the fault was the stack that used to come with it: eyebrow, title, paragraph, two
-   * buttons and a row of pills, which is the generic hero. So the check now guards the thing that
-   * actually goes wrong: no action controls in the hero at all. The masthead owns every action. */
-  const heroActions = (header.match(/class="[^"]*\b(?:cta-main|cta-alt|bm)\b/g) || []).length +
-                      (header.match(/<button/g) || []).length;
-  if (heroActions) bad(`${heroActions} action control(s) in the hero - the masthead owns actions; ` +
-                       "a CTA stack is what made the centred hero generic");
-  else ok("no action controls in the hero");
-
-  /* The rule is HORIZONTAL, not "five". The column count is content - the FONTES column was dropped
-   * once the eyebrow was found to say the same thing - so pinning the literal 5 failed on a change
-   * that did not break anything. Three or more columns is a strip; fewer is a stacked table, which
-   * is the texture that made it a twin of the ledger. */
-  var fmCols = (src.match(/\.frontmatter\{[^}]*grid-template-columns:repeat\((\d+)/) || [])[1];
-  if (!fmCols || Number(fmCols) < 3)
-    bad("front matter is not a horizontal strip (" + (fmCols || "no repeat()") +
-        " columns) - stacked, it becomes a table again");
-  else ok("front matter is a horizontal strip (" + fmCols + " columns)");
+  /* 5. The active nav state does not depend on colour alone (A11Y-010): it must also carry a
+   *    weight change and a rule/inset, so it survives greyscale and forced colours. */
+  const activeRule = (shellCss.match(/\.primary-nav \[aria-current="page"\] \{[^}]*\}/) || [""])[0];
+  const signals = ["background", "font-weight", "box-shadow"].filter(k => activeRule.includes(k)).length;
+  if (signals < 3) bad("the active nav state carries only " + signals + "/3 signals - colour alone fails greyscale");
+  else ok("active nav state: wash + weight + rule (survives greyscale)");
 }
 
 console.log(fails

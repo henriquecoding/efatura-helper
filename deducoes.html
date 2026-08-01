@@ -179,18 +179,87 @@
   </div>
 </div>
 <!-- FB:SHELL:END -->
+<!-- DED-001..005. The year list and the sector list are NOT hardcoded here: deducoes.js fills the
+     year <select> from year_snapshots.json, so a year with no data can never be offered. -->
+<div class="wrap">
+  <form class="dedbar" id="ded-form" role="search" aria-labelledby="dedbar-title">
+    <h2 id="dedbar-title" class="visually-hidden">Pesquisar deduções</h2>
+
+    <div class="db-year fb-field">
+      <label class="label" for="db-ano">Ano fiscal</label>
+      <select id="db-ano"><option value="2026">2026</option></select>
+    </div>
+
+    <div class="db-kind">
+      <span class="fb-field-label" id="db-kind-label">Quero perceber</span>
+      <div class="segmented" role="radiogroup" aria-labelledby="db-kind-label">
+        <input type="radio" name="db-kind" id="db-setor" value="setor" checked>
+        <label for="db-setor">
+          <svg class="tick" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-check"></use></svg>
+          Um setor</label>
+        <input type="radio" name="db-kind" id="db-despesa" value="despesa">
+        <label for="db-despesa">
+          <svg class="tick" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-check"></use></svg>
+          Uma despesa</label>
+      </div>
+    </div>
+
+    <div class="db-term fb-field">
+      <label class="label" for="db-q">Setor ou despesa</label>
+      <input type="search" id="db-q" autocomplete="off" placeholder="Ex.: saúde, renda, ginásio…"
+             aria-describedby="db-help">
+      <span class="hint" id="db-help">Devolve hipóteses para confirmares, nunca uma sentença.</span>
+    </div>
+
+    <div class="db-go">
+      <button class="btn" type="submit">
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-lupa"></use></svg>
+        Pesquisar</button>
+    </div>
+  </form>
+
+  <p class="db-aside">
+    <a href="#setores"><svg class="ico-inline" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-lista"></use></svg>
+      Ver todos os setores</a>
+    <a href="/perfil"><svg class="ico-inline" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-cadeado"></use></svg>
+      Usar os meus dados</a>
+  </p>
+  <div id="db-result" class="db-result" hidden>
+    <h3 id="db-res-title" tabindex="-1">Resultados</h3>
+    <div id="db-res-list"></div>
+  </div>
+</div>
+
 <header class="page-hero">
   <div class="wrap">
-    <h1>Deducoes do IRS por setor: taxas, tetos e base legal</h1>
-    <p>Quanto vale cada setor de despesa, e o artigo do CIRS por tras de cada regra. Publicado para
-       poder ser contestado &mdash; e a leitura de quem construiu o <a href="/">Fatura Boa</a>,
-       nao aconselhamento fiscal.</p>
+    <span class="eyebrow">IRS <span id="hero-ano">2026</span> &middot; taxas, tetos e regras</span>
+    <h1>Percebe quanto podes deduzir</h1>
+    <p class="lead">Vê o que conta, quanto vale e qual é a base legal — antes de classificares uma
+      fatura.</p>
   </div>
 </header>
 
+<!-- DED-004 / DED-005. "Valores gerais" is the default and needs no profile. "A minha utilização"
+     is LOCKED until a local profile exists, and it stays locked rather than showing sample numbers:
+     example figures in the personal view would be indistinguishable from the person's own. -->
+<div class="wrap">
+  <div class="lens" role="group" aria-labelledby="lens-label">
+    <span class="visually-hidden" id="lens-label">Que valores mostrar</span>
+    <button type="button" class="lens-btn" id="lens-geral" aria-pressed="true">
+      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-check"></use></svg>
+      Valores gerais</button>
+    <button type="button" class="lens-btn" id="lens-meu" aria-pressed="false" aria-describedby="lens-note">
+      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-cadeado"></use></svg>
+      A minha utilização</button>
+  </div>
+  <p class="lens-note" id="lens-note">Carrega primeiro a tua situação fiscal.</p>
+</div>
+
 <main class="wrap" id="conteudo">
 
-  <h2>Os setores, e quanto vale cada um</h2>
+  <h2 id="setores"><span class="chapter-no">01</span>Resumo de <span class="ano-inline">2026</span></h2>
+  <p class="cap-note mono">Valores gerais &middot; nao personalizados &middot; <a href="/auditoria">ver a matriz gerada</a></p>
+  <div class="tablewrap">
   <table>
     <thead><tr><th>Cod.</th><th>Setor</th><th>Beneficio</th><th>Base legal</th></tr></thead>
     <tbody>
@@ -212,19 +281,64 @@
       <tr><td class="c">C99</td><td>Despesas gerais familiares</td><td>35% ate 250 &euro;</td><td>art. 78.&ordm;-B</td></tr>
     </tbody>
   </table>
+  </div>
   <p class="updated">Taxas e citac&otilde;es conferidas artigo a artigo contra o texto <b>em vigor</b> do CIRS nas p&aacute;ginas
   dedicadas do Di&aacute;rio da Rep&uacute;blica (&uacute;ltima altera&ccedil;&atilde;o: Lei n.&ordm; 73-A/2025, OE-2026, em vigor desde
   2026-01-01). Conferido a 28 de julho de 2026.</p>
   <p class="updated">Valores a data de escrita. Ver o aviso sobre o Orcamento do Estado no fim da pagina.</p>
 
-  <div class="box">
-    <h3>O tecto de 250 &euro; e partilhado</h3>
+  <h2><span class="chapter-no">02</span>O detalhe que muda a decisao</h2>
+  <div class="box shared-cap">
+    <h3>Restauracao, ginasio, veterinario e outros partilham o mesmo teto</h3>
+    <div class="cap-compare">
+      <div class="cap-side cap-wrong">
+        <p class="cap-side-h">Nao sao 250 &euro; por setor</p>
+        <ul class="cap-icons">
+          <li><svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-deducoes"></use></svg><span class="num">250 &euro;</span></li>
+          <li><svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-euro"></use></svg><span class="num">250 &euro;</span></li>
+          <li><svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-pessoas"></use></svg><span class="num">250 &euro;</span></li>
+          <li><svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-documento"></use></svg><span class="num">250 &euro;</span></li>
+        </ul>
+      </div>
+      <div class="cap-arrow" aria-hidden="true">
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-seta"></use></svg>
+      </div>
+      <div class="cap-side cap-right">
+        <p class="cap-side-h">Sao 250 &euro; no conjunto</p>
+        <ul class="cap-icons">
+          <li><svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-deducoes"></use></svg></li>
+          <li><svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-euro"></use></svg></li>
+          <li><svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-pessoas"></use></svg></li>
+          <li><svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-documento"></use></svg></li>
+        </ul>
+        <p class="num cap-total">250 &euro; no conjunto</p>
+      </div>
+    </div>
     <p>Os setores C01 a C04 e C09 a C14 <strong>nao tem um tecto cada um</strong>: partilham um tecto
       conjunto de 250 &euro; (art. 78.&ordm;-F n.&ordm; 1). Encher a restauracao nao deixa espaco para
       o ginasio. E o detalhe que mais gente desconhece.</p>
   </div>
 
-  <h2>Porque e que as despesas gerais nao sao "nada"</h2>
+  <!-- DED-005. Locked until a local profile exists. It does NOT fall back to sample numbers:
+       a personal panel filled with invented figures is the one thing that would make this page
+       lie about the reader's own situation. -->
+  <section id="minha" class="personal" aria-labelledby="minha-h">
+    <h2 id="minha-h"><span class="chapter-no">03</span>Se carregares a tua situacao</h2>
+    <div class="personal-locked" id="personal-locked">
+      <p class="fb-note">
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-cadeado"></use></svg>
+        <span>Esta vista mostra quanto de cada teto ja usaste. Fica bloqueada ate carregares a tua
+          situacao fiscal, e nao mostra numeros de exemplo no lugar dos teus.</span>
+      </p>
+      <p><a class="btn" href="/perfil">
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-cadeado"></use></svg>
+        Carregar a minha situacao</a></p>
+      <p class="hint">Os dados ficam neste navegador e sao apagados no fim do dia.</p>
+    </div>
+    <div class="personal-view" id="personal-view" hidden></div>
+  </section>
+
+  <h2><span class="chapter-no">04</span>Porque e que as despesas gerais nao sao "nada"</h2>
   <p>O erro mais comum e pensar que uma fatura que cai em despesas gerais familiares esta perdida.
      Nao esta. As despesas gerais dao <strong>35% ate 250 &euro;</strong>, a taxa mais alta de todas.</p>
   <p>Um setor especifico so e melhor quando o seu proprio tecto ainda tem espaco. Uma fatura de
@@ -233,7 +347,7 @@
   <p>Por isso o Fatura Boa nunca forca um setor: sugere uma cascata ordenada e a decisao continua
      a ser de quem declara.</p>
 
-  <h2>Do NIF ao setor: como se decide</h2>
+  <h2><span class="chapter-no">05</span>Como decidir uma fatura</h2>
   <ol>
     <li>A fatura traz o <strong>NIF do emitente</strong>.</li>
     <li>Esse NIF e procurado no registo do Estado (<strong>SICAE</strong>), que devolve o nome
@@ -247,7 +361,7 @@
      despesa geral. Pode ver as atividades de qualquer comerciante em
      <a href="/consulta">Consulta de NIF</a>.</p>
 
-  <h2>Casos em que a lei nao decide por nos</h2>
+  <h2><span class="chapter-no">06</span>Casos em que a lei nao decide por nos</h2>
   <ul>
     <li><strong>47610 livros</strong> &mdash; nomeado <em>duas vezes</em>, no art. 78.&ordm;-F
         (livros) e no art. 78.&ordm;-D (educacao). Resolvido para Livros.</li>
@@ -279,7 +393,7 @@
       <a href="https://cae-db.diogoandrade.com/cae-map.json">cae-map.json</a>.</p>
   </div>
 
-  <h2>Fontes</h2>
+  <h2><span class="chapter-no">07</span>Explorar e confirmar</h2>
   <ul>
     <li><a href="https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/cirs_rep/Pages/irs78b.aspx" rel="nofollow noopener" target="_blank">Art. 78.&ordm;-B CIRS</a> &mdash; despesas gerais familiares</li>
     <li><a href="https://info.portaldasfinancas.gov.pt/pt/informacao_fiscal/codigos_tributarios/cirs_rep/Pages/irs78c.aspx" rel="nofollow noopener" target="_blank">Art. 78.&ordm;-C CIRS</a> &mdash; saude</li>

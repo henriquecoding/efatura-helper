@@ -19,7 +19,7 @@
 <meta property="og:image" content="https://faturas.diogoandrade.com/assets/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
 <link rel="stylesheet" href="/assets/pages/base-legal.css">
 <script defer src="/assets/site.js"></script>
@@ -116,7 +116,7 @@
   <form class="legalbar" id="legal-form" role="search" aria-labelledby="legalbar-title">
     <h2 id="legalbar-title" class="visually-hidden">Pesquisar a base legal</h2>
 
-    <div class="lb-sel field">
+    <div class="lb-sel fb-field">
       <label class="label" for="lb-diploma">Diploma</label>
       <select id="lb-diploma">
         <option value="">Todos</option>
@@ -129,12 +129,12 @@
       </select>
     </div>
 
-    <div class="lb-sel field">
+    <div class="lb-sel fb-field">
       <label class="label" for="lb-ano">Ano</label>
       <select id="lb-ano"><option value="">Todos</option></select>
     </div>
 
-    <div class="lb-term field">
+    <div class="lb-term fb-field">
       <label class="label" for="lb-q">Pesquisar regra, artigo ou tema</label>
       <input type="search" id="lb-q" autocomplete="off" spellcheck="false"
              placeholder="Ex.: rendas, art. 78.º-E, IVA…" aria-describedby="lb-help">
@@ -243,7 +243,7 @@
       <div id="lr-list"></div>
     </div>
     <noscript>
-      <p class="note">
+      <p class="fb-note">
         <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-info"></use></svg>
         <span>A pesquisa por tema precisa de JavaScript. Sem ele, a matriz completa continua
           disponível em <a href="/auditoria">/auditoria</a> e as fontes estão listadas no capítulo
@@ -285,7 +285,7 @@
               <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-externo"></use></svg></a>
             <a class="btn btn-alt" href="/auditoria">Ver a matriz gerada</a>
           </p>
-          <p class="note">
+          <p class="fb-note">
             <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-info"></use></svg>
             <span>A fonte oficial prevalece sempre. Esta página explica a leitura usada pela
               ferramenta — não a substitui.</span>
@@ -349,7 +349,7 @@
               resultado. Nunca inventamos a resposta.</p>
           </div>
         </div>
-        <p class="note note-warn">
+        <p class="fb-note fb-note-warn">
           <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-aviso"></use></svg>
           <span><b>Por confirmar</b> — a página oficial ainda não expõe o detalhe necessário.
             A ferramenta não inventa a resposta.</span>
@@ -375,7 +375,7 @@
           <a class="btn btn-alt" href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Abrir código no GitHub
             <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-externo"></use></svg></a>
         </p>
-        <p class="note">
+        <p class="fb-note">
           <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-info"></use></svg>
           <span>Não basta citar um diploma: cada número deve apontar para o artigo e para a versão
             aplicável ao ano.</span>

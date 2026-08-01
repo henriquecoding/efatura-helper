@@ -54,14 +54,25 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
-  font: 400 16px/1.6 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  /* Exactly the stack the pages already used - IBM Plex Sans, then system-ui, then sans-serif.
+     The shell must not introduce a face, a fallback or a weight the site did not already load:
+     only 400/600/700 of Plex Sans and 400/600 of Plex Mono are requested site-wide, so any other
+     weight would be synthesised by the browser and render as a subtly different face. */
+  font: 400 16px/1.6 'IBM Plex Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 img, svg { max-width: 100%; }
+/* A URL or a hash inside <code> is one unbreakable token; at 320px it is what makes the
+   document itself scroll sideways. Numbers keep their default so tabular figures stay
+   aligned. */
+code { overflow-wrap: anywhere; }
 h1, h2, h3, h4 { margin: 0 0 .4em; line-height: 1.15; text-wrap: balance; }
 p { margin: 0 0 1em; }
 p, li { max-width: var(--measure); }
-a { color: var(--pri); text-underline-offset: 3px; }
+/* break-word, not anywhere: a bare URL used as its own link text ("github.com/nobodykr/...") is
+   one long token that pushes the document sideways at 320px, but ordinary link prose must still
+   break on spaces only. */
+a { color: var(--pri); text-underline-offset: 3px; overflow-wrap: break-word; }
 a:hover { color: var(--pri-dark); }
 
 /* Focus is never removed. 3px amber, offset 2px - it must clear both the warm paper and the
@@ -84,7 +95,7 @@ summary:focus-visible, [tabindex]:focus-visible {
      header + .wrap{padding-top:--step}   -> would add a chapter gap after the hero
      .wrap{counter-reset:sec}             -> harmless, left alone
    Layout lists opt out of the prose measure; prose lists keep it. */
-.strip-items, .site-menu ul, .site-footer ul, .next-list, .steps, .res-list,
+.strip-items, .site-menu ul, .site-footer ul, .next-list, .fb-steps, .res-list,
 .src-list, .primary-nav, .foot-cols { max-width: none; }
 .page-hero + .wrap, .page-hero + .chapter { padding-top: 0; }
 .strip-label { max-width: none; }
@@ -200,7 +211,7 @@ summary:focus-visible, [tabindex]:focus-visible {
 }
 .site-menu[hidden] { display: none; }
 .site-menu .menu-cols {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 20px 32px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: 20px 32px;
 }
 .site-menu h2 {
   font: 600 .72rem/1.4 'IBM Plex Mono', ui-monospace, monospace;
@@ -265,7 +276,7 @@ summary:focus-visible, [tabindex]:focus-visible {
 }
 .panel + .panel { margin-top: 16px; }
 .card-grid {
-  display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
 }
 .hairline { border: 0; border-top: 1px solid var(--rule); margin: 26px 0; }
 
@@ -306,22 +317,22 @@ summary:focus-visible, [tabindex]:focus-visible {
 .btn-quiet { background: var(--surface); color: var(--ink2); border-color: var(--rule); }
 .btn-quiet:hover { background: var(--bg2); color: var(--ink); }
 
-.field { display: block; }
-.field > .label, .field-label {
+.fb-field { display: block; }
+.fb-field > .label, .fb-field-label {
   display: block; font-weight: 600; font-size: .9rem; color: var(--ink2); margin-bottom: 6px;
 }
-.field input[type="text"], .field input[type="search"], .field input[type="email"],
-.field textarea, .field select, .input {
+.fb-field input[type="text"], .fb-field input[type="search"], .fb-field input[type="email"],
+.fb-field textarea, .fb-field select, .input {
   width: 100%; min-height: 48px; padding: 11px 14px;
   border: 1px solid var(--hair-strong); border-radius: var(--control-radius);
   background: var(--surface); color: var(--ink); font: 400 1rem/1.5 inherit;
 }
-.field .hint { display: block; font-size: .85rem; color: var(--mute); margin-top: 6px; }
-.field .err {
+.fb-field .hint { display: block; font-size: .85rem; color: var(--mute); margin-top: 6px; }
+.fb-field .err {
   display: flex; gap: 7px; align-items: flex-start;
   font-size: .88rem; color: var(--red); margin-top: 6px; font-weight: 600;
 }
-.field .err svg { width: 16px; height: 16px; flex: none; margin-top: 2px; }
+.fb-field .err svg { width: 16px; height: 16px; flex: none; margin-top: 2px; }
 [aria-invalid="true"] { border-color: var(--red) !important; }
 
 /* Segmented choice (Procurar por: NIF | Nome). Real radios, visually a two-up segment. The check
@@ -331,7 +342,7 @@ summary:focus-visible, [tabindex]:focus-visible {
 .segmented label {
   flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; gap: 9px;
   min-height: 48px; padding: 10px 16px; cursor: pointer;
-  background: var(--surface); color: var(--ink2); font-weight: 500;
+  background: var(--surface); color: var(--ink2); font-weight: 600;
 }
 .segmented label + label { border-left: 1px solid var(--hair-strong); }
 .segmented .tick { width: 20px; height: 20px; flex: none; opacity: 0; color: currentColor; }
@@ -350,20 +361,20 @@ summary:focus-visible, [tabindex]:focus-visible {
 .state-unknown { color: var(--mute); }
 .state-info { color: var(--pri); }
 
-.note {
+.fb-note {
   display: flex; gap: 11px; align-items: flex-start;
   border: 1px solid var(--rule); border-left: 3px solid var(--pri);
   background: var(--surface); border-radius: var(--control-radius);
   padding: 13px 16px; margin: 16px 0; font-size: .93rem;
 }
-.note svg { width: 19px; height: 19px; flex: none; color: var(--pri); margin-top: 2px; }
-.note p { margin: 0; }
-.note-warn { border-left-color: var(--amber); background: #FDF8EC; }
-.note-warn svg { color: var(--amber); }
-.note-bad { border-left-color: var(--red); background: #FDEAED; }
-.note-bad svg { color: var(--red); }
-.note-ok { border-left-color: var(--green); background: #E9F5EE; }
-.note-ok svg { color: var(--green); }
+.fb-note svg { width: 19px; height: 19px; flex: none; color: var(--pri); margin-top: 2px; }
+.fb-note p { margin: 0; }
+.fb-note-warn { border-left-color: var(--amber); background: #FDF8EC; }
+.fb-note-warn svg { color: var(--amber); }
+.fb-note-bad { border-left-color: var(--red); background: #FDEAED; }
+.fb-note-bad svg { color: var(--red); }
+.fb-note-ok { border-left-color: var(--green); background: #E9F5EE; }
+.fb-note-ok svg { color: var(--green); }
 
 /* "Exemplo" marker - EMP-004 requires an example be labelled three times over and never share the
    visual state of a real result. The tint plus the mono badge is that separation. */
@@ -395,7 +406,7 @@ summary:focus-visible, [tabindex]:focus-visible {
 /* ============================================================ footer */
 .site-footer { border-top: 1px solid var(--rule); margin-top: var(--step); padding: 34px 0 40px; }
 .site-footer .foot-cols {
-  display: grid; gap: 26px 34px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  display: grid; gap: 26px 34px; grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr));
 }
 .site-footer h2 {
   font: 600 .72rem/1.4 'IBM Plex Mono', ui-monospace, monospace;
@@ -446,7 +457,11 @@ summary:focus-visible, [tabindex]:focus-visible {
   }
   .primary-nav [aria-current="page"] { box-shadow: inset 0 3px 0 var(--pri); }
   .primary-nav .nav-menu { margin-left: 0; padding-left: 2px; border-left: 0; border-radius: 9px; }
-  .nav-help { display: none; }   /* Ajuda moves into Menu; exactly 5 destinations remain. */
+  /* Ajuda moves into Menu; exactly 5 destinations remain.
+     MUST be scoped under .primary-nav: a bare `.nav-help` (0,1,0) loses to
+     `.primary-nav > :is(a, button)` (0,1,1) above, which sets display:grid - and Ajuda stayed
+     visible, making it six targets wrapping onto two rows. */
+  .primary-nav .nav-help { display: none; }
   .primary-nav .nav-short { display: block; }
   .primary-nav .nav-long { display: none; }
 
@@ -463,8 +478,12 @@ summary:focus-visible, [tabindex]:focus-visible {
   .strip-items { grid-template-columns: repeat(2, 1fr); }
   .strip-items li:nth-child(2n) { border-left: 1px solid var(--rule); }
   .strip-items li:nth-child(n + 3) { border-top: 1px solid var(--rule); }
-  .security-rule .sr-why { margin-left: 0; }
-  .security-rule > .wrap { flex-wrap: wrap; }
+  /* Keep the shield beside the text rather than letting it wrap onto its own line, and let the
+     "Porquê?" link sit under the sentence instead of stretching the band. */
+  .security-rule > .wrap { flex-wrap: wrap; gap: 10px; align-items: flex-start; }
+  .security-rule .sr-icon { width: 22px; height: 22px; margin-top: 2px; }
+  .security-rule p { flex: 1 1 200px; font-size: .9rem; }
+  .security-rule .sr-why { margin-left: 34px; min-height: 40px; }
 
   /* MOB-002: 17px floor on mobile body text. */
   body { font-size: 17px; }
@@ -474,6 +493,14 @@ summary:focus-visible, [tabindex]:focus-visible {
 @media (max-width: 400px) {
   .wrap { padding: 0 14px; }
   .strip-items li { padding: 14px 10px; gap: 9px; }
+}
+/* Below 360px two strip columns plus their dividing hairlines no longer fit; one column does.
+   Found at 320px, where the grid was 2px wider than the viewport. */
+@media (max-width: 360px) {
+  .strip-items { grid-template-columns: 1fr; }
+  .strip-items li { min-width: 0; }
+  .strip-items li:nth-child(2n) { border-left: 0; }
+  .strip-items li + li { border-top: 1px solid var(--rule); }
 }
 
 /* A focused control must never end up under the fixed bottom nav or the keyboard. */

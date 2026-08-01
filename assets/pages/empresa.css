@@ -53,17 +53,17 @@
 .is-example-band .tablewrap { background: var(--surface); }
 
 /* ---------------------------------------------------------------- numbered steps */
-.steps { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 0;
-         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
-.steps li {
+.fb-steps { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 0;
+         grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr)); }
+.fb-steps li {
   display: grid; grid-template-columns: auto auto 1fr; align-items: start; gap: 10px;
   padding: 18px 20px; max-width: none;
 }
-.steps li + li { border-left: 1px solid var(--rule); }
-.steps .n { font: 400 .82rem/1.6 'IBM Plex Mono', ui-monospace, monospace; color: var(--pri); }
-.steps > li > svg { width: 22px; height: 22px; color: var(--pri); }
-.steps b { display: block; margin-bottom: 4px; }
-.steps p { margin: 0; font-size: .93rem; color: var(--ink2); }
+.fb-steps li + li { border-left: 1px solid var(--rule); }
+.fb-steps .n { font: 400 .82rem/1.6 'IBM Plex Mono', ui-monospace, monospace; color: var(--pri); }
+.fb-steps > li > svg { width: 22px; height: 22px; color: var(--pri); }
+.fb-steps b { display: block; margin-bottom: 4px; }
+.fb-steps p { margin: 0; font-size: .93rem; color: var(--ink2); }
 
 .quiet-example {
   background: var(--bg2); border: 1px solid var(--rule); border-radius: var(--control-radius);
@@ -84,7 +84,7 @@
 .next-list .btn { white-space: nowrap; }
 
 /* ---------------------------------------------------------------- privacy + sources */
-.pf-cols { display: grid; gap: 26px 40px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-top: 18px; }
+.pf-cols { display: grid; gap: 26px 40px; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); margin-top: 18px; }
 .pf-cols h3 { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; color: var(--pri-dark); }
 .pf-cols h3 svg { width: 22px; height: 22px; color: var(--pri); flex: none; }
 .src-list { margin: 0; }
@@ -103,7 +103,7 @@
   .searchbar #sb-input {
     border: 1px solid var(--hair-strong); padding: 11px 14px; min-height: 52px;
   }
-  .steps li + li { border-left: 0; border-top: 1px solid var(--rule); }
+  .fb-steps li + li { border-left: 0; border-top: 1px solid var(--rule); }
 }
 @media (max-width: 620px) {
   .next-list li { grid-template-columns: auto 1fr; }

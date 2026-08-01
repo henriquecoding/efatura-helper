@@ -44,4 +44,6 @@ of this note said both reads were 401-gated; that was true on 2026-07-21 and sup
 later - verified live 2026-07-28.
 
 ## Provably-fair releases
-Before every deploy: bump `FB_VERSION` in tool.js if the code changed, then `node make-versions.mjs` (regenerates versions.json, the published hash + the release tag/source) and `node make-audit.mjs` (regenerates audit-manifest.json for /auditoria; fails loud via test-audit-sync.js if it drifts). Deploy. Verify at /verificar. Tag the release: `git tag vYYYY.MM.DD && git push --tags` - the tag is the public timestamped commitment.
+Before every deploy: bump `FB_VERSION` in tool.js if the code changed, then `node make-versions.mjs` (regenerates versions.json, the published hash + the release tag/source), `node make-audit.mjs` (regenerates audit-manifest.json for /auditoria; fails loud via test-audit-sync.js if it drifts) and `node make-shell.mjs` (rewrites the shared shell in every page; test-shell-sync.js fails if a page drifted). Deploy. Verify at /verificar. Tag the release: `git tag vYYYY.MM.DD && git push --tags` - the tag is the public timestamped commitment.
+
+Release gate: `npm test` must be **25/25 with `CHROME_PATH` set**. A SKIP on test-network.js is not a pass - that test is the only thing proving the consent gate still makes the tool inert, and it is the check most worth having before a visual release.

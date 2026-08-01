@@ -29,6 +29,11 @@ These are not style. Changing any of them silently is the worst failure mode thi
 | Deduction ceilings agree across `tool.js`, `deducoes.html`, `year_snapshots.json` | `test-deducoes-sync.js` |
 | The pre-selected sector is the truthful column, not the one that pays most | `test-columns.js`, `test-r1.js` |
 | `/auditoria` never quietly disagrees with the code it claims to audit | `test-audit-sync.js` |
+| The searched NIF never reaches a URL, history, `data-*` or analytics | `test-privacy-urls.js` |
+| Navigation, factual content and the feedback POST work with JS off | `test-nojs.js` |
+| The shell is identical across all 12 routes | `test-shell-sync.js` |
+| The mobile bar is 5 destinations, each icon **and** text | `test-mobile-nav.js` |
+| Client and server agree on feedback limits and sanitisation | `test-feedback-parity.js` |
 | `tool.js` is pure ASCII | `.github/workflows/encoding-guard.yml` |
 
 Rule: **to change one of these, make its test go red on purpose first, then decide.** If you cannot
@@ -60,8 +65,8 @@ The three that matter most, so they are never not loaded:
 
 ## 5. Working rules
 
-- Run `npm test` before saying anything is done. 18 checks; all must pass. `test-network.js` needs a
-  browser — it reports SKIP without one, and a SKIP is not a pass. Set `CHROME_PATH` and get 18/18.
+- Run `npm test` before saying anything is done. 25 checks; all must pass. `test-network.js` needs a
+  browser — it reports SKIP without one, and a SKIP is not a pass. Set `CHROME_PATH` and get 25/25.
 - `npm run dev` → http://localhost:4173.
 - The browser pane does not composite frames here. To actually *see* a page, render it with
   `playwright-core` and the local Chrome, and look at the PNG. Do not claim a visual result you
@@ -69,6 +74,16 @@ The three that matter most, so they are never not loaded:
 - Any `tool.js` change: bump `FB_VERSION` **and** run `node make-versions.mjs` **and**
   `node make-audit.mjs` (the `/auditoria` matrix is generated from `tool.js`; `test-audit-sync.js`
   goes red if you forget).
+- Any change to the shell (nav destinations, security rule, menu, footer): edit `make-shell.mjs`,
+  never the generated block inside a page, then run `node make-shell.mjs`. The markup is duplicated
+  across 12 files on purpose — navigation must work with JS off — and `test-shell-sync.js` is what
+  keeps the copies honest.
+- The site is four routes with one shell: `/` Empresa, `/perfil` Situação, `/deducoes` Deduções,
+  `/base-legal` Base legal. Each is a real URL with its own canonical, not a tab. `test-home-modes.js`
+  pins that.
+- The static table in `deducoes.html` stays hand-maintained. It is the third *independent* source in
+  `test-deducoes-sync.js`'s three-way agreement; generating it would compare a file to its own
+  derivative and quietly retire the invariant.
 - Scope: changed lines must serve the request. Found something unrelated and real? Write it down,
   do not fix it silently.
 - Verification is not optional and "should work" is not verification.

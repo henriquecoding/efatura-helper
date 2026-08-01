@@ -22,6 +22,14 @@ var ARGS = {
   "test-deducoes-sync.js": [],
   // reads tool.js and audit-manifest.json itself, by name
   "test-audit-sync.js": [],
+  // the shell/product contracts: each reads the pages and assets it needs, by name
+  "test-shell-sync.js": [],
+  "test-home-modes.js": [],
+  "test-privacy-urls.js": [],
+  "test-feedback-parity.js": [],
+  "test-mobile-nav.js": [],
+  "test-nojs.js": [],
+  "test-a11y-static.js": [],
   "test-render.js": [],
   // no argument = lint every .html. Passing it the default "tool.js" made it find no <style>
   // block, skip, and report PASS - a green test that checked nothing.
