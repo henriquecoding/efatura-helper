@@ -1,0 +1,501 @@
+/* Fatura Boa - shared shell and design system.
+ *
+ * One stylesheet for the tokens, the shell (security rule, brand, navbar, menu, footer) and the
+ * components every page reuses. Page-specific rules live in assets/pages/<mode>.css.
+ *
+ * Two rules that govern everything here, from .claude/design/:
+ *   1. Built, not decorated. Lines instead of shadows, type instead of illustration, hierarchy
+ *      instead of colour. The page must survive greyscale, no shadows, no images, no JS.
+ *   2. Content must never depend on an animation callback to be visible.
+ *
+ * The palette is gov.pt's blues and neutral text ramp with our own warm paper. Provenance table in
+ * .claude/design/03-design-system.md - re-read it before retuning anything, the palette was
+ * replaced by accident once. Tightest pair is --mute on --bg at 4.66:1.
+ */
+
+/* ============================================================ tokens */
+:root {
+  --pri: #034AD8;
+  --pri-dark: #021C51;
+  --pri-mid: #0338A2;
+  --pri-light: #1CA3FC;
+  --pri-soft: #E8EEFC;      /* active nav wash;
+                                derived from --pri, not a new hue */
+  --ink: #2B363C;
+  --ink2: #475164;
+  --mute: #64718B;
+  --bg: #FAF9F6;
+  --surface: #FFFFFF;
+  --bg2: #EFEEE9;
+  --bg3: #E1E4EA;
+  --rule: #CFCEC8;
+  --red: #D12332;
+  --green: #00724C;
+  --amber: #8A6100;
+  --focus: #ff7a00;
+  --hair: color-mix(in oklab, var(--ink) 12%, transparent);
+  --hair-strong: color-mix(in oklab, var(--ink) 22%, transparent);
+  --measure: 64ch;
+  --control-radius: 6px;
+  --card-radius: 14px;
+  --step: clamp(48px, 7vw, 88px);
+  --wrap: 1200px;
+  --nav-h: 76px;            /* mobile bottom nav, used to pad the body */
+}
+
+/* ============================================================ reset */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+/* [hidden] has to beat the component display rules below, or an element the page marked hidden
+   (an error slot, the menu, a result region) paints anyway. This shipped once as a stray warning
+   triangle under an empty search field. */
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 16px/1.6 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+img, svg { max-width: 100%; }
+h1, h2, h3, h4 { margin: 0 0 .4em; line-height: 1.15; text-wrap: balance; }
+p { margin: 0 0 1em; }
+p, li { max-width: var(--measure); }
+a { color: var(--pri); text-underline-offset: 3px; }
+a:hover { color: var(--pri-dark); }
+
+/* Focus is never removed. 3px amber, offset 2px - it must clear both the warm paper and the
+   dark-blue security rule, which is why it is amber and not gov.pt's magenta. */
+:is(a, button, input, select, summary, [tabindex], dialog) :focus-visible,
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible,
+summary:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 24px; }
+
+/* --- reconciliation with the long-form pages' own inline <style> ---------------------------
+   index.html, perfil.html and deducoes.html each still carry a large page stylesheet from before
+   the shell existed. Three of its rules reach into shell components and have to be answered here
+   rather than deleted there, because they are still correct for the prose chapters below:
+     ul,ol{max-width:var(--measure)}      -> would narrow a nav/strip/footer list to 64ch
+     header + .wrap{padding-top:--step}   -> would add a chapter gap after the hero
+     .wrap{counter-reset:sec}             -> harmless, left alone
+   Layout lists opt out of the prose measure; prose lists keep it. */
+.strip-items, .site-menu ul, .site-footer ul, .next-list, .steps, .res-list,
+.src-list, .primary-nav, .foot-cols { max-width: none; }
+.page-hero + .wrap, .page-hero + .chapter { padding-top: 0; }
+.strip-label { max-width: none; }
+.mono {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: .72rem; letter-spacing: .09em; text-transform: uppercase; color: var(--mute);
+}
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: absolute; left: 12px; top: -60px; z-index: 200;
+  background: var(--surface); color: var(--pri); font-weight: 600;
+  padding: 10px 16px; border: 2px solid var(--pri); border-radius: var(--control-radius);
+  transition: top .12s ease;
+}
+.skip-link:focus { top: 12px; }
+@media (prefers-reduced-motion: reduce) { .skip-link { transition: none; } }
+
+/* ============================================================ NAV-001 security rule
+   The one claim that must never move into a tooltip: the password rule. Dark blue band, real
+   text (not an image), full-width, at the very top of every page. Not sticky - it is a statement
+   read once, not a persistent chrome element competing with the navbar. */
+.security-rule {
+  background: var(--pri-dark);
+  color: #fff;
+  padding: 12px 0;
+}
+.security-rule > .wrap {
+  display: flex; align-items: center; gap: 14px;
+}
+.security-rule .sr-icon { flex: none; width: 26px; height: 26px; color: #9FC0FF; }
+.security-rule p { margin: 0; max-width: none; font-size: .95rem; line-height: 1.45; }
+.security-rule b {
+  display: block;
+  font: 600 .72rem/1.4 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .09em; text-transform: uppercase; color: #9FC0FF;
+}
+.security-rule code {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  background: rgba(255, 255, 255, .12); border-radius: 3px; padding: 1px 5px;
+}
+.security-rule .sr-why {
+  margin-left: auto; flex: none; color: #fff; font-weight: 600; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 6px;
+  min-height: 44px; padding: 0 4px;
+}
+.security-rule .sr-why svg { width: 15px; height: 15px; }
+.security-rule .sr-why:focus-visible { outline-color: #fff; }
+
+/* ============================================================ NAV-002 brand
+   Logo + wordmark, centred, isolated from the navigation by real vertical space. It is a link to
+   the homepage and nothing else - no tagline, no strapline, no second CTA. */
+.site-brand {
+  display: flex; align-items: center; justify-content: center; gap: 14px;
+  margin: 32px auto 22px; text-decoration: none; color: var(--ink);
+  width: fit-content;
+}
+.site-brand .brand-mark { width: 52px; height: 52px; flex: none; }
+.site-brand .brand-mark .plate { fill: var(--pri); }
+.site-brand .brand-name { font-size: 1.85rem; font-weight: 700; letter-spacing: -.02em; }
+
+/* ============================================================ NAV-003..006 primary nav
+   A rectangle with a hairline, radius 14 - deliberately NOT a floating pill/capsule (anti-pattern:
+   the generic SaaS nav). No blur, no shadow on desktop. The hamburger is the last item INSIDE the
+   rectangle, separated by a vertical hairline. */
+.primary-nav {
+  display: flex; align-items: stretch; gap: 2px;
+  max-width: var(--wrap); margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--card-radius);
+  padding: 8px;
+}
+.primary-nav > :is(a, button) {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  flex: 1 1 auto; min-height: 48px; padding: 8px 14px;
+  border: 0; border-radius: 10px; background: transparent;
+  color: var(--ink2); text-decoration: none;
+  font: 400 .95rem/1.25 inherit; cursor: pointer;
+  position: relative;
+}
+.primary-nav > :is(a, button):hover { background: var(--bg2); color: var(--ink); }
+.primary-nav svg { width: 22px; height: 22px; flex: none; }
+/* Two labels per destination: the full name on desktop, the short one in the bottom bar where
+   five targets share the width. Both are in the DOM, so the accessible name never depends on the
+   viewport - .nav-short is hidden from assistive tech and .nav-long stays readable. */
+.primary-nav .nav-short { display: none; }
+
+/* NAV-005 active state: wash + colour + a 3px underline. Three signals, so it never depends on
+   colour alone (A11Y-010). aria-current is what the CSS keys off - not a class - so the DOM
+   carries the state for assistive tech and the paint follows it. */
+.primary-nav [aria-current="page"] {
+  background: var(--pri-soft);
+  color: var(--pri);
+  font-weight: 600;
+  box-shadow: inset 0 -3px 0 var(--pri);
+}
+.primary-nav .nav-help { flex: 0 0 auto; }
+.primary-nav .nav-menu {
+  flex: 0 0 auto; margin-left: 6px; padding-left: 18px;
+  border-left: 1px solid var(--rule); border-radius: 0 10px 10px 0;
+}
+
+/* ============================================================ site menu (supplementary)
+   Opens from the hamburger. Plain <div> toggled by [hidden] so it needs no JS to be absent, and
+   site.js only adds the focus trap and Escape. */
+.site-menu {
+  max-width: var(--wrap); margin: 10px auto 0;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--card-radius);
+  padding: 20px 24px;
+}
+.site-menu[hidden] { display: none; }
+.site-menu .menu-cols {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 20px 32px;
+}
+.site-menu h2 {
+  font: 600 .72rem/1.4 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--mute); margin-bottom: 10px;
+}
+.site-menu ul { list-style: none; margin: 0; padding: 0; }
+.site-menu li + li { margin-top: 2px; }
+.site-menu a {
+  display: block; padding: 9px 6px; min-height: 44px; text-decoration: none;
+  color: var(--ink2); border-radius: var(--control-radius);
+}
+.site-menu a:hover { background: var(--bg2); color: var(--pri); }
+
+/* ============================================================ independence notice (CORE-007) */
+.independence {
+  display: flex; gap: 10px; align-items: flex-start;
+  color: var(--mute); font-size: .85rem; padding: 14px 0 0;
+}
+.independence svg { width: 17px; height: 17px; flex: none; margin-top: 2px; }
+.independence p { margin: 0; max-width: 78ch; }
+
+/* ============================================================ typography scale */
+.eyebrow {
+  display: block;
+  font: 600 .72rem/1.4 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--pri);
+  margin-bottom: 14px;
+}
+/* .page-hero and .chapter set display/background/padding explicitly rather than inheriting them.
+   The long-form pages still carry their own inline <style> with bare `header{}` and `section{}`
+   rules (including a [rail] grid and a decorative band); class beats element specificity, so
+   stating these here is what keeps the shell composition identical across old and new pages. */
+.page-hero {
+  display: block; background: none; border: 0;
+  padding: calc(var(--step) * .45) 0 calc(var(--step) * .4); text-align: center;
+}
+.page-hero h1 {
+  font-size: clamp(2.1rem, 6vw, 3.7rem); line-height: 1.04; letter-spacing: -.035em;
+  color: var(--pri-dark); max-width: 20ch; margin-inline: auto;
+}
+.page-hero .lead {
+  font-size: clamp(1.02rem, 1.5vw, 1.16rem); line-height: 1.62;
+  max-width: 60ch; margin: 0 auto; color: var(--ink2);
+}
+.chapter { display: block; padding: calc(var(--step) * .55) 0 0; border: 0; }
+.chapter::after, .chapter::before { content: none; }
+.chapter > h2 {
+  font-size: clamp(1.55rem, 3.4vw, 2.35rem); line-height: 1.12; letter-spacing: -.022em;
+  color: var(--pri-dark);
+}
+/* Numbered chapter heading: the statutory-instrument reference point. The number is a separate
+   mono span so it stays out of the accessible heading text flow visually but not semantically. */
+.chapter-no {
+  font: 600 .78rem/1 'IBM Plex Mono', ui-monospace, monospace;
+  color: var(--pri); letter-spacing: .06em; margin-right: 12px; vertical-align: .32em;
+}
+
+/* ============================================================ cards, panels, rules */
+.panel {
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--card-radius);
+  padding: 22px 24px;
+}
+.panel + .panel { margin-top: 16px; }
+.card-grid {
+  display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+.hairline { border: 0; border-top: 1px solid var(--rule); margin: 26px 0; }
+
+/* The numbered horizontal strip under the hero ("NUMA CONSULTA ENCONTRAS"). Separated by vertical
+   hairlines, not boxes - a ledger row, not four cards. */
+.strip { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.strip-label {
+  text-align: center; padding: 10px 0 0;
+  font: 600 .72rem/1.4 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--mute);
+}
+.strip-items {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  list-style: none; margin: 0; padding: 0;
+}
+.strip-items li {
+  display: flex; align-items: center; gap: 12px; padding: 18px 16px; max-width: none;
+}
+.strip-items li + li { border-left: 1px solid var(--rule); }
+.strip-items .n {
+  font: 400 .82rem/1 'IBM Plex Mono', ui-monospace, monospace; color: var(--pri); flex: none;
+}
+.strip-items svg { width: 26px; height: 26px; color: var(--pri); flex: none; }
+
+/* ============================================================ controls */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  min-height: 48px; padding: 12px 22px;
+  border-radius: var(--control-radius); border: 1px solid transparent;
+  font: 600 1rem/1.2 inherit; text-decoration: none; cursor: pointer;
+  background: var(--pri); color: #fff;
+}
+.btn:hover { background: var(--pri-mid); color: #fff; }
+.btn svg { width: 20px; height: 20px; }
+.btn[disabled], .btn[aria-disabled="true"] { opacity: .55; cursor: not-allowed; }
+.btn-alt { background: var(--surface); color: var(--pri); border-color: var(--pri); }
+.btn-alt:hover { background: var(--pri-soft); color: var(--pri-dark); }
+.btn-quiet { background: var(--surface); color: var(--ink2); border-color: var(--rule); }
+.btn-quiet:hover { background: var(--bg2); color: var(--ink); }
+
+.field { display: block; }
+.field > .label, .field-label {
+  display: block; font-weight: 600; font-size: .9rem; color: var(--ink2); margin-bottom: 6px;
+}
+.field input[type="text"], .field input[type="search"], .field input[type="email"],
+.field textarea, .field select, .input {
+  width: 100%; min-height: 48px; padding: 11px 14px;
+  border: 1px solid var(--hair-strong); border-radius: var(--control-radius);
+  background: var(--surface); color: var(--ink); font: 400 1rem/1.5 inherit;
+}
+.field .hint { display: block; font-size: .85rem; color: var(--mute); margin-top: 6px; }
+.field .err {
+  display: flex; gap: 7px; align-items: flex-start;
+  font-size: .88rem; color: var(--red); margin-top: 6px; font-weight: 600;
+}
+.field .err svg { width: 16px; height: 16px; flex: none; margin-top: 2px; }
+[aria-invalid="true"] { border-color: var(--red) !important; }
+
+/* Segmented choice (Procurar por: NIF | Nome). Real radios, visually a two-up segment. The check
+   mark on the selected side means the state is not carried by the blue fill alone. */
+.segmented { display: flex; border: 1px solid var(--hair-strong); border-radius: var(--control-radius); overflow: hidden; }
+.segmented input { position: absolute; opacity: 0; pointer-events: none; }
+.segmented label {
+  flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  min-height: 48px; padding: 10px 16px; cursor: pointer;
+  background: var(--surface); color: var(--ink2); font-weight: 500;
+}
+.segmented label + label { border-left: 1px solid var(--hair-strong); }
+.segmented .tick { width: 20px; height: 20px; flex: none; opacity: 0; color: currentColor; }
+.segmented input:checked + label { background: var(--pri); color: #fff; font-weight: 600; }
+.segmented input:checked + label .tick { opacity: 1; }
+.segmented input:focus-visible + label { outline: 3px solid var(--focus); outline-offset: -3px; }
+
+/* ============================================================ state vocabulary (ch.13)
+   idle / loading / success / empty / partial / stale / error / unsupported / unknown.
+   Every one renders as WORD + shape, never colour alone. */
+.state { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; font-size: .88rem; }
+.state svg { width: 16px; height: 16px; flex: none; }
+.state-ok { color: var(--green); }
+.state-warn { color: var(--amber); }
+.state-bad { color: var(--red); }
+.state-unknown { color: var(--mute); }
+.state-info { color: var(--pri); }
+
+.note {
+  display: flex; gap: 11px; align-items: flex-start;
+  border: 1px solid var(--rule); border-left: 3px solid var(--pri);
+  background: var(--surface); border-radius: var(--control-radius);
+  padding: 13px 16px; margin: 16px 0; font-size: .93rem;
+}
+.note svg { width: 19px; height: 19px; flex: none; color: var(--pri); margin-top: 2px; }
+.note p { margin: 0; }
+.note-warn { border-left-color: var(--amber); background: #FDF8EC; }
+.note-warn svg { color: var(--amber); }
+.note-bad { border-left-color: var(--red); background: #FDEAED; }
+.note-bad svg { color: var(--red); }
+.note-ok { border-left-color: var(--green); background: #E9F5EE; }
+.note-ok svg { color: var(--green); }
+
+/* "Exemplo" marker - EMP-004 requires an example be labelled three times over and never share the
+   visual state of a real result. The tint plus the mono badge is that separation. */
+.example-badge {
+  display: inline-flex; align-items: center; gap: 7px; width: fit-content; max-width: none;
+  font: 600 .7rem/1 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ink2); background: var(--bg2);
+  border: 1px solid var(--rule); border-radius: 3px; padding: 6px 9px;
+}
+.example-badge svg { width: 14px; height: 14px; flex: none; }
+.is-example { background: var(--bg2); }
+
+/* ============================================================ tables
+   Always inside .tablewrap so the table scrolls, never the document (MOB-003). */
+.tablewrap {
+  overflow-x: auto; border: 1px solid var(--rule); border-radius: var(--card-radius);
+  background: var(--surface);
+}
+.tablewrap table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+.tablewrap caption { text-align: left; padding: 14px 16px 0; color: var(--mute); font-size: .85rem; }
+.tablewrap :is(th, td) {
+  text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--rule); vertical-align: top;
+}
+.tablewrap th { background: var(--bg2); color: var(--pri-dark); font-weight: 600; white-space: nowrap; }
+.tablewrap tr:last-child :is(th, td) { border-bottom: 0; }
+.tablewrap .num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ============================================================ footer */
+.site-footer { border-top: 1px solid var(--rule); margin-top: var(--step); padding: 34px 0 40px; }
+.site-footer .foot-cols {
+  display: grid; gap: 26px 34px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+.site-footer h2 {
+  font: 600 .72rem/1.4 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .09em; text-transform: uppercase; color: var(--mute); margin-bottom: 10px;
+}
+.site-footer ul { list-style: none; margin: 0; padding: 0; }
+.site-footer li { max-width: none; }
+.site-footer a {
+  display: inline-block; padding: 7px 0; min-height: 34px; color: var(--ink2); text-decoration: none;
+}
+.site-footer a:hover { color: var(--pri); text-decoration: underline; }
+.site-footer .foot-mark { display: flex; align-items: flex-start; gap: 12px; }
+.site-footer .foot-mark .brand-mark { width: 38px; height: 38px; flex: none; }
+.site-footer .foot-mark .plate { fill: var(--pri); }
+.site-footer .foot-note { color: var(--mute); font-size: .85rem; margin: 0; }
+.site-footer .foot-base {
+  border-top: 1px solid var(--rule); margin-top: 26px; padding-top: 18px;
+  color: var(--mute); font-size: .82rem;
+}
+
+/* ============================================================ MOBILE, <= 760px
+   The navbar moves to the bottom because that is where the thumb reaches. It is a solid,
+   full-width bar - not a floating capsule - with exactly five destinations, each icon + text.
+   Ajuda folds into Menu so the count stays five (MOB-001, TEST-NEW-07). */
+@media (max-width: 760px) {
+  body { padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom)); }
+
+  .site-brand { margin: 20px auto 16px; gap: 11px; }
+  .site-brand .brand-mark { width: 40px; height: 40px; }
+  .site-brand .brand-name { font-size: 1.5rem; }
+
+  .primary-nav {
+    position: fixed; z-index: 80; inset: auto 0 0;
+    display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0; max-width: none; min-height: 68px;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+    border: 0; border-top: 1px solid var(--hair-strong); border-radius: 0;
+    background: var(--surface);
+  }
+  .primary-nav > :is(a, button) {
+    min-width: 0; min-height: 56px;
+    display: grid; place-items: center; align-content: center; gap: 3px;
+    padding: 5px 2px; border: 0; border-radius: 9px; background: transparent;
+    font-size: .72rem; line-height: 1.15; text-align: center;
+  }
+  .primary-nav > :is(a, button) span {
+    max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .primary-nav [aria-current="page"] { box-shadow: inset 0 3px 0 var(--pri); }
+  .primary-nav .nav-menu { margin-left: 0; padding-left: 2px; border-left: 0; border-radius: 9px; }
+  .nav-help { display: none; }   /* Ajuda moves into Menu; exactly 5 destinations remain. */
+  .primary-nav .nav-short { display: block; }
+  .primary-nav .nav-long { display: none; }
+
+  .site-menu {
+    position: fixed; z-index: 90;
+    inset: auto 0 calc(var(--nav-h) + env(safe-area-inset-bottom)) 0;
+    margin: 0; border-radius: var(--card-radius) var(--card-radius) 0 0;
+    border-bottom: 0; max-height: 70vh; overflow-y: auto;
+  }
+
+  .page-hero { text-align: left; padding-top: 8px; }
+  .page-hero h1 { margin-inline: 0; }
+  .page-hero .lead { margin-inline: 0; }
+  .strip-items { grid-template-columns: repeat(2, 1fr); }
+  .strip-items li:nth-child(2n) { border-left: 1px solid var(--rule); }
+  .strip-items li:nth-child(n + 3) { border-top: 1px solid var(--rule); }
+  .security-rule .sr-why { margin-left: 0; }
+  .security-rule > .wrap { flex-wrap: wrap; }
+
+  /* MOB-002: 17px floor on mobile body text. */
+  body { font-size: 17px; }
+  .wrap { padding: 0 18px; }
+}
+
+@media (max-width: 400px) {
+  .wrap { padding: 0 14px; }
+  .strip-items li { padding: 14px 10px; gap: 9px; }
+}
+
+/* A focused control must never end up under the fixed bottom nav or the keyboard. */
+@media (max-width: 760px) {
+  :root { scroll-padding-bottom: calc(var(--nav-h) + 24px); }
+  html { scroll-padding-bottom: calc(var(--nav-h) + 24px); }
+}
+
+/* ============================================================ motion
+   Only opacity/transform, always behind a guard, and nothing is invisible without JS. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important; scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================ print / forced colours */
+@media print {
+  .primary-nav, .site-menu, .skip-link { display: none; }
+  body { background: #fff; padding-bottom: 0; }
+}
+@media (forced-colors: active) {
+  .primary-nav [aria-current="page"] { forced-color-adjust: none; border: 2px solid Highlight; }
+}

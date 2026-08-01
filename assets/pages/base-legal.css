@@ -1,0 +1,117 @@
+/* Homepage Base legal e fiscal. Shell and components come from assets/site.css. */
+
+.legalbar {
+  display: grid;
+  grid-template-columns: minmax(140px, 180px) minmax(110px, 140px) 1fr auto;
+  gap: 0; align-items: start;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--card-radius);
+  padding: 16px 18px; margin-top: 22px;
+}
+.legalbar .lb-sel { padding-right: 20px; }
+.legalbar .lb-term { padding: 0 20px; border-left: 1px solid var(--rule); }
+.legalbar .lb-go { padding-left: 20px; border-left: 1px solid var(--rule); align-self: center; }
+.legalbar .lb-go .btn { width: 100%; min-height: 54px; }
+.legalbar select { min-height: 48px; }
+
+.lb-aside { display: flex; gap: 26px; flex-wrap: wrap; margin: 14px 0 0; max-width: none; }
+.lb-aside a { display: inline-flex; align-items: center; gap: 7px; min-height: 44px; font-weight: 500; }
+.ico-inline { width: 16px; height: 16px; }
+
+/* three assurances under the hero */
+.assure {
+  list-style: none; margin: 0; padding: 0; max-width: none;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule);
+}
+.assure li { display: flex; gap: 13px; padding: 20px 22px; max-width: none; align-items: flex-start; }
+.assure li + li { border-left: 1px solid var(--rule); }
+.assure svg { width: 26px; height: 26px; color: var(--pri); flex: none; }
+.assure b { display: block; margin-bottom: 3px; }
+.assure p { margin: 0; font-size: .92rem; color: var(--ink2); }
+
+.chapter-lead { color: var(--ink2); }
+
+/* LEG-002 topic index */
+.topics {
+  list-style: none; margin: 20px 0 0; padding: 0; max-width: none;
+  border: 1px solid var(--rule); border-radius: var(--card-radius); background: var(--surface);
+}
+.topics li {
+  display: grid; align-items: center; gap: 6px 16px; padding: 16px 20px; max-width: none;
+  grid-template-columns: auto minmax(150px, 1fr) minmax(0, 1.4fr) minmax(0, 1fr) auto;
+}
+.topics li + li { border-top: 1px solid var(--rule); }
+.topics > li > svg { width: 24px; height: 24px; color: var(--pri); }
+.topics .t-name { font-weight: 600; }
+.topics .t-desc { color: var(--ink2); font-size: .93rem; }
+.topics .t-arts { color: var(--mute); font-size: .78rem; letter-spacing: .04em; text-transform: none; }
+.topics .t-open { min-height: 44px; padding: 8px 16px; font-size: .92rem; white-space: nowrap; }
+
+/* results */
+.legal-results { margin-top: 24px; }
+.lr-count { letter-spacing: .06em; }
+.lr-item {
+  border: 1px solid var(--rule); border-radius: var(--card-radius); background: var(--surface);
+  padding: 16px 18px; margin-bottom: 12px;
+}
+.lr-item h4 { margin: 0 0 6px; font-size: 1.02rem; color: var(--pri-dark); }
+.lr-item .lr-meta {
+  display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center;
+  margin: 8px 0 0; font-size: .86rem; color: var(--ink2);
+}
+.lr-item .lr-gov { color: var(--ink2); font-size: .93rem; margin: 0; }
+
+/* rule card */
+.two-col { display: grid; gap: 30px 40px; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.rule-card h3 { font-size: 1.1rem; color: var(--pri-dark); margin-top: 12px; }
+.rule-dl { margin: 14px 0 0; display: grid; grid-template-columns: minmax(130px, .8fr) 1.2fr; gap: 0; }
+.rule-dl dt, .rule-dl dd {
+  padding: 10px 0; border-top: 1px solid var(--rule); margin: 0; font-size: .93rem;
+}
+.rule-dl dt { color: var(--mute); padding-right: 14px; }
+.rule-dl dd { color: var(--ink); }
+.rule-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; max-width: none; }
+.rule-actions .btn { min-height: 44px; padding: 10px 16px; font-size: .95rem; }
+
+/* changes */
+.changes {
+  list-style: none; margin: 16px 0 0; padding: 0; max-width: none;
+  border: 1px solid var(--rule); border-radius: var(--card-radius); background: var(--surface);
+}
+.changes li {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 6px 16px;
+  padding: 14px 18px; max-width: none;
+}
+.changes li + li { border-top: 1px solid var(--rule); }
+.changes .c-date { color: var(--mute); white-space: nowrap; }
+.changes .c-what { font-size: .95rem; }
+
+.cert-cols { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); margin-top: 16px; }
+.cert-cols .panel { padding: 16px 18px; }
+.cert-cols h3 { font-size: .95rem; margin-bottom: 8px; }
+.cert-cols p { font-size: .91rem; color: var(--ink2); }
+
+/* responsible notice */
+.warn-panel {
+  display: grid; grid-template-columns: auto 1fr auto; gap: 18px; align-items: center;
+  background: var(--pri-soft); border-color: var(--pri);
+}
+.warn-panel .wp-icon svg { width: 34px; height: 34px; color: var(--pri); }
+.warn-panel h2 { font-size: 1.15rem; margin-bottom: 8px; }
+.warn-panel ul { margin: 0; padding-left: 20px; }
+.warn-panel li { font-size: .93rem; color: var(--ink2); }
+
+@media (max-width: 900px) {
+  .legalbar { grid-template-columns: 1fr 1fr; gap: 14px; }
+  .legalbar .lb-sel { padding-right: 0; }
+  .legalbar .lb-term { grid-column: 1 / -1; padding: 0; border-left: 0; }
+  .legalbar .lb-go { grid-column: 1 / -1; padding-left: 0; border-left: 0; }
+  .assure li + li { border-left: 0; border-top: 1px solid var(--rule); }
+  .topics li { grid-template-columns: auto 1fr; }
+  .topics .t-desc, .topics .t-arts { grid-column: 1 / -1; }
+  .topics .t-open { grid-column: 1 / -1; width: 100%; }
+  .changes li { grid-template-columns: 1fr; }
+  .warn-panel { grid-template-columns: 1fr; }
+  .rule-dl { grid-template-columns: 1fr; }
+  .rule-dl dd { padding-top: 0; border-top: 0; padding-bottom: 12px; }
+}

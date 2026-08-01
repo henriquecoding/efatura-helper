@@ -1,0 +1,112 @@
+/* Homepage Empresa - the public company lookup.
+ * Shell, tokens and shared components come from assets/site.css; this file only adds what the
+ * Empresa composition needs. */
+
+/* ---------------------------------------------------------------- EMP-001 search bar
+   The search is the primary object on the page: one row on desktop (mode | term | action),
+   stacked on mobile. It sits ABOVE the hero because it is the task; the hero explains it. */
+.searchbar {
+  display: grid;
+  grid-template-columns: minmax(230px, 300px) 1fr auto;
+  align-items: start;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--card-radius);
+  padding: 16px 18px;
+  margin-top: 22px;
+}
+.searchbar .sb-mode { padding-right: 22px; }
+.searchbar .sb-term { padding: 0 22px; border-left: 1px solid var(--rule); }
+.searchbar .sb-go { padding-left: 22px; border-left: 1px solid var(--rule); align-self: center; }
+.searchbar .sb-go .btn { width: 100%; min-height: 56px; font-size: 1.05rem; }
+
+/* The term input is the biggest type on the bar: it is what the person is about to read back. */
+.searchbar #sb-input {
+  font-family: 'IBM Plex Mono', ui-monospace, monospace;
+  font-size: 1.3rem; letter-spacing: .02em; border: 0; padding-left: 0; min-height: 44px;
+}
+.searchbar #sb-input:focus-visible { outline-offset: 4px; }
+.searchbar #sb-input::placeholder { color: var(--mute); opacity: 1; }
+
+.sb-aside { text-align: center; margin: 14px auto 0; font-size: .95rem; color: var(--ink2); }
+.sb-aside a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; }
+.ico-inline { width: 15px; height: 15px; vertical-align: -2px; }
+
+.sb-privacy {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 16px 0 0; margin: 0; color: var(--ink2); font-size: .95rem; max-width: none;
+}
+.sb-privacy svg { width: 20px; height: 20px; flex: none; color: var(--pri); margin-top: 1px; }
+.sb-sources {
+  border-top: 1px solid var(--rule); margin: 16px 0 0; padding: 14px 0 0;
+  text-align: center; letter-spacing: .12em; max-width: none;
+}
+
+/* Result region: rendered by empresa.js, or by /consulta without JS. */
+.sb-result { margin-top: 22px; }
+.sb-result[hidden] { display: none; }
+
+/* ---------------------------------------------------------------- example band
+   A tinted band plus a badge, so an illustrative dossier can never be read as a real result. */
+.is-example-band { background: var(--bg2); padding-bottom: calc(var(--step) * .5); }
+.is-example-band .tablewrap { background: var(--surface); }
+
+/* ---------------------------------------------------------------- numbered steps */
+.steps { list-style: none; margin: 20px 0 0; padding: 0; display: grid; gap: 0;
+         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.steps li {
+  display: grid; grid-template-columns: auto auto 1fr; align-items: start; gap: 10px;
+  padding: 18px 20px; max-width: none;
+}
+.steps li + li { border-left: 1px solid var(--rule); }
+.steps .n { font: 400 .82rem/1.6 'IBM Plex Mono', ui-monospace, monospace; color: var(--pri); }
+.steps > li > svg { width: 22px; height: 22px; color: var(--pri); }
+.steps b { display: block; margin-bottom: 4px; }
+.steps p { margin: 0; font-size: .93rem; color: var(--ink2); }
+
+.quiet-example {
+  background: var(--bg2); border: 1px solid var(--rule); border-radius: var(--control-radius);
+  padding: 12px 16px; color: var(--ink2); font-size: .93rem; max-width: none;
+}
+
+/* ---------------------------------------------------------------- next steps */
+.next-list { list-style: none; margin: 20px 0 0; padding: 0;
+             border: 1px solid var(--rule); border-radius: var(--card-radius); background: var(--surface); }
+.next-list li {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px;
+  padding: 18px 20px; max-width: none;
+}
+.next-list li + li { border-top: 1px solid var(--rule); }
+.next-list > li > svg { width: 24px; height: 24px; color: var(--pri); }
+.next-list b { display: block; margin-bottom: 2px; }
+.next-list p { margin: 0; font-size: .93rem; color: var(--ink2); }
+.next-list .btn { white-space: nowrap; }
+
+/* ---------------------------------------------------------------- privacy + sources */
+.pf-cols { display: grid; gap: 26px 40px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-top: 18px; }
+.pf-cols h3 { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; color: var(--pri-dark); }
+.pf-cols h3 svg { width: 22px; height: 22px; color: var(--pri); flex: none; }
+.src-list { margin: 0; }
+.src-list dt {
+  font: 600 .78rem/1.6 'IBM Plex Mono', ui-monospace, monospace;
+  letter-spacing: .06em; color: var(--pri-dark); margin-top: 10px;
+}
+.src-list dd { margin: 0; color: var(--ink2); font-size: .93rem; }
+
+/* ---------------------------------------------------------------- mobile */
+@media (max-width: 860px) {
+  .searchbar { grid-template-columns: 1fr; gap: 14px; }
+  .searchbar .sb-mode { padding-right: 0; }
+  .searchbar .sb-term { padding: 0; border-left: 0; }
+  .searchbar .sb-go { padding-left: 0; border-left: 0; }
+  .searchbar #sb-input {
+    border: 1px solid var(--hair-strong); padding: 11px 14px; min-height: 52px;
+  }
+  .steps li + li { border-left: 0; border-top: 1px solid var(--rule); }
+}
+@media (max-width: 620px) {
+  .next-list li { grid-template-columns: auto 1fr; }
+  .next-list .btn { grid-column: 1 / -1; width: 100%; }
+  .sb-aside { text-align: left; }
+}

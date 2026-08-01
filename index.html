@@ -1153,6 +1153,10 @@
     <!-- analytics: Umami self-hosted, sem cookies e sem dados pessoais -->
     <script defer src="https://analytics.d1060.com/script.js" data-website-id="1e64e3e0-fe5f-44d0-895b-ac8bfadd3538" data-domains="faturas.diogoandrade.com" data-exclude-search="true" data-exclude-hash="true"></script>
     <script defer src="/metrics.js"></script>
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/pages/empresa.css">
+<script defer src="/assets/site.js"></script>
+<script defer src="/assets/empresa.js"></script>
 </head>
 <body>
 <!-- Marker filter for .mark-hl. feTurbulence + feDisplacementMap warps the highlight's edges so
@@ -1178,213 +1182,322 @@
      It now sits on the SAME [rail] grid as the masthead and every chapter, with a red rule and an
      index in the rail. Red is the token for "blocked / real deadline"; this is the one rule on the
      site that can cost someone their credentials, so it is the one place the red rule belongs. -->
-<details class="alertbar">
-  <summary><div class="wrap ab-head">
-    <p class="ab-idx">Regra de segurança</p>
-    <p class="big">A tua password das Finanças só se escreve em páginas cujo endereço
-      <b>termina</b> em <code>.gov.pt</code>.<span class="ab-never">Aqui, nunca.</span></p>
-    <span class="why">Porquê</span>
-  </div></summary>
-  <div class="wrap ab-body">
-    <p class="ab-idx" aria-hidden="true">Porquê</p>
-    <div class="ab-text">
-      <p class="small">Esta ferramenta <b>não te pede a password</b> e <b>não consegue vê-la</b>.
-        Funciona como uma extensão do navegador: só corre quando <b>tu</b> clicas, só dentro da
-        página do e-Fatura onde <b>já fizeste login</b>, e não vê mais nada. Se alguma vez um site
-        te pedir as credenciais das Finanças, é burla. Fecha-o.</p>
-      <p class="small tagline"><span class="tag">Não oficial</span> Projeto pessoal e independente.
-        <b>Não</b> é um serviço do Estado nem da Autoridade Tributária.
-        <a class="ab-more" href="#como">Como funciona, em detalhe</a></p>
+<!-- FB:SHELL:START (gerado por make-shell.mjs - nao editar a mao) -->
+<a class="skip-link" href="#conteudo">Saltar para o conteúdo</a>
+
+<div class="security-rule" role="note" aria-label="Regra de segurança">
+  <div class="wrap">
+    <svg class="sr-icon" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-escudo"></use></svg>
+    <p><b>Regra de segurança</b>
+      A tua password das Finanças só se escreve em páginas cujo endereço termina em
+      <code>.gov.pt</code>. Aqui, nunca.</p>
+    <a class="sr-why" href="/privacidade#password">Porquê?<svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-externo"></use></svg></a>
+  </div>
+</div>
+
+<div class="wrap">
+  <a class="site-brand" href="/" aria-label="Fatura Boa, início">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <rect class="plate" width="32" height="32" rx="7"></rect>
+        <path fill="#fff" d="M6.75 6.5 H13.375 C18.875 6.5 22.75 10.3125 22.75 16 C22.75 21.6875 18.875 25.5 13.375 25.5 H6.75 Z M10 9.5 V22.5 H13.1875 C16.8125 22.5 19.5 20 19.5 16 C19.5 12 16.8125 9.5 13.1875 9.5 H10 Z"></path>
+        <path fill="#fff" d="M18.25 25.5 L23.875 6.5 H26.375 L20.75 25.5 Z"></path>
+        <path fill="#fff" d="M25.25 6.5 H27.75 L22.125 25.5 H19.625 Z"></path>
+        <rect class="cut" x="20.875" y="16.375" width="4.875" height="2.25" rx="0.5" fill="#fff"></rect>
+      </svg>
+    <span class="brand-name">Fatura Boa</span>
+  </a>
+
+  <nav class="primary-nav" aria-label="Principal">
+    <a href="/" data-mode-link="empresa" aria-current="page"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-empresa"></use></svg><span>Empresa</span></a>
+    <a href="/perfil" data-mode-link="situacao"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-situacao"></use></svg><span class="nav-long">A minha situação</span><span class="nav-short" aria-hidden="true">Situação</span></a>
+    <a href="/deducoes" data-mode-link="deducoes"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-deducoes"></use></svg><span>Deduções</span></a>
+    <a href="/base-legal" data-mode-link="legal"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-legal"></use></svg><span class="nav-long">Base legal e fiscal</span><span class="nav-short" aria-hidden="true">Base legal</span></a>
+    <a class="nav-help" href="/sobre#ajuda"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-ajuda"></use></svg><span>Ajuda</span></a>
+    <button class="nav-menu" type="button" aria-expanded="false" aria-controls="site-menu"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-menu"></use></svg><span>Menu</span></button>
+  </nav>
+
+  <div class="site-menu" id="site-menu" hidden>
+    <div class="menu-cols">
+      <div>
+        <h2>Usar</h2>
+        <ul>
+          <li><a href="/">Consultar uma empresa</a></li>
+          <li><a href="/perfil">A minha situação</a></li>
+          <li><a href="/deducoes">Deduções</a></li>
+          <li><a href="/base-legal">Base legal e fiscal</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Confiar</h2>
+        <ul>
+          <li><a href="/verificar">Verificar o código</a></li>
+          <li><a href="/auditoria">Auditoria</a></li>
+          <li><a href="/sobre">Sobre</a></li>
+          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Legal</h2>
+        <ul>
+          <li><a href="/privacidade">Privacidade</a></li>
+          <li><a href="/termos">Termos</a></li>
+          <li><a href="https://polyformproject.org/licenses/noncommercial/1.0.0" target="_blank" rel="noopener">Licença</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Ajuda</h2>
+        <ul>
+          <li><a href="/sobre#ajuda">Como funciona</a></li>
+          <li><a href="/#relato">Reportar um erro</a></li>
+        </ul>
+      </div>
     </div>
   </div>
-</details>
-<div class="mast">
+</div>
+<!-- FB:SHELL:END -->
+
+<main id="conteudo">
+
+<!-- EMP-001 Fragmented search. The single ambiguous box became an explicit choice: the person
+     picks NIF or Nome FIRST, so the label, the placeholder, the input mode and the validation all
+     describe one thing instead of hedging between two. The radios are real form controls, so with
+     JavaScript off the form still submits to /consulta and the server-rendered result answers.
+
+     PRIVACY (CORE / test-privacy-urls): the term is never written into the URL, history, a data-*
+     attribute or an analytics property. Submitting with JS enabled calls preventDefault and looks
+     the value up in place; the no-JS path posts to /consulta, which reads the field and does not
+     echo it back into a query it then tracks. -->
+<div class="wrap">
+  <form class="searchbar" id="empresa-form" action="/consulta" method="get" role="search"
+        aria-labelledby="searchbar-title">
+    <h2 id="searchbar-title" class="visually-hidden">Consultar uma empresa</h2>
+
+    <div class="sb-mode">
+      <span class="field-label" id="sb-mode-label">Procurar por</span>
+      <div class="segmented" role="radiogroup" aria-labelledby="sb-mode-label">
+        <input type="radio" name="tipo" id="sb-nif" value="nif" checked>
+        <label for="sb-nif">
+          <svg class="tick" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-check"></use></svg>
+          NIF</label>
+        <input type="radio" name="tipo" id="sb-nome" value="nome">
+        <label for="sb-nome">
+          <svg class="tick" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-check"></use></svg>
+          Nome</label>
+      </div>
+    </div>
+
+    <div class="sb-term field">
+      <label class="label" for="sb-input" id="sb-input-label">NIF da empresa</label>
+      <input type="text" id="sb-input" name="q" autocomplete="off" spellcheck="false"
+             inputmode="numeric" placeholder="Ex.: 500 960 046"
+             aria-describedby="sb-help sb-error">
+      <span class="hint" id="sb-help">Nove dígitos. Espaços são ignorados.</span>
+      <span class="err" id="sb-error" hidden>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-aviso"></use></svg>
+        <span id="sb-error-text"></span>
+      </span>
+    </div>
+
+    <div class="sb-go">
+      <button class="btn" type="submit" id="sb-submit">
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-lupa"></use></svg>
+        <span id="sb-submit-text">Consultar</span>
+      </button>
+    </div>
+  </form>
+
+  <p class="sb-aside">
+    <span id="sb-aside-text">Só sabes o nome? Escolhe <b>Nome</b> acima.</span><br>
+    <a href="/consulta?q=500960046">Experimentar com 500 960 046
+      <svg class="ico-inline" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-externo"></use></svg></a>
+  </p>
+  <p class="sb-status visually-hidden" id="sb-status" role="status"></p>
+  <div id="sb-result" class="sb-result" hidden></div>
+</div>
+
+<!-- The hero carries NO action. Every control lives in the search above it, which is the one place
+     an action belongs on this page; a hero CTA stack would repeat it 300px lower. -->
+<header class="page-hero">
   <div class="wrap">
-    <!-- Diogo's DA monogram, same geometry as the favicon and diogoandrade.com, but in the site's
-         blue instead of the personal navy. Inlined rather than an <img> so the fills can be CSS
-         variables - the mark follows the palette instead of being a second place to update it.
-         Counter-shapes (the D's bowl, the A's crossbar, the signature cut) are painted in the
-         SAME colour as the plate, so they read as holes at any size. -->
-    <a class="mark" href="/" aria-label="Fatura Boa, início">
-      <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-        <rect class="plate" width="32" height="32" rx="7"/>
-        <path fill="#fff" d="M6.75 6.5 H13.375 C18.875 6.5 22.75 10.3125 22.75 16
-                             C22.75 21.6875 18.875 25.5 13.375 25.5 H6.75 Z
-                             M10 9.5 V22.5 H13.1875 C16.8125 22.5 19.5 20 19.5 16
-                             C19.5 12 16.8125 9.5 13.1875 9.5 H10 Z"/>
-        <path fill="#fff" d="M18.25 25.5 L23.875 6.5 H26.375 L20.75 25.5 Z"/>
-        <path fill="#fff" d="M25.25 6.5 H27.75 L22.125 25.5 H19.625 Z"/>
-        <rect class="cut" x="20.875" y="16.375" width="4.875" height="2.25" rx="0.5"/>
-        <!-- The diagonal is LOAD-BEARING, not decoration. The A's left stroke passes behind the
-             D and both are white, so without this they fuse into one shape. Removing it was
-             tried and made the mark less legible, not more. Reproduced exactly as on
-             diogoandrade.com; only the colours differ. -->
-        <path class="cut" d="M15.75 24.5 L25.125 6.5 H27.375 L18 24.5 Z" opacity="0.18"/>
-      </svg>
-    </a>
-    <!-- The tagline that sat here read "A tua situação fiscal, das fontes oficiais" - word for
-         word the <h1>, both on screen at the same time. Removed: a running head repeats the
-         publisher, never the headline. -->
-    <!-- The tagline repeats the <h1> word for word, and both are on screen at once. Removed on that
-         basis, restored 30-07-2026 at the owner's explicit request after seeing it both ways.
-         Desktop only: below 1180px the whole lockup gives way to the search. The duplication check
-         in test-design.js carries a matching exception rather than being weakened. -->
-    <div class="nm">Fatura Boa<span>A tua situação fiscal, das fontes oficiais</span></div>
-
-    <!-- HEADER SEARCH.
-         Structure ported from the Refúgio Animal SearchBar: a mode selector living inside the bar,
-         an expanding panel, a distinct mobile treatment, recent searches, Enter/Esc, and a footer
-         hint. What did NOT come across, because this project's system forbids it: backdrop blur
-         (anti-patterns #1), gradient buttons, 60px shadows, and the gold palette. Rules and tokens
-         instead.
-
-         Two modes, and each does something real:
-           NIF       - submits to /consulta, which already has the lookup and reads ?q=
-           SITUAÇÃO  - filters a static list of what the tool actually reads, all linking to /perfil
-
-         It does NOT query the API as you type. cae-db has a /search endpoint and using it live
-         would tell the server what someone is typing before they decide to search. Submitting on
-         Enter keeps the lookup an explicit act, which is the posture the whole product takes.
-
-         Ships without `hidden` so it works with no JS: the form submits to /consulta natively and
-         the mode radios are real inputs. JS only adds the panel, the filtering and the history. -->
-    <form class="hsearch" id="hsearch" action="/consulta" method="get" role="search">
-      <fieldset class="hs-modes">
-        <legend class="sr">O que queres procurar</legend>
-        <label class="hs-mode">
-          <input type="radio" name="mode" value="nif" checked>
-          <span>Consultar NIF</span>
-        </label>
-        <label class="hs-mode">
-          <input type="radio" name="mode" value="situacao">
-          <span>A minha situação</span>
-        </label>
-      </fieldset>
-
-      <div class="hs-field">
-        <svg class="hs-icon" aria-hidden="true" focusable="false" viewBox="0 0 16 16">
-          <circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
-          <path d="M10.5 10.5 14 14" fill="none" stroke="currentColor" stroke-width="1.6"
-                stroke-linecap="round"/>
-        </svg>
-        <label class="sr" for="hs-q">NIF ou nome da empresa</label>
-        <input id="hs-q" name="q" type="search" autocomplete="off" inputmode="numeric"
-               placeholder="NIF ou nome da empresa">
-        <button type="button" class="hs-clear" id="hs-clear" hidden aria-label="Limpar">
-          <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8" fill="none"
-            stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-        </button>
-        <button type="submit" class="hs-go">Consultar</button>
-      </div>
-
-      <div class="hs-panel" id="hs-panel" hidden>
-        <div class="hs-body" id="hs-body"></div>
-        <p class="hs-foot"><span>Enter para pesquisar · Esc para fechar</span>
-          <span id="hs-count"></span></p>
-      </div>
-    </form>
-    <!-- Plain text links, not buttons. "A minha situação" was a filled blue button here AND
-         "Ver a minha situação" is the hero's primary - the same action, twice, above the fold,
-         competing. The masthead is navigation; the hero is where you act. -->
-    <!-- "A minha situação" and "Consultar NIF" were here until the search landed: they are now the
-         two SEARCH MODES, 400px to the left, in the same words. Four identical words twice in one
-         running head, and they were squeezing the input so hard a 9-digit NIF rendered as "046".
-         The nav keeps only what the search does not already reach. -->
-    <nav class="nav">
-      <a class="mastnav" href="/deducoes">Deduções</a>
-      <a class="mastnav" href="/verificar">Verificar</a>
-    </nav>
+    <span class="eyebrow">Consulta pública &middot; fontes verificáveis</span>
+    <h1>Consultar uma empresa</h1>
+    <p class="lead">Nome, CAE, setor da dedução, morada e IVA — explicado sem linguagem técnica.</p>
   </div>
-</div>
-
-<!-- HERO = document header band (concept C, 30-07-2026).
-     What it replaced and why, measured on the previous build at 1440x900:
-       20 discrete elements above the fold, 822px of hero in a 900px viewport, 206px of void under
-       the short column, 141px of vertical misalignment between the two columns, and - the
-       dominant fault - TWO ruled label/value tables side by side (front matter, 5 rows; ledger,
-       3 rows). Same texture, same weight, same rhythm: the eye saw twin tables competing and
-       neither won, so there was no first read.
-     The rule that comes out of that, and it governs any future change here:
-       ONE ruled texture above the fold. If the hero has more than one column, exactly one of them
-       may be ruled; the rest is type.
-     So: title and prose in the top band (two textures, not two tables), then a heavy rule, then
-     the front matter as ONE horizontal strip. The ledger left the hero entirely and now opens
-     chapter 02, where it gets full width and real scale. -->
-<header>
- <div class="wrap hero-band">
-  <p class="hero-stamp">Ferramenta independente <span>· não é um serviço do Estado</span></p>
-  <div class="hero-inner">
-  <!-- The keyword line lives INSIDE the <h1>. "Fontes oficiais, em vez de palpites" is the right
-       thing to say to a human and worthless to a search engine - nobody types that. The eyebrow
-       was already sitting here saying "e-Fatura / IRS"; making it a full phrase and moving it
-       into the heading buys the search intent without changing what the page looks like. -->
-  <h1><span class="eyebrow">e-Fatura · IRS · Segurança Social</span>A tua situação fiscal,<br>das <span class="mark-hl">fontes oficiais</span>.</h1>
-
-  <div class="hero-aside">
-  <!-- Shortened 30-07-2026. The closing clause was "e o código é <a>verificável</a>" - the third
-       place that word appeared above the fold, after the colophon's CÓDIGO row and the nav's
-       "Verificar". Cutting it removes a duplicate AND a line of hero height. -->
-  <p class="sub">Não te pede a password. Corre na sessão que <b>já tens aberta</b> nas Finanças
-     e na Segurança Social, lê o que o Estado já sabe sobre ti, e mostra a tua situação: faturas,
-     rendas, situação fiscal, património e IRS. Tudo <b>no teu navegador</b>.</p>
-
-  <!-- No action lives in the hero. "Ver a minha situação" is a search mode in the masthead, and
-       "Como funciona" moved into the alert bar's disclosure, where the explanation of how it works
-       already was. Two duplicates gone and the hero column gets shorter. -->
-  <!-- Recovered-euro counter. Hidden until there is a real, non-zero number (no fake social proof).
-       Fed by opt-in, deduplicated per user server-side (cae-db /counter/total). Styled by class
-       now rather than inline: it briefly existed twice with the same id while the CTA row was
-       being removed, which would have left the script writing into whichever came first. -->
-  <p id="fb-counter" class="hero-counter" hidden></p>
-  <script>
-  (function(){
-    fetch("https://cae-db.diogoandrade.com/counter/total").then(function(r){return r.json();}).then(function(d){
-      if(!d || !(d.recuperado>0)) return;
-      var el=document.getElementById("fb-counter"); if(!el) return;
-      var eur=Math.round(d.recuperado), users=d.users||0, cur=0, step=Math.max(1,Math.round(eur/40));
-      el.hidden = false;
-      var t=setInterval(function(){ cur+=step; if(cur>=eur){cur=eur;clearInterval(t);}
-        el.innerHTML='<b>€'+cur.toLocaleString("pt-PT")+'</b> já encontrados para recuperar'+(users>1?' por '+users+' pessoas':'')+'.'; },25);
-    }).catch(function(){});
-  })();
-  </script>
-
-  </div><!-- /hero-aside -->
-
-  <!-- The colophon: the document's terms, stated once, as ONE horizontal strip across the base of
-       the band. It was a stacked 5-row table in the left column, which is what made it a twin of
-       the ledger. Horizontal, it stops being a table and becomes a masthead strip - a different
-       texture from everything above it. -->
-  <dl class="frontmatter">
-    <!-- The FONTES column was dropped: the eyebrow above the h1 already reads
-         "e-Fatura · IRS · Segurança Social" and does the SEO work. Four columns, wider each. -->
-    <div><dt>password</dt><dd>nunca pedida</dd></div>
-    <div><dt>dados</dt><dd>não saem do teu navegador</dd></div>
-    <div><dt>código</dt><dd><a href="/verificar">verificável</a></dd></div>
-    <div><dt>custo</dt><dd>grátis, sem contas</dd></div>
-  </dl>
-
-  <!-- LENS: the three things someone actually comes here to do, mapped to the three routes that
-       already exist (/perfil, /consulta, /deducoes). Adapted from the supplied hero mock, with two
-       deliberate departures:
-         1. The mock's switch was a pill track with a sliding indicator on a shadowed capsule -
-            anti-patterns #9 and #7. Here the tabs are a ruled row: the selected one carries a 2px
-            rule, the others nothing. Same affordance, no capsule.
-         2. The mock's search was decorative (a fake NIF in a mock panel). This one is REAL: the
-            field posts to /consulta, which already reads ?q= and does the lookup. A search box
-            that does not search is a lie about what the product does.
-       Only the entity lens gets a field, because it is the only one where a query means anything.
-       WITHOUT JS every panel is visible and every control works - the tabs only hide panels once
-       the script confirms it can also show them again. -->
-  <!-- The lens (3 tabs + 3 panels + CTA) was removed on 30-07-2026. The header search became the
-       same thing and better: same three destinations, persistent on scroll, with real filtering.
-       Measured before removal: 4 labels rendered in BOTH the masthead and the hero - "consultar
-       nif", "a minha situação", "consultar", "deduções". The hero keeps no action of its own;
-       the header owns them. Principle borrowed from HeroRail.tsx in lost-letters-room: the hero
-       carries one thing, never a stack of competing objects. -->
-  </div><!-- /hero-inner -->
-</div>
 </header>
+
+<div class="wrap">
+  <div class="strip">
+    <p class="strip-label" id="strip-label">Numa consulta encontras</p>
+    <ul class="strip-items" aria-labelledby="strip-label">
+      <li><span class="n">01</span>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-empresa"></use></svg>
+        <span>Nome e CAE</span></li>
+      <li><span class="n">02</span>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-deducoes"></use></svg>
+        <span>Setor da dedução</span></li>
+      <li><span class="n">03</span>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-local"></use></svg>
+        <span>Morada e IVA</span></li>
+      <li><span class="n">04</span>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-banco"></use></svg>
+        <span>Contratos públicos</span></li>
+    </ul>
+  </div>
+
+  <!-- EMP-007. The honest boundary: this is a PUBLIC search, and it is a request to a server. The
+       "fica no teu navegador" promise belongs to the tool that reads your faturas, NOT here, and
+       saying it here would be false. -->
+  <p class="sb-privacy">
+    <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-info"></use></svg>
+    A pesquisa usa dados públicos e só é enviada quando carregas em <b>Consultar</b>.
+  </p>
+  <p class="sb-sources mono">Fontes: SICAE &middot; VIES &middot; BASE</p>
+</div>
+
+<!-- EMP-004 Example dossier. Marked as an example THREE times - the eyebrow, the badge beside the
+     values, and the closing note - because an illustrative block that reads as real data is the
+     single most damaging thing this page could do. The NIF is masked and the company is invented;
+     no plausible real business appears here. -->
+<section class="chapter is-example-band" id="exemplo" aria-labelledby="exemplo-h">
+  <div class="wrap">
+    <span class="eyebrow">02 &middot; Exemplo da estrutura</span>
+    <h2 id="exemplo-h"><span class="chapter-no">02</span>Tudo o que precisas para perceber uma empresa</h2>
+    <p class="example-badge">
+      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-info"></use></svg>
+      Exemplo &middot; dados ilustrativos</p>
+
+    <div class="tablewrap is-example">
+      <table>
+        <caption>Estrutura de um resultado. Os valores abaixo são inventados e servem só para
+          mostrar o formato — não são de nenhuma empresa real.</caption>
+        <thead>
+          <tr><th scope="col">Campo</th><th scope="col">Exemplo</th><th scope="col">Fonte</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Nome oficial</th><td>Empresa de exemplo, Lda.</td><td class="mono">SICAE</td></tr>
+          <tr><th scope="row">NIF</th><td class="num">5•• ••• •••</td><td class="mono">SICAE</td></tr>
+          <tr><th scope="row">CAE principal</th><td>47110 &middot; Comércio a retalho em hipermercados</td><td class="mono">SICAE</td></tr>
+          <tr><th scope="row">Atividades secundárias</th>
+              <td>47730 &middot; Comércio a retalho de produtos farmacêuticos<br>
+                  58110 &middot; Edição de livros</td><td class="mono">SICAE</td></tr>
+          <tr><th scope="row">Setor possível no e-Fatura</th><td>Comércio &middot; Superfícies e hipermercados</td><td class="mono">BASE</td></tr>
+          <tr><th scope="row">Situação de IVA</th><td>Ativo</td><td class="mono">VIES</td></tr>
+          <tr><th scope="row">Morada</th><td>Rua das Flores, 123, 1000-001 Lisboa</td><td class="mono">SICAE</td></tr>
+          <tr><th scope="row">Contratos públicos</th><td>Sem contratos públicos nos últimos 12 meses</td><td class="mono">BASE</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="note">
+      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-info"></use></svg>
+      <span>O CAE mostra o que a empresa <b>pode</b> exercer. O que compraste continua a decidir o
+        setor correto. Os dados acima são um exemplo de formato, não um resultado.</span>
+    </p>
+  </div>
+</section>
+
+<!-- EMP-005. The one thing this chapter must never say is that a CAE proves what was bought. -->
+<section class="chapter" id="cae" aria-labelledby="cae-h">
+  <div class="wrap">
+    <span class="eyebrow">03 &middot; Do NIF à decisão</span>
+    <h2 id="cae-h"><span class="chapter-no">03</span>Porque é que o CAE principal nem sempre chega</h2>
+
+    <ol class="steps">
+      <li>
+        <span class="n">01</span>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-lupa"></use></svg>
+        <div><b>Procuramos o NIF</b>
+          <p>Confirmamos o NIF nas bases públicas para garantir que a empresa existe e está ativa.</p></div>
+      </li>
+      <li>
+        <span class="n">02</span>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-documento"></use></svg>
+        <div><b>Lemos o CAE principal e os secundários</b>
+          <p>Os códigos CAE mostram o que a empresa <b>pode</b> fazer, não o que fez na tua fatura.</p></div>
+      </li>
+      <li>
+        <span class="n">03</span>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-legal"></use></svg>
+        <div><b>Explicamos os setores possíveis</b>
+          <p>Transformamos os CAE em setores e-Fatura. Usas o que corresponde ao que
+             <b>compraste</b>.</p></div>
+      </li>
+    </ol>
+
+    <p class="quiet-example">Exemplo: um hipermercado pode ter também atividade de farmácia,
+      livraria ou restauração.</p>
+
+    <p class="note note-warn">
+      <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-aviso"></use></svg>
+      <span>Ser aceite pelo e-Fatura não significa que a classificação esteja certa.
+        Quem declara és tu.</span>
+    </p>
+  </div>
+</section>
+
+<!-- EMP-006. One primary action; the rest are secondary. -->
+<section class="chapter" id="seguir" aria-labelledby="seguir-h">
+  <div class="wrap">
+    <span class="eyebrow">04 &middot; O que podes fazer a seguir</span>
+    <h2 id="seguir-h"><span class="chapter-no">04</span>A seguir</h2>
+
+    <ul class="next-list">
+      <li>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-check"></use></svg>
+        <div><b>Confirmar o setor de uma fatura</b>
+          <p>Compara o tipo de despesa com os setores possíveis da empresa.</p></div>
+        <a class="btn" href="/deducoes">Ver deduções</a>
+      </li>
+      <li>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-empresa"></use></svg>
+        <div><b>Consultar outra empresa</b>
+          <p>Pesquisa por NIF ou nome para obter um novo dossiê.</p></div>
+        <a class="btn btn-alt" href="#empresa-form">Nova pesquisa</a>
+      </li>
+      <li>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-situacao"></use></svg>
+        <div><b>Perceber a tua situação completa</b>
+          <p>Vê o teu resumo de deduções e despesas já comunicadas.</p></div>
+        <a class="btn btn-alt" href="/perfil">A minha situação</a>
+      </li>
+      <li>
+        <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-legal"></use></svg>
+        <div><b>Conferir a regra aplicada</b>
+          <p>Consulta a base legal e as orientações que usamos.</p></div>
+        <a class="btn btn-alt" href="/base-legal">Ver base legal</a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="chapter" id="privacidade-fontes" aria-labelledby="pf-h">
+  <div class="wrap">
+    <span class="eyebrow">05 &middot; Privacidade e fontes</span>
+    <h2 id="pf-h" class="visually-hidden">Privacidade e fontes</h2>
+    <div class="pf-cols">
+      <div>
+        <h3><svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-cadeado"></use></svg>
+          Pesquisa pública</h3>
+        <p>O NIF ou o nome só é enviado quando carregas em <b>Consultar</b>. Não fica escrito no
+           endereço da página, não é guardado num histórico ligado a ti, e não entra na contagem
+           de visitas.</p>
+        <p class="mono">Ferramenta independente &middot; não afiliada à Autoridade Tributária.</p>
+      </div>
+      <div>
+        <h3><svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-pasta"></use></svg>
+          Fontes verificáveis</h3>
+        <dl class="src-list">
+          <dt>SICAE</dt><dd>Base de dados de empresas e CAE.</dd>
+          <dt>VIES</dt><dd>Verificação da situação de IVA na UE.</dd>
+          <dt>BASE</dt><dd>Contratos públicos e dados complementares.</dd>
+        </dl>
+        <p><a href="/base-legal">Ver base legal e fiscal
+          <svg class="ico-inline" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-seta"></use></svg></a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <div class="wrap">
 
@@ -1896,20 +2009,19 @@
      is not a separator, it is a character that happens to be vertical.
      Now the page's rail grid one last time: the independence statement in the main column, the
      links in named groups, and the licence closing the block under a rule. -->
-<footer>
- <div class="wrap foot">
-  <p class="foot-idx">Fatura Boa</p>
-  <div class="foot-main">
-    <p class="foot-claim">Ferramenta comunitária e independente. <b>Não</b> afiliada à Autoridade
-      Tributária. Sem garantias — confirma sempre nas Finanças.</p>
+</main>
 
-    <nav class="foot-nav" aria-label="Rodapé">
+<!-- FB:FOOTER:START (gerado por make-shell.mjs - nao editar a mao) -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-cols">
       <div>
         <h2>Usar</h2>
         <ul>
+          <li><a href="/">Empresa</a></li>
           <li><a href="/perfil">A minha situação</a></li>
-          <li><a href="/consulta">Consultar NIF</a></li>
           <li><a href="/deducoes">Deduções</a></li>
+          <li><a href="/base-legal">Base legal e fiscal</a></li>
         </ul>
       </div>
       <div>
@@ -1917,8 +2029,8 @@
         <ul>
           <li><a href="/verificar">Verificar o código</a></li>
           <li><a href="/auditoria">Auditoria</a></li>
-          <li><a id="gh2" href="#" target="_blank" rel="noopener">Código no GitHub</a></li>
           <li><a href="/sobre">Sobre</a></li>
+          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
         </ul>
       </div>
       <div>
@@ -1926,18 +2038,31 @@
         <ul>
           <li><a href="/privacidade">Privacidade</a></li>
           <li><a href="/termos">Termos</a></li>
-          <li><a href="https://polyformproject.org/licenses/noncommercial/1.0.0"
-                 target="_blank" rel="noopener">Licença</a></li>
+          <li><a href="https://polyformproject.org/licenses/noncommercial/1.0.0" target="_blank" rel="noopener">Licença</a></li>
         </ul>
       </div>
-    </nav>
-
-    <p class="foot-lic"><b>PolyForm Noncommercial 1.0.0</b> — livre para uso pessoal, proibido
-      monetizar. Feito por <a href="https://diogoandrade.com" target="_blank" rel="noopener">Diogo
-      Andrade</a>.</p>
+      <div class="foot-mark">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <rect class="plate" width="32" height="32" rx="7"></rect>
+        <path fill="#fff" d="M6.75 6.5 H13.375 C18.875 6.5 22.75 10.3125 22.75 16 C22.75 21.6875 18.875 25.5 13.375 25.5 H6.75 Z M10 9.5 V22.5 H13.1875 C16.8125 22.5 19.5 20 19.5 16 C19.5 12 16.8125 9.5 13.1875 9.5 H10 Z"></path>
+        <path fill="#fff" d="M18.25 25.5 L23.875 6.5 H26.375 L20.75 25.5 Z"></path>
+        <path fill="#fff" d="M25.25 6.5 H27.75 L22.125 25.5 H19.625 Z"></path>
+        <rect class="cut" x="20.875" y="16.375" width="4.875" height="2.25" rx="0.5" fill="#fff"></rect>
+      </svg>
+        <div>
+          <p class="foot-note"><b>Fatura Boa</b><br>Ferramenta comunitária e independente.
+            Não afiliada à Autoridade Tributária.</p>
+        </div>
+      </div>
+    </div>
+    <div class="foot-base">
+      <p class="foot-note">Isto é informação para confirmares, não aconselhamento fiscal.
+        Os valores são indicadores: a ferramenta lê, tu decides e submetes.
+        Fontes: SICAE &middot; VIES &middot; BASE &middot; DRE.</p>
+    </div>
   </div>
- </div>
 </footer>
+<!-- FB:FOOTER:END -->
 
 <!-- Back to top. Ships `hidden`; only the script at the bottom of this file can reveal it, so a
      no-JS visitor never gets a parked control that does nothing. A word plus an arrow rather than
@@ -1954,10 +2079,15 @@
   // Set these two constants at deploy time.
   var GH  = "https://github.com/nobodykr/efatura-helper";
   var HOST = location.origin;              // where tool.js is served (this site)
-  document.getElementById("gh").href = GH;
-  document.getElementById("ghissues").href = GH + "/issues";
-  document.getElementById("ghissues2").href = GH + "/issues";
-  document.getElementById("gh2").href = GH;
+  // Null-safe since the shell rebuild: the masthead and the hand-written footer that used to carry
+  // #gh / #gh2 are now generated by make-shell.mjs with the URL already in the markup. The ids that
+  // remain in the page body still get theirs here; a missing one is no longer a page-breaking throw.
+  (function (map) {
+    Object.keys(map).forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.href = map[id];
+    });
+  })({ gh: GH, gh2: GH, ghissues: GH + "/issues", ghissues2: GH + "/issues" });
   // Copy the bookmarklet source. No browser lets a page create a bookmark - the APIs that used to
   // (window.sidebar.addPanel, window.external.AddFavorite) were removed precisely because silently
   // installing a javascript: bookmark is an attack. So the best we can do is remove the typing.

@@ -98,32 +98,88 @@
     <!-- analytics: Umami self-hosted, sem cookies e sem dados pessoais -->
     <script defer src="https://analytics.d1060.com/script.js" data-website-id="1e64e3e0-fe5f-44d0-895b-ac8bfadd3538" data-domains="faturas.diogoandrade.com" data-exclude-search="true" data-exclude-hash="true"></script>
     <script defer src="/metrics.js"></script>
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/pages/deducoes.css">
+<script defer src="/assets/site.js"></script>
+<script defer src="/assets/deducoes.js"></script>
 </head>
-<body>
+<body data-home-mode="deducoes">
 
 
-<div class="mast">
+<!-- FB:SHELL:START (gerado por make-shell.mjs - nao editar a mao) -->
+<a class="skip-link" href="#conteudo">Saltar para o conteúdo</a>
+
+<div class="security-rule" role="note" aria-label="Regra de segurança">
   <div class="wrap">
-    <a class="mark" href="/" aria-label="Fatura Boa, início">
-      <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-        <rect class="plate" width="32" height="32" rx="7"/>
-        <path fill="#fff" d="M6.75 6.5 H13.375 C18.875 6.5 22.75 10.3125 22.75 16
-                             C22.75 21.6875 18.875 25.5 13.375 25.5 H6.75 Z
-                             M10 9.5 V22.5 H13.1875 C16.8125 22.5 19.5 20 19.5 16
-                             C19.5 12 16.8125 9.5 13.1875 9.5 H10 Z"/>
-        <path fill="#fff" d="M18.25 25.5 L23.875 6.5 H26.375 L20.75 25.5 Z"/>
-        <path fill="#fff" d="M25.25 6.5 H27.75 L22.125 25.5 H19.625 Z"/>
-        <rect class="cut" x="20.875" y="16.375" width="4.875" height="2.25" rx="0.5"/>
-        <!-- diagonal is LOAD-BEARING: without it the A's left stroke fuses into the D -->
-        <path class="cut" d="M15.75 24.5 L25.125 6.5 H27.375 L18 24.5 Z" opacity="0.18"/>
-      </svg>
-    </a>
-    <div class="nm">Fatura Boa<span>Classificar faturas pendentes do e-Fatura, por setor, para o IRS</span></div>
-    <a class="mastnav" href="/deducoes" aria-current="page">Deduções</a>
-    <a class="mastnav" href="/consulta">Consultar NIF</a>
+    <svg class="sr-icon" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-escudo"></use></svg>
+    <p><b>Regra de segurança</b>
+      A tua password das Finanças só se escreve em páginas cujo endereço termina em
+      <code>.gov.pt</code>. Aqui, nunca.</p>
+    <a class="sr-why" href="/privacidade#password">Porquê?<svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-externo"></use></svg></a>
   </div>
 </div>
-<header>
+
+<div class="wrap">
+  <a class="site-brand" href="/" aria-label="Fatura Boa, início">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <rect class="plate" width="32" height="32" rx="7"></rect>
+        <path fill="#fff" d="M6.75 6.5 H13.375 C18.875 6.5 22.75 10.3125 22.75 16 C22.75 21.6875 18.875 25.5 13.375 25.5 H6.75 Z M10 9.5 V22.5 H13.1875 C16.8125 22.5 19.5 20 19.5 16 C19.5 12 16.8125 9.5 13.1875 9.5 H10 Z"></path>
+        <path fill="#fff" d="M18.25 25.5 L23.875 6.5 H26.375 L20.75 25.5 Z"></path>
+        <path fill="#fff" d="M25.25 6.5 H27.75 L22.125 25.5 H19.625 Z"></path>
+        <rect class="cut" x="20.875" y="16.375" width="4.875" height="2.25" rx="0.5" fill="#fff"></rect>
+      </svg>
+    <span class="brand-name">Fatura Boa</span>
+  </a>
+
+  <nav class="primary-nav" aria-label="Principal">
+    <a href="/" data-mode-link="empresa"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-empresa"></use></svg><span>Empresa</span></a>
+    <a href="/perfil" data-mode-link="situacao"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-situacao"></use></svg><span class="nav-long">A minha situação</span><span class="nav-short" aria-hidden="true">Situação</span></a>
+    <a href="/deducoes" data-mode-link="deducoes" aria-current="page"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-deducoes"></use></svg><span>Deduções</span></a>
+    <a href="/base-legal" data-mode-link="legal"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-legal"></use></svg><span class="nav-long">Base legal e fiscal</span><span class="nav-short" aria-hidden="true">Base legal</span></a>
+    <a class="nav-help" href="/sobre#ajuda"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-ajuda"></use></svg><span>Ajuda</span></a>
+    <button class="nav-menu" type="button" aria-expanded="false" aria-controls="site-menu"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-menu"></use></svg><span>Menu</span></button>
+  </nav>
+
+  <div class="site-menu" id="site-menu" hidden>
+    <div class="menu-cols">
+      <div>
+        <h2>Usar</h2>
+        <ul>
+          <li><a href="/">Consultar uma empresa</a></li>
+          <li><a href="/perfil">A minha situação</a></li>
+          <li><a href="/deducoes">Deduções</a></li>
+          <li><a href="/base-legal">Base legal e fiscal</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Confiar</h2>
+        <ul>
+          <li><a href="/verificar">Verificar o código</a></li>
+          <li><a href="/auditoria">Auditoria</a></li>
+          <li><a href="/sobre">Sobre</a></li>
+          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Legal</h2>
+        <ul>
+          <li><a href="/privacidade">Privacidade</a></li>
+          <li><a href="/termos">Termos</a></li>
+          <li><a href="https://polyformproject.org/licenses/noncommercial/1.0.0" target="_blank" rel="noopener">Licença</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Ajuda</h2>
+        <ul>
+          <li><a href="/sobre#ajuda">Como funciona</a></li>
+          <li><a href="/#relato">Reportar um erro</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- FB:SHELL:END -->
+<header class="page-hero">
   <div class="wrap">
     <h1>Deducoes do IRS por setor: taxas, tetos e base legal</h1>
     <p>Quanto vale cada setor de despesa, e o artigo do CIRS por tras de cada regra. Publicado para
@@ -132,7 +188,7 @@
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap" id="conteudo">
 
   <h2>Os setores, e quanto vale cada um</h2>
   <table>
@@ -235,13 +291,58 @@
 
 </main>
 
-<footer class="wrap">
-  <a href="/">Fatura Boa</a> &middot;
-  <a href="/consulta">Consulta de NIF</a> &middot;
-  <a href="https://github.com/nobodykr/efatura-helper" rel="noopener" target="_blank">Codigo</a> &middot;
-  <a href="/auditoria">Auditoria</a>
-  &middot; Nao afiliado a Autoridade Tributaria
+<!-- FB:FOOTER:START (gerado por make-shell.mjs - nao editar a mao) -->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="foot-cols">
+      <div>
+        <h2>Usar</h2>
+        <ul>
+          <li><a href="/">Empresa</a></li>
+          <li><a href="/perfil">A minha situação</a></li>
+          <li><a href="/deducoes">Deduções</a></li>
+          <li><a href="/base-legal">Base legal e fiscal</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Confiar</h2>
+        <ul>
+          <li><a href="/verificar">Verificar o código</a></li>
+          <li><a href="/auditoria">Auditoria</a></li>
+          <li><a href="/sobre">Sobre</a></li>
+          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Legal</h2>
+        <ul>
+          <li><a href="/privacidade">Privacidade</a></li>
+          <li><a href="/termos">Termos</a></li>
+          <li><a href="https://polyformproject.org/licenses/noncommercial/1.0.0" target="_blank" rel="noopener">Licença</a></li>
+        </ul>
+      </div>
+      <div class="foot-mark">
+        <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <rect class="plate" width="32" height="32" rx="7"></rect>
+        <path fill="#fff" d="M6.75 6.5 H13.375 C18.875 6.5 22.75 10.3125 22.75 16 C22.75 21.6875 18.875 25.5 13.375 25.5 H6.75 Z M10 9.5 V22.5 H13.1875 C16.8125 22.5 19.5 20 19.5 16 C19.5 12 16.8125 9.5 13.1875 9.5 H10 Z"></path>
+        <path fill="#fff" d="M18.25 25.5 L23.875 6.5 H26.375 L20.75 25.5 Z"></path>
+        <path fill="#fff" d="M25.25 6.5 H27.75 L22.125 25.5 H19.625 Z"></path>
+        <rect class="cut" x="20.875" y="16.375" width="4.875" height="2.25" rx="0.5" fill="#fff"></rect>
+      </svg>
+        <div>
+          <p class="foot-note"><b>Fatura Boa</b><br>Ferramenta comunitária e independente.
+            Não afiliada à Autoridade Tributária.</p>
+        </div>
+      </div>
+    </div>
+    <div class="foot-base">
+      <p class="foot-note">Isto é informação para confirmares, não aconselhamento fiscal.
+        Os valores são indicadores: a ferramenta lê, tu decides e submetes.
+        Fontes: SICAE &middot; VIES &middot; BASE &middot; DRE.</p>
+    </div>
+  </div>
 </footer>
+<!-- FB:FOOTER:END -->
 
 </body>
 </html>
