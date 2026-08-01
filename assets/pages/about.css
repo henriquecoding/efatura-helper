@@ -250,6 +250,13 @@ code { background: var(--bg2); border: 1px solid var(--rule); border-radius: 2px
   .about-intro-title h2 { max-width: 20ch; }
   .toc, .about-wrap > section { grid-template-columns: minmax(0, 1fr); }
   .toc-h, .toc ol, .about-wrap > section > * { grid-column: 1; }
+  /* `> *` does NOT match a pseudo-element, so ::before kept `grid-column: rail` while this query
+     deleted the [rail] line. An unresolvable name creates an IMPLICIT track, which then claimed
+     ~193px of a 362px viewport and squeezed the 1fr content track down to 73px - every paragraph
+     in the long chapters was rendering about eight characters per line, which is why /sobre stood
+     at 60.000px on a phone and read as "the content is missing". Placement has to be reset here,
+     not just the positioning. */
+  .about-wrap > section::before { grid-column: 1; grid-row: auto; }
   .toc-h, .about-wrap > section::before { position: static; width: fit-content; margin-bottom: 15px; }
   .about-wrap > .box.draft { margin-left: 0; }
   .reg > div { grid-template-columns: minmax(0, 1fr) auto; }

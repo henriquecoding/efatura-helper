@@ -64,6 +64,30 @@ const ok = (m) => console.log("  ok   " + m);
     bad(`menu mobile fora do viewport: ${JSON.stringify(geometry)}`);
   if (geometry.scroll > geometry.width + 1) bad("menu mobile cria overflow horizontal");
   else ok("mobile: dialog cabe no viewport e nao alarga a pagina");
+  await mobile.keyboard.press("Escape");
+
+  /* THE MEASURE OF THE TEXT COLUMN ON A PHONE.
+   * /sobre lays its chapters on a [rail]/[main] grid. The <=900px query drops the [rail] line but
+   * `> *` cannot reach ::before, which kept asking for it - an unresolvable name makes an IMPLICIT
+   * track, that track took ~193px of a 362px viewport, and every paragraph in the long chapters
+   * rendered about eight characters wide. The page stood at 60.000px and read as if the content
+   * were missing. Nothing in the suite could see it, because height and overflow were both legal.
+   * A body-copy column narrower than half the viewport is the symptom to refuse. */
+  const measure = await mobile.evaluate(() => {
+    const out = [];
+    document.querySelectorAll(".about-wrap > section").forEach((section) => {
+      const block = section.querySelector("p, li, dd");
+      if (block) out.push({ id: section.id, w: Math.round(block.getBoundingClientRect().width) });
+    });
+    return { blocks: out, vw: innerWidth, height: document.documentElement.scrollHeight };
+  });
+  const narrow = measure.blocks.filter((b) => b.w < measure.vw * 0.5);
+  if (narrow.length)
+    bad(`coluna de texto esmagada a 390px em ${narrow.map((b) => "#" + b.id + " (" + b.w + "px)").join(", ")}`);
+  else ok(`mobile: a medida do texto acompanha o viewport nos ${measure.blocks.length} capitulos`);
+  if (measure.height > 32000)
+    bad(`/sobre tem ${measure.height}px a 390px - a grelha voltou a colapsar`);
+  else ok(`mobile: /sobre cabe em ${measure.height}px`);
   await mobile.close();
 
   await browser.close();

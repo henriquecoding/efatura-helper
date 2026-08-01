@@ -146,18 +146,46 @@
       section.setAttribute("data-ch", label);
     });
 
+    /* Scroll reveal. ARMING ORDER IS LOAD-BEARING: .js-reveal is what makes .reveal transparent,
+     * so it is added INSIDE the observer's first callback and never before. If the observer never
+     * delivers, nothing is ever hidden.
+     *
+     * The sweep is the second belt, and it is not theoretical: this page is 14.000px of chapters
+     * with a 14-entry index, so it gets flick-scrolled and jumped through by anchor. Doing that
+     * left spec rows stranded at opacity 0 - "the content is missing", which is exactly the report
+     * that sent us looking. Anything whose top has passed the viewport floor is revealed on the
+     * next settle whatever the observer did or did not deliver. */
     var reveal = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
     if (!reveal.length || !("IntersectionObserver" in window)) return;
     var armed = false;
+    function show(element) {
+      element.classList.add("in");
+      observer.unobserve(element);
+      var i = reveal.indexOf(element);
+      if (i !== -1) reveal.splice(i, 1);
+    }
     var observer = new IntersectionObserver(function (entries) {
       if (!armed) { document.documentElement.classList.add("js-reveal"); armed = true; }
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add("in");
-        observer.unobserve(entry.target);
-      });
+      entries.forEach(function (entry) { if (entry.isIntersecting) show(entry.target); });
     }, { rootMargin: "0px 0px -8% 0px", threshold: .1 });
     reveal.forEach(function (element) { observer.observe(element); });
+
+    var queued = false;
+    function sweep() {
+      queued = false;
+      for (var i = reveal.length - 1; i >= 0; i--)
+        if (reveal[i].getBoundingClientRect().top < window.innerHeight) show(reveal[i]);
+    }
+    // rAF-throttled rather than a trailing debounce: during a fast flick the trailing timer only
+    // fires once the scroll has stopped, by which point the rows it should have caught are off
+    // screen again and stay hidden. This runs on frames the browser was painting anyway.
+    addEventListener("scroll", function () {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(sweep);
+    }, { passive: true });
+    // and once after load, in case the observer never ran at all
+    setTimeout(sweep, 1200);
   }
 
   function wireTop() {
