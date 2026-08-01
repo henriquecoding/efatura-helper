@@ -99,13 +99,12 @@
     <script defer src="https://analytics.d1060.com/script.js" data-website-id="1e64e3e0-fe5f-44d0-895b-ac8bfadd3538" data-domains="faturas.diogoandrade.com" data-exclude-search="true" data-exclude-hash="true"></script>
     <script defer src="/metrics.js"></script>
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/demo-stage.css">
 <link rel="stylesheet" href="/assets/pages/deducoes.css">
+<script defer src="/assets/profile-contract.js"></script>
 <script defer src="/assets/site.js"></script>
 <script defer src="/assets/deducoes.js"></script>
-<link rel="stylesheet" href="/assets/demo-stage.css">
-<script defer src="/assets/demo-fixtures.js"></script>
-<script defer src="/assets/demo-stage-core.js"></script>
-<script defer src="/assets/demo-stage.js"></script>
+<script defer src="/assets/demo-loader.js"></script>
 </head>
 <body data-home-mode="deducoes">
 
@@ -136,15 +135,19 @@
   </a>
 
   <nav class="primary-nav" aria-label="Principal">
-    <a href="/" data-mode-link="empresa"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-empresa"></use></svg><span>Empresa</span></a>
-    <a href="/perfil" data-mode-link="situacao"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-situacao"></use></svg><span class="nav-long">A minha situação</span><span class="nav-short" aria-hidden="true">Situação</span></a>
-    <a href="/deducoes" data-mode-link="deducoes" aria-current="page"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-deducoes"></use></svg><span>Deduções</span></a>
-    <a href="/base-legal" data-mode-link="legal"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-legal"></use></svg><span class="nav-long">Base legal e fiscal</span><span class="nav-short" aria-hidden="true">Base legal</span></a>
-    <a class="nav-help" href="/sobre#ajuda"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-ajuda"></use></svg><span>Ajuda</span></a>
+    <a href="/" data-mode-link="empresa" aria-label="Empresa"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-empresa"></use></svg><span>Empresa</span></a>
+    <a href="/perfil" data-mode-link="situacao" aria-label="A minha situação"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-situacao"></use></svg><span class="nav-long">A minha situação</span><span class="nav-short" aria-hidden="true">Situação</span></a>
+    <a href="/deducoes" data-mode-link="deducoes" aria-label="Deduções" aria-current="page"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-deducoes"></use></svg><span>Deduções</span></a>
+    <a href="/base-legal" data-mode-link="legal" aria-label="Base legal e fiscal"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-legal"></use></svg><span class="nav-long">Base legal e fiscal</span><span class="nav-short" aria-hidden="true">Base legal</span></a>
+    <a class="nav-help" href="/sobre"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-ajuda"></use></svg><span>Sobre</span></a>
     <button class="nav-menu" type="button" aria-expanded="false" aria-controls="site-menu"><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-menu"></use></svg><span>Menu</span></button>
   </nav>
 
-  <div class="site-menu" id="site-menu" hidden>
+  <dialog class="site-menu" id="site-menu" aria-labelledby="site-menu-title">
+    <div class="site-menu-head">
+      <h2 id="site-menu-title">Navegação completa</h2>
+      <button class="site-menu-close" type="button" data-menu-close><svg class="" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-fechar"></use></svg><span>Fechar</span></button>
+    </div>
     <div class="menu-cols">
       <div>
         <h2>Usar</h2>
@@ -161,7 +164,7 @@
           <li><a href="/verificar">Verificar o código</a></li>
           <li><a href="/auditoria">Auditoria</a></li>
           <li><a href="/sobre">Sobre</a></li>
-          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
+          <li><a href="https://github.com/henriquecoding/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
         </ul>
       </div>
       <div>
@@ -173,46 +176,28 @@
         </ul>
       </div>
       <div>
-        <h2>Ajuda</h2>
+        <h2>Sobre e ajuda</h2>
         <ul>
           <li><a href="/sobre#ajuda">Como funciona</a></li>
-          <li><a href="/#relato">Reportar um erro</a></li>
+          <li><a href="/sobre#relato">Reportar um erro</a></li>
         </ul>
       </div>
     </div>
-  </div>
+  </dialog>
 </div>
 <!-- FB:SHELL:END -->
-<!-- DED-001..005. The year list and the sector list are NOT hardcoded here: deducoes.js fills the
-     year <select> from year_snapshots.json, so a year with no data can never be offered. -->
+<!-- A pesquisa usa exclusivamente a matriz corrente, auditada para 2026. Nao oferece anos
+     historicos enquanto nao existir um renderer temporal que troque taxas, tetos e fontes em
+     conjunto: mudar apenas o rotulo do ano seria apresentar os valores de 2026 como historicos. -->
 <div class="wrap">
   <form class="dedbar" id="ded-form" role="search" aria-labelledby="dedbar-title">
     <h2 id="dedbar-title" class="visually-hidden">Pesquisar deduções</h2>
 
-    <div class="db-year fb-field">
-      <label class="label" for="db-ano">Ano fiscal</label>
-      <select id="db-ano"><option value="2026">2026</option></select>
-    </div>
-
-    <div class="db-kind">
-      <span class="fb-field-label" id="db-kind-label">Quero perceber</span>
-      <div class="segmented" role="radiogroup" aria-labelledby="db-kind-label">
-        <input type="radio" name="db-kind" id="db-setor" value="setor" checked>
-        <label for="db-setor">
-          <svg class="tick" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-check"></use></svg>
-          Um setor</label>
-        <input type="radio" name="db-kind" id="db-despesa" value="despesa">
-        <label for="db-despesa">
-          <svg class="tick" aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-check"></use></svg>
-          Uma despesa</label>
-      </div>
-    </div>
-
     <div class="db-term fb-field">
-      <label class="label" for="db-q">Setor ou despesa</label>
+      <label class="label" for="db-q">Setor, despesa ou artigo</label>
       <input type="search" id="db-q" autocomplete="off" placeholder="Ex.: saúde, renda, ginásio…"
              aria-describedby="db-help">
-      <span class="hint" id="db-help">Devolve hipóteses para confirmares, nunca uma sentença.</span>
+      <span class="hint" id="db-help">Matriz de 2026. Devolve regras para confirmares, nunca uma sentença.</span>
     </div>
 
     <div class="db-go">
@@ -237,13 +222,13 @@
 <header class="page-hero">
   <div class="wrap hero-grid">
     <div class="hero-copy">
-    <span class="eyebrow">IRS <span id="hero-ano">2026</span> &middot; taxas, tetos e regras</span>
+    <span class="eyebrow">IRS 2026 &middot; taxas, tetos e regras</span>
     <h1>Percebe quanto podes deduzir</h1>
     <p class="lead">Vê o que conta, quanto vale e qual é a base legal — antes de classificares uma
       fatura.</p>
     </div>
 <!-- FB:DEMO:START (gerado por make-shell.mjs - nao editar a mao) -->
-<button type="button" class="demo-launch demo-launch-top" data-demo-open data-demo-start="deducoes" hidden>
+<button type="button" class="demo-launch demo-launch-compact" data-demo-open data-demo-start="deducoes" hidden>
   <span class="demo-launch-device" aria-hidden="true">
     <span class="dl-screen">
       <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-grafico"></use></svg>
@@ -251,8 +236,8 @@
     <span class="dl-base"></span>
   </span>
   <span class="demo-launch-txt">
-    <b>Ver a demonstração guiada</b>
-    <span class="dl-sub">Sete jornadas encenadas, passo a passo — do NIF ao plano de faturas.</span>
+    <b>Ver como funciona: Deduções</b>
+    <span class="dl-sub">Explicação encenada, passo a passo.</span>
     <span class="dl-meta mono">Dados ilustrativos &middot; nada é submetido</span>
   </span>
   <span class="demo-launch-go" aria-hidden="true">
@@ -296,7 +281,7 @@
 
 <main class="wrap" id="conteudo">
 
-  <h2 id="setores"><span class="chapter-no">01</span>Resumo de <span class="ano-inline">2026</span></h2>
+  <h2 id="setores" tabindex="-1"><span class="chapter-no">01</span>Resumo de 2026</h2>
   <p class="cap-note mono">Valores gerais &middot; nao personalizados &middot; <a href="/auditoria">ver a matriz gerada</a></p>
   <div class="tablewrap">
   <table>
@@ -362,7 +347,7 @@
        a personal panel filled with invented figures is the one thing that would make this page
        lie about the reader's own situation. -->
   <section id="minha" class="personal" aria-labelledby="minha-h">
-    <h2 id="minha-h"><span class="chapter-no">03</span>Se carregares a tua situacao</h2>
+    <h2 id="minha-h" tabindex="-1"><span class="chapter-no">03</span>Se carregares a tua situacao</h2>
     <div class="personal-locked" id="personal-locked">
       <p class="fb-note">
         <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-cadeado"></use></svg>
@@ -463,7 +448,7 @@
           <li><a href="/verificar">Verificar o código</a></li>
           <li><a href="/auditoria">Auditoria</a></li>
           <li><a href="/sobre">Sobre</a></li>
-          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
+          <li><a href="https://github.com/henriquecoding/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
         </ul>
       </div>
       <div>

@@ -1,4 +1,5 @@
-// TEST-NEW-09. Navigation, factual content and the feedback POST must not depend on JavaScript.
+// TEST-NEW-09. Navigation and factual content must not depend on JavaScript. Where an external
+// anti-spam challenge makes JS unavoidable, a visible no-JS contact route must tell the truth.
 //
 // The reason is not purity. It is that this site is read by people on old phones, locked-down
 // work machines and slow connections, and the thing they most need from it - what the rule says,
@@ -45,18 +46,25 @@ const rows = dedDoc.querySelectorAll("table tbody tr");
 if (rows.length < 16) bad(`deducoes.html: tabela com ${rows.length} linhas no HTML - deve ser estatica`);
 else ok(`deducoes.html: ${rows.length} linhas de deducoes no HTML servido`);
 
-// 5. the feedback form POSTs without JavaScript
+// 5. feedback does not pretend to work without the anti-spam script: the enhanced form starts
+// hidden and <noscript> offers a real GitHub route instead of a submit that the endpoint rejects.
 const idx = fs.readFileSync("index.html", "utf8");
 const idxDoc = new JSDOM(idx).window.document;
-const form = idxDoc.querySelector('form[action="/api/feedback"]');
-if (!form) bad("index.html: formulario de feedback sem action=/api/feedback");
+const about = fs.readFileSync("sobre.html", "utf8");
+const aboutDoc = new JSDOM(about).window.document;
+const form = aboutDoc.querySelector('form[action="/api/feedback"]');
+if (!form) bad("sobre.html: formulario de feedback sem action=/api/feedback");
 else {
   if ((form.getAttribute("method") || "").toLowerCase() !== "post")
-    bad("index.html: formulario de feedback nao e method=post");
-  else ok("formulario de feedback faz POST sem JavaScript");
+    bad("sobre.html: formulario de feedback nao e method=post");
+  else ok("contrato POST do formulario de feedback preservado");
   if (!form.querySelector("textarea[name], input[name]"))
-    bad("index.html: formulario de feedback sem campos nomeados - nada seria enviado sem JS");
+    bad("sobre.html: formulario de feedback sem campos nomeados - nada seria enviado sem JS");
 }
+if (form && !form.hidden) bad("sobre.html: formulario dependente de Turnstile aparece ativo sem JavaScript");
+const noScriptIssue = aboutDoc.querySelector('noscript a[href*="github.com/henriquecoding/efatura-helper/issues"]');
+if (!noScriptIssue) bad("sobre.html: sem alternativa de feedback no <noscript>");
+else ok("sem JavaScript, Sobre aponta honestamente para o GitHub");
 
 // 6. the company search falls back to a real GET
 const empForm = idxDoc.querySelector("#empresa-form");
@@ -75,5 +83,5 @@ if (!/<noscript>/.test(legal))
   bad("base-legal.html: a pesquisa precisa de JS e a pagina nao o diz num <noscript>");
 else ok("base-legal.html declara a dependencia de JS e aponta para /auditoria");
 
-console.log(fails ? `\n  ${fails} FALHA(S) sem JavaScript` : "\n  navegacao, conteudo factual e POST funcionam sem JavaScript");
+console.log(fails ? `\n  ${fails} FALHA(S) sem JavaScript` : "\n  navegacao, conteudo factual e alternativa de contacto funcionam sem JavaScript");
 process.exit(fails ? 1 : 0);

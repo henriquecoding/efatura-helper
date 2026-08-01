@@ -19,7 +19,6 @@
 
   var q = document.getElementById("lb-q");
   var diploma = document.getElementById("lb-diploma");
-  var ano = document.getElementById("lb-ano");
   var results = document.getElementById("legal-results");
   var list = document.getElementById("lr-list");
   var count = document.getElementById("lr-count");
@@ -40,7 +39,7 @@
   };
   var TOPIC_LABEL = {
     deducoes: "Deduções do IRS", faturas: "Faturas e setores", rendas: "Rendas e habitação",
-    iva: "IVA e atividade", prazos: "Prazos e correções", ss: "Segurança Social"
+    iva: "IVA e atividade", prazos: "Prazos e correções"
   };
   var DIPLOMA = function (id, gov) {
     if (/^cirs/.test(id)) return "CIRS";
@@ -59,10 +58,19 @@
 
   function load() {
     if (loaded) return Promise.resolve();
+    function json(url, optional) {
+      return fetch(url, { cache: "no-store" }).then(function (r) {
+        if (!r.ok) throw new Error(url + " devolveu HTTP " + r.status);
+        return r.json();
+      }).catch(function (error) {
+        if (optional) return null;
+        throw error;
+      });
+    }
     return Promise.all([
-      fetch("/legal_sources.json").then(function (r) { return r.json(); }),
-      fetch("/audit-manifest.json", { cache: "no-store" }).then(function (r) { return r.json(); }).catch(function () { return null; }),
-      fetch("/audit-freshness.json", { cache: "no-store" }).then(function (r) { return r.json(); }).catch(function () { return null; })
+      json("/legal_sources.json", false),
+      json("/audit-manifest.json", true),
+      json("/audit-freshness.json", true)
     ]).then(function (a) {
       var legal = a[0], audit = a[1], fresh = a[2];
 
@@ -78,10 +86,6 @@
 
       INDEX = (legal.sources || []).map(function (s) {
         var rows = bySource[s.id] || [];
-        var years = [];
-        rows.forEach(function (r) {
-          (r.effective_years || []).forEach(function (y) { if (years.indexOf(y) === -1) years.push(y); });
-        });
         return {
           id: s.id,
           topic: TOPIC[s.id] || "deducoes",
@@ -94,24 +98,24 @@
           why: s.why_it_matters || "",
           freshness: fmap[s.id] || null,
           rows: rows,
-          years: years.sort(),
           checked: fresh && fresh._checked ? fresh._checked : null
         };
       });
 
-      // Year filter offers only years that actually appear in the data (DED-001 rule, same idea).
-      var allYears = [];
-      INDEX.forEach(function (e) {
-        e.years.forEach(function (y) { if (allYears.indexOf(y) === -1) allYears.push(y); });
-      });
-      allYears.sort().forEach(function (y) {
-        var o = document.createElement("option");
-        o.value = y; o.textContent = y;
-        ano.appendChild(o);
-      });
-
       loaded = true;
     });
+  }
+
+  function ruleSummary(rows) {
+    var seen = [];
+    (rows || []).forEach(function (row) {
+      if (!row || (!row.rate && row.ceiling_eur == null)) return;
+      var value = (row.code ? row.code + " · " : "") + (row.rate || "") +
+        (row.ceiling_eur != null ? " até " + row.ceiling_eur + " €" : "");
+      if (seen.indexOf(value) === -1) seen.push(value);
+    });
+    if (seen.length > 3) return seen.slice(0, 3).join("; ") + "; +" + (seen.length - 3) + " variantes";
+    return seen.join("; ");
   }
 
   function stateFor(e) {
@@ -139,15 +143,13 @@
         'A matriz completa está em <a href="/auditoria">/auditoria</a>.</span></p>';
     } else {
       list.innerHTML = items.map(function (e) {
-        var ceil = e.rows.length && e.rows[0].ceiling_eur != null
-          ? e.rows[0].rate + " até " + e.rows[0].ceiling_eur + " €" : "";
+        var summary = ruleSummary(e.rows);
         return '<article class="lr-item">' +
           "<h4>" + esc(e.article || e.id) + " · " + esc(TOPIC_LABEL[e.topic] || "") + "</h4>" +
           '<p class="lr-gov">' + esc(e.governs) + "</p>" +
           '<p class="lr-meta">' +
             stateFor(e) +
-            (ceil ? '<span class="mono">' + esc(ceil) + "</span>" : "") +
-            (e.years.length ? '<span class="mono">anos ' + esc(e.years.join(", ")) + "</span>" : "") +
+            (summary ? '<span class="mono">' + esc(summary) + "</span>" : "") +
             (e.checked ? '<span class="mono">lido ' + esc(e.checked) + "</span>" : "") +
           "</p>" +
           '<p class="rule-actions">' +
@@ -161,11 +163,10 @@
 
   function apply(topicFilter) {
     var term = q.value.trim().toLowerCase();
-    var d = diploma.value, y = ano.value;
+    var d = diploma.value;
     var items = INDEX.filter(function (e) {
       if (topicFilter && e.topic !== topicFilter) return false;
       if (d && e.diploma !== d) return false;
-      if (y && e.years.indexOf(y) === -1) return false;
       if (!term) return true;
       return (e.governs + " " + e.article + " " + e.expect + " " + e.id + " " +
               (TOPIC_LABEL[e.topic] || "")).toLowerCase().indexOf(term) !== -1;
@@ -175,18 +176,28 @@
 
   form.addEventListener("submit", function (e) {
     e.preventDefault();
-    load().then(function () { apply(null); });
+    load().then(function () { apply(null); }).catch(showLoadError);
   });
 
   Array.prototype.forEach.call(document.querySelectorAll(".t-open"), function (btn) {
     btn.addEventListener("click", function () {
       var t = btn.getAttribute("data-filter");
-      load().then(function () { apply(t); });
+      load().then(function () { apply(t); }).catch(showLoadError);
     });
   });
 
   // Changing a select re-filters only once the index exists, so the first paint costs nothing.
-  [diploma, ano].forEach(function (sel) {
+  [diploma].forEach(function (sel) {
     sel.addEventListener("change", function () { if (loaded) apply(null); });
   });
+
+  function showLoadError() {
+    results.hidden = false;
+    count.textContent = "dados indisponíveis";
+    list.innerHTML = '<p class="fb-note fb-note-bad"><svg aria-hidden="true" focusable="false">' +
+      '<use href="/assets/icons.svg#fb-aviso"></use></svg><span>Não foi possível carregar o índice ' +
+      'legal. As fichas estáticas abaixo continuam disponíveis; tenta novamente ou abre a ' +
+      '<a href="/auditoria">matriz de auditoria</a>.</span></p>';
+    title.focus();
+  }
 })();

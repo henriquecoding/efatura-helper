@@ -16,7 +16,8 @@ const bad = (m) => { console.log("  FAIL " + m); fails++; };
 const ok = (m) => console.log("  ok   " + m);
 
 const server = fs.readFileSync("functions/api/feedback.js", "utf8");
-const page = fs.readFileSync("index.html", "utf8");
+const page = fs.readFileSync("sobre.html", "utf8");
+const client = fs.readFileSync("assets/about.js", "utf8");
 
 // --- limits -------------------------------------------------------------------------------
 const srvMax = server.match(/const MAX = \{([^}]*)\}/);
@@ -35,9 +36,9 @@ ok(`limites do servidor: message ${limits.message}, context ${limits.context}, e
 const need = [["fb-msg", limits.message], ["fb-ctx", limits.context], ["fb-mail", limits.email]];
 for (const [id, max] of need) {
   const tag = (page.match(new RegExp(`<(?:input|textarea)[^>]*id="${id}"[^>]*>`)) || [])[0];
-  if (!tag) { bad(`index.html: campo #${id} nao encontrado`); continue; }
+  if (!tag) { bad(`sobre.html: campo #${id} nao encontrado`); continue; }
   const ml = (tag.match(/maxlength="(\d+)"/) || [])[1];
-  if (Number(ml) !== max) bad(`index.html: #${id} maxlength=${ml}, servidor aceita ${max}`);
+  if (Number(ml) !== max) bad(`sobre.html: #${id} maxlength=${ml}, servidor aceita ${max}`);
 }
 if (!fails) ok("maxlength do formulario == limites do servidor");
 
@@ -45,7 +46,7 @@ if (!fails) ok("maxlength do formulario == limites do servidor");
 const srvDwell = Number((server.match(/MIN_DWELL_MS = (\d+)/) || [])[1]);
 if (srvDwell !== 3000) bad(`feedback.js: MIN_DWELL_MS = ${srvDwell}, esperado 3000`);
 else ok("dwell minimo de 3000 ms no servidor");
-if (!/elapsed/.test(page)) bad("index.html: o cliente nao envia `elapsed` - o dwell nao pode ser validado");
+if (!/elapsed/.test(client)) bad("assets/about.js: o cliente nao envia `elapsed` - o dwell nao pode ser validado");
 else ok("o cliente envia elapsed para o servidor validar");
 
 // --- honeypot -----------------------------------------------------------------------------
@@ -55,9 +56,9 @@ if (!/website/.test(server)) bad("feedback.js: o servidor ignora o honeypot");
 
 // --- the dangerous pattern, applied to the same vectors by both ----------------------------
 const srvRe = (server.match(/const DANGEROUS =\s*\n\s*\/(.+)\/i;/) || [])[1];
-const cliRe = (page.match(/var FB_DANGEROUS =\s*\n?\s*\/(.+)\/i;/) || [])[1];
+const cliRe = (client.match(/var FB_DANGEROUS =\s*\n?\s*\/(.+)\/i;/) || [])[1];
 if (!srvRe) bad("feedback.js: nao encontrei DANGEROUS");
-if (!cliRe) bad("index.html: nao encontrei FB_DANGEROUS");
+if (!cliRe) bad("assets/about.js: nao encontrei FB_DANGEROUS");
 
 if (srvRe && cliRe) {
   const S = new RegExp(srvRe, "i"), C = new RegExp(cliRe, "i");
@@ -95,8 +96,8 @@ if (srvRe && cliRe) {
 }
 
 // --- the endpoint stays a POST, and the form still points at it ------------------------------
-if (!/action="\/api\/feedback"/.test(page)) bad("index.html: o formulario deixou de apontar para /api/feedback");
-if (!/method="post"/i.test(page)) bad("index.html: o formulario deixou de ser POST");
+if (!/action="\/api\/feedback"/.test(page)) bad("sobre.html: o formulario deixou de apontar para /api/feedback");
+if (!/method="post"/i.test(page)) bad("sobre.html: o formulario deixou de ser POST");
 
 console.log(fails ? `\n  ${fails} FALHA(S) de paridade cliente/servidor` : "\n  cliente e servidor concordam em limites, dwell e sanitizacao");
 process.exit(fails ? 1 : 0);

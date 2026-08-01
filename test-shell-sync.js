@@ -17,7 +17,7 @@ const EXPECTED = [
   ["legal", "/base-legal"],
 ];
 
-// page -> the mode that should be marked current (null = support page, nothing is current)
+// page -> current destination. Sobre has its own nav link; other support pages mark nothing.
 const PAGES = {
   "index.html": "empresa",
   "consulta.html": "empresa",
@@ -27,7 +27,7 @@ const PAGES = {
   "base-legal.html": "legal",
   "auditoria.html": null,
   "verificar.html": null,
-  "sobre.html": null,
+  "sobre.html": "sobre",
   "privacidade.html": null,
   "termos.html": null,
   "404.html": null,
@@ -62,7 +62,11 @@ for (const [page, current] of Object.entries(PAGES)) {
   const marked = [...nav.querySelectorAll('[aria-current="page"]')];
   if (current === null && marked.length)
     bad(`${page}: pagina de apoio nao devia ter aria-current (tem ${marked.length})`);
-  if (current !== null) {
+  if (current === "sobre") {
+    if (marked.length !== 1) bad(`${page}: esperado exatamente 1 aria-current, tem ${marked.length}`);
+    else if (!marked[0].classList.contains("nav-help"))
+      bad(`${page}: aria-current devia estar na ligacao Sobre`);
+  } else if (current !== null) {
     if (marked.length !== 1) bad(`${page}: esperado exatamente 1 aria-current, tem ${marked.length}`);
     else if (marked[0].dataset.modeLink !== current)
       bad(`${page}: aria-current em "${marked[0].dataset.modeLink}", esperado "${current}"`);

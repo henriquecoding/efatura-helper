@@ -14,12 +14,12 @@
 (function () {
   "use strict";
 
-  var PKEY = "fb-profile-v1";        // same key the engine in perfil.html writes
-  var EXTRA_KEY = "fb-profile-extra";
+  var contract = window.FBProfileContract;
+  var PKEY = contract ? contract.KEY : "fb-profile-v1";
 
   function endOfDayLabel() {
     try {
-      var s = JSON.parse(localStorage.getItem(PKEY) || "null");
+      var s = contract ? contract.read(localStorage) : JSON.parse(localStorage.getItem(PKEY) || "null");
       if (!s || !s.expiresAt) return null;
       var d = new Date(s.expiresAt);
       return d.toLocaleTimeString("pt-PT", { hour: "2-digit", minute: "2-digit" });
@@ -28,7 +28,7 @@
 
   function hasProfile() {
     try {
-      var s = JSON.parse(localStorage.getItem(PKEY) || "null");
+      var s = contract ? contract.read(localStorage) : JSON.parse(localStorage.getItem(PKEY) || "null");
       if (!s) return false;
       if (s.expiresAt && Date.now() >= s.expiresAt) return false;
       return !!(s.partitions && Object.keys(s.partitions).length);
@@ -64,8 +64,8 @@
       // Simple confirmation, stating the consequence and that it cannot be undone.
       if (!window.confirm("Apagar os dados deste navegador? Esta ação não pode ser desfeita.")) return;
       try {
-        localStorage.removeItem(PKEY);
-        localStorage.removeItem(EXTRA_KEY);
+        if (contract) contract.clear(localStorage);
+        else localStorage.removeItem(PKEY);
       } catch (e) {}
       document.getElementById("wipe-status").textContent =
         "Apagado. Não ficou nada guardado neste navegador.";

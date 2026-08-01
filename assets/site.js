@@ -2,7 +2,7 @@
  *
  * Everything critical already works without this file: the navigation is real <a href> markup in
  * every page, the active mode is marked server-side with aria-current, the forms POST, and the
- * factual content is in the document. This adds the supplementary menu, the focus trap, the mobile
+ * factual content is in the document. This adds the native supplementary dialog, the mobile
  * search sheet and the copy buttons.
  *
  * What this file may NOT do (ch.17 responsibilities): read the profile, search a NIF, or emit any
@@ -35,50 +35,39 @@
   }
 
   /* ---------------------------------------------------------------- supplementary menu
-   * button[aria-controls] toggles a panel that is [hidden] by default, so with JS off the menu
-   * simply is not there and every link inside it also lives in the footer. Escape closes and
-   * returns focus to the trigger (A11Y-002). */
+   * A native dialog supplies modal semantics, background inertness, Escape and focus containment.
+   * Without JavaScript it remains closed and every destination also lives in the footer. */
   function wireMenu() {
     var btn = document.querySelector('button[aria-controls="site-menu"]');
     var panel = document.getElementById("site-menu");
     if (!btn || !panel) return;
 
+    function isOpen() { return !!panel.open || panel.hasAttribute("open"); }
     function open() {
-      panel.hidden = false;
       btn.setAttribute("aria-expanded", "true");
-      var first = focusables(panel)[0];
+      if (typeof panel.showModal === "function") panel.showModal();
+      else panel.setAttribute("open", "");
+      var first = panel.querySelector("[data-menu-close]") || focusables(panel)[0];
       if (first) first.focus();
     }
     function close(returnFocus) {
-      panel.hidden = true;
+      if (panel.open && typeof panel.close === "function") panel.close();
+      else panel.removeAttribute("open");
       btn.setAttribute("aria-expanded", "false");
       if (returnFocus) btn.focus();
     }
 
     btn.addEventListener("click", function () {
-      if (panel.hidden) open(); else close(true);
+      if (isOpen()) close(true); else open();
     });
-
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && !panel.hidden) { close(true); }
+    var closer = panel.querySelector("[data-menu-close]");
+    if (closer) closer.addEventListener("click", function () { close(true); });
+    panel.addEventListener("close", function () {
+      btn.setAttribute("aria-expanded", "false");
+      if (document.activeElement !== btn) btn.focus();
     });
-
-    // Click outside closes, but only once the menu is actually open.
-    document.addEventListener("click", function (e) {
-      if (panel.hidden) return;
-      if (panel.contains(e.target) || btn.contains(e.target)) return;
-      close(false);
-    });
-
-    // Keep focus inside while open.
-    panel.addEventListener("keydown", function (e) {
-      if (e.key !== "Tab") return;
-      var items = focusables(panel);
-      if (!items.length) return;
-      var first = items[0], last = items[items.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    });
+    panel.addEventListener("cancel", function () { btn.setAttribute("aria-expanded", "false"); });
+    panel.addEventListener("click", function (e) { if (e.target === panel) close(true); });
   }
 
   /* ---------------------------------------------------------------- copy buttons

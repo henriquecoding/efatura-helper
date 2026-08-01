@@ -44,22 +44,26 @@ const ok = (m) => console.log("  ok   " + m);
     p.on("pageerror", (e) => errs.push(String(e.message)));
     await p.goto("https://local.test/index.html", { waitUntil: "domcontentloaded" });
     await p.waitForTimeout(600);
-    // the demo now lives in a modal: nothing may run before the launcher is pressed
+    // the demo now lives in a modal: the tiny loader and visual shell CSS may arrive before intent;
+    // fixtures and controllers must wait for the launcher.
     const preOpen = await p.evaluate(() => ({
-      launcher: !document.querySelector(".demo-launch-top").hidden,
+      launcher: !document.querySelector(".demo-launch-compact").hidden,
       dialogOpen: document.querySelector("[data-demo-modal]").open,
     }));
     if (!preOpen.launcher) bad("o launcher nao esta visivel");
     if (preOpen.dialogOpen) bad("o dialog abriu sozinho - deve esperar pelo clique");
     else ok("nada corre antes do clique no launcher");
-    await p.click(".demo-launch-top");
+    const earlyStage = reqs.filter((r) => /demo-(?:fixtures|stage-core|stage)\.js/.test(r));
+    if (earlyStage.length) bad("scripts da Mesa chegaram antes do clique: " + earlyStage.join(", "));
+    else ok("fixtures e controladores da Mesa esperam por intencao");
+    await p.click(".demo-launch-compact");
     await p.waitForTimeout(3200);           // more than one act of autoplay inside the modal
     const offsite = reqs.filter((r) => !r.startsWith("https://local.test/"));
     const dynamic = reqs.filter((r) => /demo-/.test(r)).length;
     if (offsite.filter((r) => !/analytics|fonts|challenges/.test(r)).length)
       bad("pedidos fora do site alem dos ja divulgados: " + offsite.join(", "));
-    if (dynamic > 4) bad(`a demo pediu ${dynamic} ficheiros - so os 4 estaticos (css + 3 js) sao permitidos`);
-    else ok("a demo so pede os seus 4 ficheiros estaticos; nenhum pedido nasce da encenacao");
+    if (dynamic > 5) bad(`a demo pediu ${dynamic} ficheiros - so loader + CSS + 3 JS sao permitidos`);
+    else ok("a demo so pede loader + os seus 4 ficheiros estaticos; nenhum pedido nasce da encenacao");
     if (errs.length) bad("erros de consola: " + errs[0]);
     else ok("zero erros de pagina com a demo a correr");
 
@@ -103,7 +107,7 @@ const ok = (m) => console.log("  ok   " + m);
     const { p } = await newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: "reduce" });
     await p.goto("https://local.test/index.html", { waitUntil: "domcontentloaded" });
     await p.waitForTimeout(900);
-    await p.click(".demo-launch-top");
+    await p.click(".demo-launch-compact");
     await p.waitForTimeout(400);
     const r = await p.evaluate(() => {
       const panel = document.querySelector(".demo-panel:not([hidden])");
@@ -132,7 +136,7 @@ const ok = (m) => console.log("  ok   " + m);
     const { p } = await newPage({ viewport: { width: 390, height: 844 } });
     await p.goto("https://local.test/index.html", { waitUntil: "domcontentloaded" });
     await p.waitForTimeout(900);
-    await p.evaluate(() => document.querySelector(".demo-launch-top").click());
+    await p.evaluate(() => document.querySelector(".demo-launch-compact").click());
     await p.waitForTimeout(400);
     const m = await p.evaluate(() => ({
       sw: document.documentElement.scrollWidth, iw: window.innerWidth,

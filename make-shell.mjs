@@ -56,7 +56,7 @@ const BRAND_SVG = `<svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true
         <rect class="cut" x="20.875" y="16.375" width="4.875" height="2.25" rx="0.5" fill="#fff"></rect>
       </svg>`;
 
-function shell(current) {
+function shell(current, file) {
   const navItems = MODES.map((m) => {
     const isCurrent = m.id === current;
     // Full label for the desktop bar, short one for the five-up bottom bar. Both ship in the DOM;
@@ -65,7 +65,7 @@ function shell(current) {
     const text = m.short
       ? `<span class="nav-long">${m.label}</span><span class="nav-short" aria-hidden="true">${m.short}</span>`
       : `<span>${m.label}</span>`;
-    return `    <a href="${m.href}" data-mode-link="${m.id}"${isCurrent ? ' aria-current="page"' : ""}>` +
+    return `    <a href="${m.href}" data-mode-link="${m.id}" aria-label="${m.label}"${isCurrent ? ' aria-current="page"' : ""}>` +
            `${icon(m.icon, "")}${text}</a>`;
   }).join("\n");
 
@@ -90,11 +90,15 @@ function shell(current) {
 
   <nav class="primary-nav" aria-label="Principal">
 ${navItems}
-    <a class="nav-help" href="/sobre#ajuda">${icon("fb-ajuda", "")}<span>Ajuda</span></a>
+    <a class="nav-help" href="/sobre"${file === "sobre.html" ? ' aria-current="page"' : ""}>${icon("fb-ajuda", "")}<span>Sobre</span></a>
     <button class="nav-menu" type="button" aria-expanded="false" aria-controls="site-menu">${icon("fb-menu", "")}<span>Menu</span></button>
   </nav>
 
-  <div class="site-menu" id="site-menu" hidden>
+  <dialog class="site-menu" id="site-menu" aria-labelledby="site-menu-title">
+    <div class="site-menu-head">
+      <h2 id="site-menu-title">Navegação completa</h2>
+      <button class="site-menu-close" type="button" data-menu-close>${icon("fb-fechar", "")}<span>Fechar</span></button>
+    </div>
     <div class="menu-cols">
       <div>
         <h2>Usar</h2>
@@ -111,7 +115,7 @@ ${navItems}
           <li><a href="/verificar">Verificar o código</a></li>
           <li><a href="/auditoria">Auditoria</a></li>
           <li><a href="/sobre">Sobre</a></li>
-          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
+          <li><a href="https://github.com/henriquecoding/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
         </ul>
       </div>
       <div>
@@ -123,25 +127,27 @@ ${navItems}
         </ul>
       </div>
       <div>
-        <h2>Ajuda</h2>
+        <h2>Sobre e ajuda</h2>
         <ul>
           <li><a href="/sobre#ajuda">Como funciona</a></li>
-          <li><a href="/#relato">Reportar um erro</a></li>
+          <li><a href="/sobre#relato">Reportar um erro</a></li>
         </ul>
       </div>
     </div>
-  </div>
+  </dialog>
 </div>
 ${END}`;
 }
 
 /* The Mesa Fiscal launcher + dialog, on EVERY navbar route (owner decision 01-08-2026 - the
-   report had confined it to the homepage). `data-demo-start` makes the demo open on the journey
+   report had confined it to a single page). `data-demo-start` makes the demo open on the journey
    that matches the page you launched it from, instead of always Empresa. */
 function demoBlock(mode) {
   const journey = (MODES.find((m) => m.id === mode) || {}).demo || "empresa";
+  const item = MODES.find((m) => m.id === mode);
+  const compact = !!item;
   return `${DEMO_START}
-<button type="button" class="demo-launch demo-launch-top" data-demo-open data-demo-start="${journey}" hidden>
+<button type="button" class="demo-launch ${compact ? "demo-launch-compact" : "demo-launch-about"}" data-demo-open data-demo-start="${journey}" hidden>
   <span class="demo-launch-device" aria-hidden="true">
     <span class="dl-screen">
       <svg aria-hidden="true" focusable="false"><use href="/assets/icons.svg#fb-grafico"></use></svg>
@@ -149,8 +155,8 @@ function demoBlock(mode) {
     <span class="dl-base"></span>
   </span>
   <span class="demo-launch-txt">
-    <b>Ver a demonstração guiada</b>
-    <span class="dl-sub">Sete jornadas encenadas, passo a passo — do NIF ao plano de faturas.</span>
+    <b>${compact ? `Ver como funciona: ${item.label}` : "Abrir a Mesa Fiscal"}</b>
+    <span class="dl-sub">${compact ? "Explicação encenada, passo a passo." : "Sete funcionalidades explicadas, passo a passo, num ambiente inspirado num MacBook."}</span>
     <span class="dl-meta mono">Dados ilustrativos &middot; nada é submetido</span>
   </span>
   <span class="demo-launch-go" aria-hidden="true">
@@ -194,7 +200,7 @@ const FOOTER = `${FOOT_START}
           <li><a href="/verificar">Verificar o código</a></li>
           <li><a href="/auditoria">Auditoria</a></li>
           <li><a href="/sobre">Sobre</a></li>
-          <li><a href="https://github.com/nobodykr/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
+          <li><a href="https://github.com/henriquecoding/efatura-helper" target="_blank" rel="noopener">Código no GitHub</a></li>
         </ul>
       </div>
       <div>
@@ -237,7 +243,7 @@ for (const [file, mode] of Object.entries(PAGES)) {
   try { src = readFileSync(file, "utf8"); }
   catch { missing.push(file + " (nao existe)"); continue; }
 
-  let out = replaceBlock(src, START, END, shell(mode), file);
+  let out = replaceBlock(src, START, END, shell(mode, file), file);
   if (out === null) { missing.push(file + " (sem marcadores FB:SHELL)"); continue; }
   const out2 = replaceBlock(out, FOOT_START, FOOT_END, FOOTER, file);
   if (out2 === null) { missing.push(file + " (sem marcadores FB:FOOTER)"); continue; }

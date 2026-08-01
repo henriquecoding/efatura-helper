@@ -303,7 +303,8 @@
      min-width: 0 defeats the grid's min-content floor that was letting it grow to 751px */
   .demo-tabs {
     align-self: stretch; padding: 8px; min-width: 0;
-    overflow-x: auto; scroll-snap-type: x proximity;
+    overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: thin;
+    overscroll-behavior-inline: contain;
   }
   .demo-tablist { flex-direction: row; gap: 4px; width: max-content; }
   .demo-tab { scroll-snap-align: start; white-space: nowrap; flex: none; }
@@ -378,18 +379,24 @@
 .demo-modal {
   width: min(1080px, calc(100vw - 32px));
   max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
   padding: 0; border: 0; background: transparent; overflow: visible;
   margin: auto;
 }
 .demo-modal[open] { display: block; }
 .demo-modal::backdrop { background: color-mix(in srgb, var(--pri-dark) 55%, transparent); }
 .demo-modal .demo-shell { margin-top: 0; }
-.demo-modal .demo-device { max-height: calc(100vh - 32px); overflow-y: auto; }
+.demo-modal .demo-device {
+  max-height: calc(100vh - 32px); max-height: calc(100dvh - 32px); overflow-y: auto;
+}
+.demo-modal .demo-titlebar { position: sticky; top: 0; z-index: 8; }
 
 @media (max-width: 760px) {
   .demo-launch { grid-template-columns: auto minmax(0, 1fr); }
   .demo-launch-go { display: none; }
-  .demo-modal { width: calc(100vw - 16px); max-height: calc(100vh - 16px); }
+  .demo-modal {
+    width: calc(100vw - 16px); max-height: calc(100vh - 16px); max-height: calc(100dvh - 16px);
+  }
 }
 @media (forced-colors: active) {
   .demo-launch, .demo-launch-go { border: 1px solid ButtonText; }
@@ -400,18 +407,15 @@
    beside the section's own copy - not a floating dock and not a card three chapters below.
    It STACKS: at ~380px the three-column form left the title on three lines and the meta line
    broken mid-phrase. Device on top, then the text, then the affordance. */
-.demo-launch-top {
-  margin: 0; max-width: none;
-  grid-template-columns: 1fr; justify-items: start; gap: 12px;
-  padding: 22px 24px;
+.demo-launch-compact {
+  margin: 0; max-width: 420px; grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px; padding: 13px 16px; border-radius: var(--control-radius);
 }
-.demo-launch-top .demo-launch-device { flex-direction: row; }
-.demo-launch-top .demo-launch-txt { gap: 5px; }
-.demo-launch-top .demo-launch-txt b { font-size: 1.12rem; }
-.demo-launch-top .dl-meta { line-height: 1.6; }
-.demo-launch-top .demo-launch-go {
-  width: 40px; height: 40px; justify-self: start; margin-top: 2px;
-}
+.demo-launch-compact .demo-launch-device { display: none; }
+.demo-launch-compact .demo-launch-txt b { font-size: .98rem; }
+.demo-launch-compact .demo-launch-txt .dl-sub { font-size: .82rem; }
+.demo-launch-compact .demo-launch-go { width: 38px; height: 38px; }
+.demo-launch-about { max-width: 760px; }
 .demo-launch-again { margin-top: 16px; }
 .demo-launch-again svg { width: 19px; height: 19px; }
 
@@ -421,4 +425,3 @@
   .demo-titlebar { gap: 10px; }
   .demo-pause { padding: 7px 10px; font-size: .8rem; }
 }
-

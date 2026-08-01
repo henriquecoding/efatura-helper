@@ -16,7 +16,7 @@ const ok = (m) => console.log("  ok   " + m);
 const FILES = [
   "index.html", "consulta.html", "deducoes.html", "base-legal.html", "perfil.html",
   "assets/empresa.js", "assets/site.js", "assets/deducoes.js", "assets/base-legal.js",
-  "assets/situacao.js",
+  "assets/situacao.js", "assets/about.js",
 ];
 
 // pushState/replaceState carrying anything that looks like a built query string.

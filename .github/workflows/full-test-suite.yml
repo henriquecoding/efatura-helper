@@ -1,0 +1,23 @@
+name: full-test-suite
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install the pinned test dependencies
+        run: npm ci
+      - name: Run static, data-contract and real-browser checks
+        env:
+          CI: "true"
+          CHROME_PATH: /usr/bin/google-chrome
+        run: npm test
