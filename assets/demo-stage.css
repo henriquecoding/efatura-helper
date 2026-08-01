@@ -13,8 +13,12 @@
  * under a number someone needs to read.
  */
 
-#demonstracao {
-  /* Reworked 01-08-2026 on owner feedback: the near-black screen made the glass read as murk and
+:root {
+  /* Scoped to :root, NOT to #demonstracao. The launcher and the dialog moved into each route's
+     hero, so tokens confined to the section left every var(--demo-*) undefined: the bezel, the
+     screen gradient and the panel all resolved to nothing and the modal rendered as loose text
+     floating over the page. Every name here is --demo-*, so :root is not a leak.
+     Reworked 01-08-2026 on owner feedback: the near-black screen made the glass read as murk and
      drowned the chrome text. The screen is now a LIGHT two-point blue (the reference's airy
      wallpaper), the glass is a white wash over it, and the chrome text flips to dark ink - which
      is where the contrast comes from. */

@@ -271,6 +271,16 @@ console.log("\nassets/demo-stage.css - the demo chrome exception");
   if (/#(8b5cf6|a855f7|7c3aed|9333ea)|violet|purple/i.test(demoCss)) bad("violeta na demo");
   else ok("sem transition:all, sem animacao de layout, sem violeta");
 
+  /* The --demo-* tokens must be reachable from ANYWHERE the shell can be mounted. They used to
+     be scoped to `#demonstracao`; when the launcher and the dialog moved into each route's hero,
+     every var(--demo-*) resolved to nothing and the modal rendered as loose text over the page
+     with no bezel, no screen and no panel. Tokens live on :root. */
+  const tokenBlock = demoCss.match(/^([^{]*)\{[^}]*--demo-bezel/m);
+  if (!tokenBlock) bad("nao encontrei o bloco de tokens --demo-*");
+  else if (tokenBlock[1].trim() !== ":root")
+    bad(`tokens --demo-* presos a "${tokenBlock[1].trim()}" - tem de ser :root, senao quebram fora dessa seccao`);
+  else ok("tokens --demo-* em :root (alcancaveis de qualquer rota)");
+
   // one elevation level only: the device shadow token
   const shadows = (demoCss.match(/box-shadow:(?![^;]*inset)[^;]*;/g) || [])
     .filter((s) => !/var\(--demo-shadow\)|none/.test(s));
